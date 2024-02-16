@@ -22,7 +22,7 @@ function App() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+          Edit <code>12394023904589023929043829042390489042890238903284092384023948902482390349</code> and save to test HMR
         </p>
       </div>
       <p className="read-the-docs">
