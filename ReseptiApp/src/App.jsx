@@ -131,11 +131,6 @@ export function App() {
                   <img className="recipeImage" src="https://metro.co.uk/wp-content/uploads/2017/08/pri_50131368.jpg?quality=90&strip=all&zoom=1&resize=644%2C483" alt="Recipe 3" />
                   <h2>Reseptttiii 3</h2>
                 </td>
-                <td className="recipeCell">
-                  {/* Large picture 4 */}
-                  <img className="recipeImage" src="https://www.kotikokki.net/media/cache/large/recipeimage/large/52d6e25bd074a9ec0e0d0a75/original.jpg" alt="Recipe 3" />
-                  <h2>Nakkitalo</h2>
-                </td>
               </tr>
             </tbody>
           </table>
