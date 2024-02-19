@@ -1,29 +1,18 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import { Register } from './Register'
 import './App.css'
 export function App() {
-  const [role, setRole] = useState('');
- 
   const [count, setCount] = useState(0);
   const [ansassa, setAnsassa] = useState(false);
   const [imageSource, setImageSource] = useState("https://www.modernhoney.com/wp-content/uploads/2023/11/Nutella-Cream-Pie-1-crop-768x602.jpg")
   const [openApp, setOpenApp] = useState(false);
-  const [useRooli, setUserRooli] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState('login'); // Default to login tab
   //
-  const [nicknameInput, setNicknameInput] = useState('');
-  const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
-  const [values, setValues] = useState({
-    nickname: "nicknameInput",
-    name: "nameInput",
-    email: "emailInput", 
-    password: "passwordInput",
-    user_role: "useRooli"
-  })
   const toggleModal = () => {
     setShowModal(!showModal);
     setActiveTab(null);
@@ -55,42 +44,7 @@ export function App() {
       console.log("ERROR LOGIN ", error);
     }
   };
-
-  const handleRegisterSubmit = async (event) => {
-    event.preventDefault();
-    setUserRooli("user");
-    setValues({
-      nickname: nicknameInput,
-      name: nameInput,
-      email: emailInput,
-      password: passwordInput,
-      user_role: "user" 
-    });
-    
-
-    try {
-      const response = await fetch("http://localhost:8081/register", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          nickname: nicknameInput,
-          name: nameInput,
-          email: emailInput,
-          password: passwordInput,
-          user_role: 'user'}),
-      });
-      const result = await response.json(); 
-      console.log("JEEEEEEEEEEEE" + result);
-      setValues(null);
-    } catch (error) {
-      console.log("JOKIN MENI VITUIKSI")
-      console.error("Error:", error);
-    }
-  };
     // Send the POST request to the backend
-  
   const handleCLICKME = () =>{
     setOpenApp(true);
   };
@@ -142,13 +96,7 @@ export function App() {
                 </form>
               )}
               {activeTab === 'register' && (
-                <form onSubmit={handleRegisterSubmit}>
-                  <input  onChange={(e) => setNicknameInput(e.target.value) } name = 'nickname' type="text" placeholder="Käyttäjänimi" />
-                  <input  onChange={(e) => setNameInput(e.target.value)}  type="text" name='name' placeholder="Oikea nimesi" />
-                  <input  onChange={(e => setEmailInput(e.target.value))}  type="email" name = 'email' placeholder="Sähköpostiosoite" />
-                  <input onChange={(e) => setPasswordInput(e.target.value)}  type="password" name = 'password' placeholder="Salasana" />
-                  <button type="submit">Luo käyttäjä</button>
-                </form>
+                <Register/>
               )}
             </div>
             <div className="modal-footer">

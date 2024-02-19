@@ -35,6 +35,7 @@ app.listen(8081, () => {
 })
 
 app.post('/register', (req, res) => {
+    try {
     console.log("Toimiiko edes vittuuu")
     const sql = "INSERT INTO users (nickname, name, email, password, user_role) VALUES (?, ?, ?, ?, ?)";
     const values = [
@@ -44,10 +45,14 @@ app.post('/register', (req, res) => {
         req.body.password,
         req.body.user_role  /*USER ROLE VOI OLLA AINOASTAAN JOKO 'superadmin', 'user' tai 'viewer'          */
     ];
-    db.query(sql, values, (err, data) => {
-        if(err) return res.json("Ei toiminut", err); 
-        return res.json("Toimii ", data); 
-    });
+    db.query(sql, values, (err) => {
+        if(err) return res.status(500).json("Error rekisteröinnissä" + err);
+        return res.status(200).json("Rekisteröinti onnistui")
+    }); 
+    }
+    catch (error) {
+        return res.status(500).json("Error rekisteröinnissä: " + error);
+    }
 });
 
 app.post('/login', (req, res) => {
