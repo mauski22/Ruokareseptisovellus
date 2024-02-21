@@ -71,3 +71,13 @@ app.post('/login', (req, res) => {
         }
     })
 })
+app.delete('/delete/:id', (req, res) => {
+    const sql = "DELETE FROM users WHERE user_id = ?";
+    const user_id = req.params.id; 
+    db.query (sql, [user_id], (err, result) => {
+        if(err) {return res.status(500).json("Error rekisteröinnissä: " + err);}
+        else { return res.status(200).json("Poisto onnistui:");
+        }
+    }
+    )
+})
