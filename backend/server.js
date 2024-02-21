@@ -36,7 +36,6 @@ app.listen(8081, () => {
 
 app.post('/register', (req, res) => {
     try {
-    console.log("Toimiiko edes vittuuu")
     const sql = "INSERT INTO users (nickname, name, email, password, user_role) VALUES (?, ?, ?, ?, ?)";
     const values = [
         req.body.nickname,
@@ -54,6 +53,19 @@ app.post('/register', (req, res) => {
         return res.status(500).json("Error rekisteröinnissä: " + error);
     }
 });
+app.post('/photos', (req, res) => {
+    try {
+        const sql = "INSERT INTO photos (recipe_id, url) VALUES (?, ?)"
+        const values = [req.body.recipe_id, req.body.url]
+        db.query(sql, values, (err) => {
+            if (err) return res.status(500).json("Kuvien lisäys epäonnistui" + err);
+            return res.status(200).json("Kuvien lisäys onnistui")
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Kuvien lisäys epäonnistui" + error)
+    }
+})
 
 app.post('/login', (req, res) => {
     const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
