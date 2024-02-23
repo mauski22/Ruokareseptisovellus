@@ -67,6 +67,20 @@ app.post('/photos', (req, res) => {
     }
 })
 
+app.post('/recipes', (req, res) => {
+    try {
+        const sql = "INSERT INTO Recipes (title, author_id, description, visibility) VALUES (?, ?, ?, ?)"
+        const values = [req.body.title, req.body.author_id, req.body.description, req.body.visibility]
+        db.query(sql, values, (err) => {
+            if(err) return res.status(500).json("Reseptin lisäys epäonnistui"+ err)
+            return res.status(200).json("Reseptin lisäys onnistui")
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Reseptin lisäys epäonnistui" + error)
+    }
+})
+
 app.post('/login', (req, res) => {
     const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
     const values = [
