@@ -29,6 +29,14 @@ app.get('/users', (req, res) => {
         return res.json(data);
     })
 })
+app.get('/users/:id', (req, res) => {
+    const sql = "SELECT * FROM users WHERE user_id = ?"; 
+    const user_id = req.params.id
+    db.query(sql, [user_id], (err, data) => {
+        if(err) return res.status(500).json("Error yskittäisen käyttäjän haussa: " + err)
+        return res.status(200).json(data); 
+    })
+})
 app.get('/recipes', (req, res) => {
     const sql = "SELECT * FROM recipes"; 
     db.query(sql, (err, data) => {
@@ -36,13 +44,13 @@ app.get('/recipes', (req, res) => {
         return res.status(200).json(data); 
     })
 })
-//yksittäisen käyttäjän haku pelkällä id:llä 
+//yksittäisen reseptin haku pelkällä id:llä 
 //postmanissa osoite pitää olla muotoa http://localhost:8081/recipes/2 esimerkiksi 
 app.get('/recipes/:id', (req, res) => {
     const sql = "SELECT * FROM recipes WHERE recipe_id = ?"; 
     const recipe_id = req.params.id
     db.query(sql, [recipe_id], (err, data) => {
-        if(err) return res.status(500).json("Error reseptien yskittäisen reseptin haussa: " + err)
+        if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
         return res.status(200).json(data); 
     })
 })
@@ -159,6 +167,17 @@ app.delete('/users/delete/:id', (req, res) => {
     db.query (sql, [user_id], (err, result) => {
         if(err) {return res.status(500).json("Error käyttäjän poistossa: " + err);}
         else { return res.status(200).json("Poisto onnistui: " + result);
+        }
+    }
+    )
+})
+
+app.delete('/recipes/delete/:id', (req, res) => {
+    const sql = "DELETE FROM recipes WHERE recipe_id = ?";
+    const recipe_id = req.params.id; 
+    db.query (sql, [recipe_id], (err, result) => {
+        if(err) {return res.status(500).json("Error reseptin poistossa: " + err);}
+        else { return res.status(200).json("Reseptin poisto onnistui: " + result);
         }
     }
     )
