@@ -10,9 +10,10 @@ export function App() {
   const [openApp, setOpenApp] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState('login'); // Default to login tab
-  //
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+
+
   const toggleModal = () => {
     setShowModal(!showModal);
     setActiveTab(null);
@@ -48,20 +49,7 @@ export function App() {
   const handleCLICKME = () =>{
     setOpenApp(true);
   };
-  if (count === 1) {
-    setCount(1.1);
-    setImageSource("https://d2vsf1hynzxim7.cloudfront.net/production/media/17882/responsive-images/foodnetwork-image-3553741b-911d-4d99-bfd2-df31a0e1cc1e___default_572_429.png") 
-  }
-  if(count ===2.1){
-    setCount(2.2)
-    setAnsassa(true);
-    setImageSource("https://metro.co.uk/wp-content/uploads/2017/08/pri_50131368.jpg?quality=90&strip=all&zoom=1&resize=644%2C483")
-  }
-  if(count===3.2){
-    setAnsassa(false);
-    setCount(0)
-    setImageSource("https://www.modernhoney.com/wp-content/uploads/2023/11/Nutella-Cream-Pie-1-crop-768x602.jpg");
-  }
+
   return (
     <div>
     <>
@@ -109,7 +97,7 @@ export function App() {
           <div id="recipe-search">
             {/*hakupalkki */}
             <input type="text" id="recipe-search-input" placeholder="Search recipes..." />
-            <button id="search-button">Search</button>
+            <button id="search-button" class="btn btn-primary">Search</button>
           </div>
   
           <table className='table'>
@@ -139,17 +127,11 @@ export function App() {
       ) : (
         <>
           <h1>Tervetuloa Haute Cuisine Reseptit -sivulle!</h1>
-          <div>
-            <a href="https://vitejs.dev" target="_blank">
-              <img src={viteLogo} className="logo" alt="Vite logo" />
-            </a>
-            <a href="https://react.dev" target="_blank">
-              <img src={reactLogo} className="logo react" alt="React logo" />
-            </a>
-          </div>
           <h1>Ruokareseptisovellus</h1>
           <h2>Aleksi Hyvärinen, Toni Kuura, Mauno Rytkönen, Juho Rissanen</h2>
-          <button onClick={handleCLICKME}>Click me</button>
+
+          <button onClick={handleCLICKME}>Siirry kirjautumaan</button>
+
         </>
       )}
     </>
