@@ -3,7 +3,7 @@ import { Form, Button, InputGroup, Container } from 'react-bootstrap';
 
 const SearchBar = () => {
   return (
-    <Container className="my-4">
+    <Container className="search-bar-container">
       <InputGroup>
         <Form.Control
           placeholder="Search for recipes, ingredients, or more"

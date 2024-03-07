@@ -24,11 +24,4 @@
   padding-right: 0.5rem;
 }
 
-.search-bar-container {
-  position: absolute;
-  padding: 1rem; /* Adjust padding to give space below the navbar */
-  margin-top: 0;
-}
-
-
 /* You may need to adjust this if you want more padding around the items */
