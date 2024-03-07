@@ -4,6 +4,7 @@ import NavigationBar from './components/NavigationBar';
 import SearchBar from './components/SearchBar';
 import FeaturedRecipes from './components/FeaturedRecipes';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 const App = () => {
   // State for the homepage

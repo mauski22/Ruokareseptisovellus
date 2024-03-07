@@ -3,9 +3,9 @@ import { Container, Navbar, Nav } from 'react-bootstrap';
 
 const NavigationBar = ({ onLoginClicked }) => {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" className="justify-content-start">
       <Container>
-        <Navbar.Brand href="#home">Foodie</Navbar.Brand>
+        <Navbar.Brand href="#home">Ruokareseptisovellus</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
