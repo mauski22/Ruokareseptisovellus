@@ -1,32 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import { Register } from './Register'
-import './App.css'
-export function App() {
-  const [count, setCount] = useState(0);
-  const [ansassa, setAnsassa] = useState(false);
-  const [imageSource, setImageSource] = useState("https://www.modernhoney.com/wp-content/uploads/2023/11/Nutella-Cream-Pie-1-crop-768x602.jpg")
-  const [openApp, setOpenApp] = useState(false);
+import React, { useState } from 'react';
+import { Modal, Button, Nav, Tab, Form } from 'react-bootstrap';
+import NavigationBar from './components/NavigationBar';
+import SearchBar from './components/SearchBar';
+import FeaturedRecipes from './components/FeaturedRecipes';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const App = () => {
+  // State for the homepage
   const [showModal, setShowModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('login'); // Default to login tab
+  const [activeTab, setActiveTab] = useState('login');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  // Placeholder for recipes data
+  const [recipesData] = useState([
+    // ... Your recipes data here
+  ]);
 
-
+  // Toggle modal visibility
   const toggleModal = () => {
     setShowModal(!showModal);
-    setActiveTab(null);
+    setActiveTab('login'); // Reset to login tab by default when modal is toggled
   };
 
-  const switchTab = (tab) => {
-    setActiveTab(tab);
-  };
-
+  // Login submit handler
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const vastaus = await fetch("http://localhost:8081/login",  {
+      const response = await fetch("http://localhost:8081/login", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,109 +35,83 @@ export function App() {
           email: emailInput,
           password: passwordInput
         })
-      }
-      )
-      const tulos = await vastaus.json();
-      console.log("LOGIN ONNISTUI", tulos);
-    }
-    catch (error) {
-      console.log("Jokin meni pieleen login hommelissa")
-      console.log("ERROR LOGIN ", error);
+      });
+      const result = await response.json();
+      console.log("LOGIN ONNISTUI", result);
+      toggleModal(); // Close the modal on successful login
+    } catch (error) {
+      console.error("Jokin meni pieleen login hommelissa", error);
     }
   };
-    // Send the POST request to the backend
-  const handleCLICKME = () =>{
-    setOpenApp(true);
+
+  // Register submit handler
+  const handleRegisterSubmit = async (event) => {
+    event.preventDefault();
+    // Implement your register logic here
+    // This should be similar to handleLoginSubmit, but posting to a different endpoint
   };
 
   return (
-    <div>
-    <>
-      {openApp ? ( /* Conditionally render based on openApp state */
-        <div>
-                <div className="App">
-      {!showModal && (<button onClick={toggleModal}>Klikkaa tästä!</button>)}
-      {!showModal && (<div>Vinkki: Jotkut reseptit näkyvät vain rekisteröityneille käyttäjille.</div>)}
+    <div className="App">
+      <NavigationBar onLoginClicked={toggleModal} />
+      <SearchBar />
+      <FeaturedRecipes recipes={recipesData} />
 
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              
-            </div>
-            <div className="nav nav-tabs">
-              <div className={activeTab === 'login' ? 'active' : ''}>
-                <button onClick={() => switchTab('login')}>Kirjautumaan..</button>
-              </div>
-              Tai
-              <div className={activeTab === 'register' ? 'active' : ''}>
-                <button onClick={() => switchTab('register')}>Luo uusi käyttäjä</button>
-              </div>
-            </div>
-            <div className="modal-body">
-              {activeTab === 'login' && (
-                <form onSubmit={handleLoginSubmit}>
-                  {/* Login form fields */}
-                  <input value={emailInput} onChange={e => setEmailInput(e.target.value)}  type="email" placeholder="Sähköpostiosoite" />
-                  <input value={passwordInput} onChange={e => setPasswordInput(e.target.value)}  type="password" placeholder="Salasana" />
-                  <button type="submit">Kirjaudu</button>
-                </form>
-              )}
-              {activeTab === 'register' && (
-                <Register/>
-              )}
-            </div>
-            <div className="modal-footer">
-              <button onClick={toggleModal}>Peruuta</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-          <div id="recipe-search">
-            {/*hakupalkki */}
-            <input type="text" id="recipe-search-input" placeholder="Search recipes..." />
-            <button id="search-button" class="btn btn-primary">Search</button>
-          </div>
-  
-          <table className='table'>
-            <tbody>
-              <tr>
-                <td className="recipeCell">
-                  {/* Large picture 1 */}
-                  <img className="recipeImage" src="https://d2vsf1hynzxim7.cloudfront.net/production/media/17882/responsive-images/foodnetwork-image-3553741b-911d-4d99-bfd2-df31a0e1cc1e___default_572_429.png" alt="Recipe 1" />
-                  <h2>Reseptttiii</h2>
-                </td>
-                <td className="recipeCell">
-                  {/* Large picture 2 */}
-                  <img className="recipeImage" src="https://www.modernhoney.com/wp-content/uploads/2023/11/Nutella-Cream-Pie-1-crop-768x602.jpg" alt="Recipe 2" />
-                  <h2>Reseptttiii2</h2>
-                </td>
-                <td className="recipeCell">
-                  {/* Large picture 3 */}
-                  <img className="recipeImage" src="https://metro.co.uk/wp-content/uploads/2017/08/pri_50131368.jpg?quality=90&strip=all&zoom=1&resize=644%2C483" alt="Recipe 3" />
-                  <h2>Reseptttiii 3</h2>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-  
-        {/* Add more content as needed */}
-      </div>
-      ) : (
-        <>
-          <h1>Tervetuloa Haute Cuisine Reseptit -sivulle!</h1>
-          <h1>Ruokareseptisovellus</h1>
-          <h2>Aleksi Hyvärinen, Toni Kuura, Mauno Rytkönen, Juho Rissanen</h2>
-
-          <button onClick={handleCLICKME}>Siirry kirjautumaan</button>
-
-        </>
-      )}
-    </>
+      {/* Login/Register Modal */}
+      <Modal show={showModal} onHide={toggleModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{activeTab === 'login' ? 'Login' : 'Register'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Nav variant="tabs" defaultActiveKey="login">
+            <Nav.Item>
+              <Nav.Link eventKey="login" onSelect={() => setActiveTab('login')}>
+                Login
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="register" onSelect={() => setActiveTab('register')}>
+                Register
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+          <Tab.Content>
+            <Tab.Pane eventKey="login" active={activeTab === 'login'}>
+              <Form onSubmit={handleLoginSubmit}>
+                <Form.Group>
+                  <Form.Control
+                    type="email"
+                    placeholder="Sähköpostiosoite"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Control
+                    type="password"
+                    placeholder="Salasana"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Kirjaudu
+                </Button>
+              </Form>
+            </Tab.Pane>
+            <Tab.Pane eventKey="register" active={activeTab === 'register'}>
+              <Form onSubmit={handleRegisterSubmit}>
+                {/* Repeat similar structure for registration as login */}
+                {/* Add other fields as necessary for registration */}
+              </Form>
+            </Tab.Pane>
+          </Tab.Content>
+        </Modal.Body>
+      </Modal>
     </div>
   );
-}
+};
 
-export default App
-
+export default App;

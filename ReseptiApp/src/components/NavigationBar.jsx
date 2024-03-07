@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 
-const NavigationBar = () => {
+const NavigationBar = ({ onLoginClicked }) => {
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -15,8 +15,8 @@ const NavigationBar = () => {
             <Nav.Link href="#marketplace">Marketplace</Nav.Link>
           </Nav>
           <Nav>
-            <Nav.Link href="#login">Log In</Nav.Link>
-            <Nav.Link href="#signup">Sign Up</Nav.Link>
+            <Nav.Link href="#login" onClick={onLoginClicked}>Log In</Nav.Link>
+            <Nav.Link href="#signup" onClick={onLoginClicked}>Sign Up</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
