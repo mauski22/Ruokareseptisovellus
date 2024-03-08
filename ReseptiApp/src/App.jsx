@@ -36,8 +36,13 @@ export function App() {
         })
       }
       )
+
       const tulos = await vastaus.json();
-      console.log("LOGIN ONNISTUI", tulos);
+      if (tulos === "Login Successfully") {
+        console.log("LOGIN ONNISTUI", tulos);
+      } else {
+        console.log("LOGIN FAILED", tulos);
+      }
     }
     catch (error) {
       console.log("Jokin meni pieleen login hommelissa")

@@ -156,7 +156,7 @@ app.post('/login', (req, res) => {
             return res.json("Login Successfully")
         }
         else {
-            res.json("Eipä ollut login oikein")
+            res.json("Login failed")
         }
     })
 })
