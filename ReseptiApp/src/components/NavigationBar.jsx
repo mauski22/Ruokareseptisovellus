@@ -26,7 +26,8 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  Signed in as: <a href="#profile">{user.name}</a>
+                  {console.log(user)}
+                  Signed in as: <a href="#profile">{user}</a>
                 </Navbar.Text>
                 <Button onClick={handleLogout} variant="outline-danger">Logout</Button>
               </>

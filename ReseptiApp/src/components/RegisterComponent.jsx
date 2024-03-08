@@ -11,7 +11,6 @@ const RegisterComponent = ({
   nameInput,
   emailInput,
   passwordInput,
-  toggleRegisterModal,
 }) => {
   return (
     <Form onSubmit={handleRegisterSubmit}>

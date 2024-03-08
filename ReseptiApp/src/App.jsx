@@ -31,29 +31,31 @@ const App = () => {
   // Login submit handler
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
-      try {
-        const response = await fetch("http://localhost:8081/login", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: emailInput,
-            password: passwordInput
-          })
-        });
-        const result = await response.json();
-        console.log(result);
-        if (response.ok) {
-          console.log("LOGIN SUCCESSFUL", result);
-          login({ name: result.name });
-          toggleLoginModal(); // Close the modal on successful login
-        } else {
-          console.error("Login failed", result.message);
-        }
-      } catch (error) {
-        console.error("An error occurred during login", error);
+    try {
+      const vastaus = await fetch("http://localhost:8081/login",  {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailInput,
+          password: passwordInput
+        })
       }
+      )
+      const tulos = await vastaus.json();
+      if (tulos === "Login failed") {
+        console.log(tulos);
+      } else {
+        console.log("Käyttäjän ", tulos + " kirjautuminen onnistui ");
+        login(tulos);
+        toggleLoginModal();
+      }
+    }
+    catch (error) {
+      console.log("Jokin meni pieleen login hommelissa")
+      console.log("ERROR LOGIN ", error);
+    }
   };
 
   // Register submit handler

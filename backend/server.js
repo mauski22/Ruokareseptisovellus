@@ -1,7 +1,6 @@
 const express = require('express');
 const mysql = require('mysql')
 const cors = require('cors')
-const bcrypt = require('bcrypt');
 
 
 
@@ -148,37 +147,22 @@ app.post('/ratings', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    // Select user by email without checking the password in SQL query
-    const sql = "SELECT * FROM users WHERE email = ?";
-    const values = [req.body.email];
-
-    db.query(sql, values, async (err, users) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ message: "Login Failed" });
+    const sql = "SELECT name FROM users WHERE email = ? AND password = ?";
+    const values = [
+        req.body.email,
+        req.body.password
+    ]
+    db.query(sql, values, (err, data) => {
+        if(err) return res.json("Login Failed");
+        if (data.length > 0) {
+            const userName = data[0].name;
+            return res.json(userName);
         }
-        if (users.length > 0) {
-            const user = users[0];
-            // Now, compare the plaintext password with the hashed password
-            const match = await bcrypt.compare(req.body.password, user.password);
-            if (match) {
-                // If the password matches, return the necessary user information
-                // Exclude the password from the response for security
-                const { password, ...userWithoutPassword } = user;
-                return res.json({
-                    message: "Login Successfully",
-                    user: userWithoutPassword // Send back user info excluding the password
-                });
-            } else {
-                // Password does not match
-                return res.status(401).json({ message: "Eipä ollut login oikein" });
-            }
-        } else {
-            // No user found with that email
-            return res.status(404).json({ message: "Eipä ollut login oikein" });
+        else {
+            res.json("Login failed")
         }
-    });
-});
+    })
+})
 //postmanissa osoite pitää olla muotoa http://localhost:8081/users/delete/2, Postman poistaa käyttäjän id:llä = 2 tässä tapauksessa   
 app.delete('/users/delete/:id', (req, res) => {
     const sql = "DELETE FROM users WHERE user_id = ?";
