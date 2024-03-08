@@ -11,6 +11,7 @@ const RegisterComponent = ({
   nameInput,
   emailInput,
   passwordInput,
+  toggleRegisterModal,
 }) => {
   return (
     <Form onSubmit={handleRegisterSubmit}>
@@ -57,6 +58,7 @@ const RegisterComponent = ({
       <Button variant="primary" type="submit">
         Register
       </Button>
+      <Button variant="danger">Cancel</Button>
     </Form>
   );
 };

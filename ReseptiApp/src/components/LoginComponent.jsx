@@ -25,6 +25,7 @@ const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, em
       <Button variant="primary" type="submit">
         Login
       </Button>
+      <Button variant="danger">Cancel</Button>
     </Form>
   );
 };
