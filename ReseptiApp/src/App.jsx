@@ -3,13 +3,19 @@ import { Modal, Button, Nav, Tab, Form } from 'react-bootstrap';
 import NavigationBar from './components/NavigationBar';
 import SearchBar from './components/SearchBar';
 import FeaturedRecipes from './components/FeaturedRecipes';
+import LoginComponent from './components/LoginComponent';
+import RegisterComponent from './components/RegisterComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+
 const App = () => {
   // State for the homepage
-  const [showModal, setShowModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
+  const [nicknameInput, setNicknameInput] = useState('');
+  const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   // Placeholder for recipes data
@@ -18,10 +24,8 @@ const App = () => {
   ]);
 
   // Toggle modal visibility
-  const toggleModal = () => {
-    setShowModal(!showModal);
-    setActiveTab('login'); // Reset to login tab by default when modal is toggled
-  };
+  const toggleLoginModal = () => setShowLoginModal(!showLoginModal);
+  const toggleRegisterModal = () => setShowRegisterModal(!showRegisterModal);
 
   // Login submit handler
   const handleLoginSubmit = async (event) => {
@@ -48,67 +52,60 @@ const App = () => {
   // Register submit handler
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
-    // Implement your register logic here
-    // This should be similar to handleLoginSubmit, but posting to a different endpoint
+    try {
+      const response = await fetch("http://localhost:8081/register", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname: nicknameInput, name: nameInput, email: emailInput, password: passwordInput, user_role: 'user' }),
+      });
+      const result = await response.json();
+      console.log("Registration Success:", result);
+      // Handle success (e.g., navigating to a different page, showing a success message)
+    } catch (error) {
+      console.error("Registration Failed:", error);
+      // Handle error (e.g., showing an error message)
+    }
   };
 
   return (
     <div className="App">
-      <NavigationBar onLoginClicked={toggleModal} />
+      <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
       <SearchBar />
       <FeaturedRecipes recipes={recipesData} />
 
-      {/* Login/Register Modal */}
-      <Modal show={showModal} onHide={toggleModal}>
+      {/* Login Modal */}
+      <Modal show={showLoginModal} onHide={toggleLoginModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{activeTab === 'login' ? 'Login' : 'Register'}</Modal.Title>
+          <Modal.Title>Login</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Nav variant="tabs" defaultActiveKey="login">
-            <Nav.Item>
-              <Nav.Link eventKey="login" onSelect={() => setActiveTab('login')}>
-                Login
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="register" onSelect={() => setActiveTab('register')}>
-                Register
-              </Nav.Link>
-            </Nav.Item>
-          </Nav>
-          <Tab.Content>
-            <Tab.Pane eventKey="login" active={activeTab === 'login'}>
-              <Form onSubmit={handleLoginSubmit}>
-                <Form.Group>
-                  <Form.Control
-                    type="email"
-                    placeholder="Sähköpostiosoite"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group>
-                  <Form.Control
-                    type="password"
-                    placeholder="Salasana"
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    required
-                  />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                  Kirjaudu
-                </Button>
-              </Form>
-            </Tab.Pane>
-            <Tab.Pane eventKey="register" active={activeTab === 'register'}>
-              <Form onSubmit={handleRegisterSubmit}>
-                {/* Repeat similar structure for registration as login */}
-                {/* Add other fields as necessary for registration */}
-              </Form>
-            </Tab.Pane>
-          </Tab.Content>
+          <LoginComponent
+            handleLoginSubmit={handleLoginSubmit}
+            setEmailInput={setEmailInput}
+            setPasswordInput={setPasswordInput}
+            emailInput={emailInput}
+            passwordInput={passwordInput}
+          />
+        </Modal.Body>
+      </Modal>
+
+      {/* Register Modal */}
+      <Modal show={showRegisterModal} onHide={toggleRegisterModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Register</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <RegisterComponent
+            handleRegisterSubmit={handleRegisterSubmit}
+            setNicknameInput={setNicknameInput}
+            setNameInput={setNameInput}
+            setEmailInput={setEmailInput}
+            setPasswordInput={setPasswordInput}
+            nicknameInput={nicknameInput}
+            nameInput={nameInput}
+            emailInput={emailInput}
+            passwordInput={passwordInput}
+          />
         </Modal.Body>
       </Modal>
     </div>

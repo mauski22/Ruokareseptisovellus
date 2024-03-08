@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 
-const NavigationBar = ({ onLoginClicked }) => {
+const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
   return (
     <Navbar bg="light" expand="lg" className="justify-content-start">
       <Container>
@@ -16,7 +16,7 @@ const NavigationBar = ({ onLoginClicked }) => {
           </Nav>
           <Nav>
             <Nav.Link href="#login" onClick={onLoginClicked}>Log In</Nav.Link>
-            <Nav.Link href="#signup" onClick={onLoginClicked}>Sign Up</Nav.Link>
+            <Nav.Link href="#signup" onClick={onSignUpClicked}>Register</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
