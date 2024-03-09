@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Nav, Tab, Form } from 'react-bootstrap';
+import { Modal, Button, Nav, Tab, Form, Image } from 'react-bootstrap';
 import NavigationBar from './components/NavigationBar';
 import SearchBar from './components/SearchBar';
 import FeaturedRecipes from './components/FeaturedRecipes';
@@ -78,7 +78,7 @@ const App = () => {
   };
 
   return (
-      <div className="App">
+      <div className="App search-bar">
           <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
           <SearchBar />
           <FeaturedRecipes recipes={recipesData} />
