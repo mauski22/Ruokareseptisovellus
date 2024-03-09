@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
-const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, emailInput, passwordInput }) => {
+const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, emailInput, passwordInput, handleCloseForm }) => {
+
   return (
     <Form onSubmit={handleLoginSubmit}>
       <Form.Group>
@@ -25,7 +26,7 @@ const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, em
       <Button variant="primary" type="submit">
         Login
       </Button>
-      <Button variant="danger">Cancel</Button>
+      <Button variant="danger" onClick={handleCloseForm}>Cancel</Button>
     </Form>
   );
 };

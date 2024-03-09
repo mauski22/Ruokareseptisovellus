@@ -95,6 +95,7 @@ const App = () => {
                 setPasswordInput={setPasswordInput}
                 emailInput={emailInput}
                 passwordInput={passwordInput}
+                handleCloseForm={toggleLoginModal}
               />
             </Modal.Body>
           </Modal>
@@ -115,6 +116,7 @@ const App = () => {
                 nameInput={nameInput}
                 emailInput={emailInput}
                 passwordInput={passwordInput}
+                handleCloseForm={toggleRegisterModal}
               />
             </Modal.Body>
           </Modal>

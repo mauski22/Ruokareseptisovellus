@@ -11,6 +11,7 @@ const RegisterComponent = ({
   nameInput,
   emailInput,
   passwordInput,
+  handleCloseForm,
 }) => {
   return (
     <Form onSubmit={handleRegisterSubmit}>
@@ -57,7 +58,7 @@ const RegisterComponent = ({
       <Button variant="primary" type="submit">
         Register
       </Button>
-      <Button variant="danger">Cancel</Button>
+      <Button variant="danger" onClick={handleCloseForm}>Cancel</Button>
     </Form>
   );
 };
