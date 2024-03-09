@@ -13,10 +13,9 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
 
   const handleLogout = () => {
     setShowConfirmModal(true);
-
-
     logout();
     setShowConfirmModal(false);
+
   };
 
   const location = useLocation();
@@ -55,7 +54,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  Signed in as: <a href="/login">{user}</a> {/* Consider updating this to use NavLink or a more appropriate approach */}
+                  Signed in as: {user} {/* Consider updating this to use NavLink or a more appropriate approach */}
                 </Navbar.Text>
                 <Button onClick={handleShowConfirmModal} variant="outline-danger">Logout</Button>
               </>
