@@ -1,46 +1,90 @@
-import React from 'react';
-import { Container, Navbar, Nav, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Navbar, Nav, Button, Modal } from 'react-bootstrap';
 import { useAuth } from './AuthContext';
+import { NavLink, useLocation } from 'react-router-dom';
+import AddRecipeForm from './AddRecipeForm';
+import ConfirmModal from './Confirmation';
+
 
 const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
   const { user, logout } = useAuth();
+  const [showAddRecipeModal, setShowAddRecipeModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleLogout = () => {
+    setShowConfirmModal(true);
+
+
     logout();
-    // Optionally, redirect the user to the homepage or perform other cleanup tasks
+    setShowConfirmModal(false);
   };
 
+  const location = useLocation();
+  const isRecipesPage = location.pathname === '/recipes';
+  const isLoggedIn = user !== null;
+
+  const handleShowAddRecipeForm = () => setShowAddRecipeModal(true);
+  const handleCloseAddRecipeForm = () => setShowAddRecipeModal(false);
+
+  const handleShowConfirmModal = () => {
+    setShowConfirmModal(true);
+  };
+
+  const handleCloseConfirmModal = () => {
+    setShowConfirmModal(false);
+  };
+
+
   return (
+    <>
     <Navbar bg="light" expand="lg" className="justify-content-between">
       <Container>
-        <Navbar.Brand href="#home">Ruokareseptisovellus</Navbar.Brand>
+        <Navbar.Brand as={NavLink} to="/">Ruokareseptisovellus</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#recipes">Recipes</Nav.Link>
-            <Nav.Link href="#community">Community</Nav.Link>
-            <Nav.Link href="#marketplace">Marketplace</Nav.Link>
+            <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
+            <Nav.Link as={NavLink} to="/recipes">Recipes</Nav.Link>
+            <Nav.Link as={NavLink} to="/community">Community</Nav.Link>
+            <Nav.Link as={NavLink} to="/marketplace">Marketplace</Nav.Link>
+            {isRecipesPage && isLoggedIn && (
+              <Button variant="primary" onClick={handleShowAddRecipeForm}>Add recipe</Button>
+            )}
           </Nav>
           <Nav>
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  {console.log(user)}
-                  Signed in as: <a href="#profile">{user}</a>
+                  Signed in as: <a href="/login">{user}</a> {/* Consider updating this to use NavLink or a more appropriate approach */}
                 </Navbar.Text>
-                <Button onClick={handleLogout} variant="outline-danger">Logout</Button>
+                <Button onClick={handleShowConfirmModal} variant="outline-danger">Logout</Button>
               </>
             ) : (
               <>
-                <Nav.Link href="#login" onClick={onLoginClicked}>Log In</Nav.Link>
-                <Nav.Link href="#signup" onClick={onSignUpClicked}>Register</Nav.Link>
+                <Button onClick={onLoginClicked} variant="primary">Log In</Button> {/* Adjust as necessary for your login logic */}
+                <Button onClick={onSignUpClicked} variant="secondary">Register</Button> {/* Adjust as necessary for your signup logic */}
               </>
             )}
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
+    <ConfirmModal
+        show={showConfirmModal}
+        handleClose={handleCloseConfirmModal}
+        title="Confirm Logout"
+        body="Are you sure you want to logout?"
+        confirmAction={handleLogout}
+      />
+    <Modal show={showAddRecipeModal} onHide={handleCloseAddRecipeForm}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add a New Recipe</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <AddRecipeForm user={user} />
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 
