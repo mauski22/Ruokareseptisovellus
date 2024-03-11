@@ -10,7 +10,6 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
   const { user, logout } = useAuth();
   const [showAddRecipeModal, setShowAddRecipeModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
   const handleLogout = () => {
     setShowConfirmModal(true);
     logout();
@@ -21,8 +20,11 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
   const location = useLocation();
   const isRecipesPage = location.pathname === '/recipes';
   const isLoggedIn = user !== null;
-  //const isSuperAdmin = user.user_role === 'superadmin';
-
+  let isSuperAdmin = false;
+  if(isLoggedIn){
+    isSuperAdmin = user.userRole === "superadmin";
+  }
+  
   const handleShowAddRecipeForm = () => setShowAddRecipeModal(true);
   const handleCloseAddRecipeForm = () => setShowAddRecipeModal(false);
 
@@ -46,10 +48,9 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
             <Nav.Link as={NavLink} to="/recipes">Recipes</Nav.Link>
             <Nav.Link as={NavLink} to="/community">Community</Nav.Link>
-            <Nav.Link as={NavLink} to="/usersTable" >Käyttäjien hallinta</Nav.Link>
-            {/*{isSuperAdmin && isLoggedIn && (
+            {isLoggedIn && isSuperAdmin && (
+              <Nav.Link as={NavLink} to="/usersTable">{"("}ADMIN{")"}</Nav.Link>
             )}
-            */}
             {isRecipesPage && isLoggedIn && (
               <Button variant="primary" onClick={handleShowAddRecipeForm}>Add recipe</Button>
             )}
@@ -58,7 +59,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  Signed in as: {user.userName} {/* Consider updating this to use NavLink or a more appropriate approach */}
+                  Signed in as: {user.userName} {"("}{user.userRole}{")"} {/* Consider updating this to use NavLink or a more appropriate approach */}
                 </Navbar.Text>
                 <Button onClick={handleShowConfirmModal} variant="outline-danger">Logout</Button>
               </>
