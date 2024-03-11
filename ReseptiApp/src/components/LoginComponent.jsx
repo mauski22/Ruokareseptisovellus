@@ -8,7 +8,7 @@ const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, em
       <Form.Group>
         <Form.Control
           type="email"
-          placeholder="Email Address"
+          placeholder="Sähköposti"
           value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)}
           required
@@ -17,7 +17,7 @@ const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, em
       <Form.Group>
         <Form.Control
           type="password"
-          placeholder="Password"
+          placeholder="Salasana"
           value={passwordInput}
           onChange={(e) => setPasswordInput(e.target.value)}
           required

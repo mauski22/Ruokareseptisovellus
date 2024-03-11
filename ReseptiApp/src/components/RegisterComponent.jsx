@@ -16,49 +16,49 @@ const RegisterComponent = ({
   return (
     <Form onSubmit={handleRegisterSubmit}>
       <Form.Group className="mb-3" controlId="formNickname">
-        <Form.Label>Username</Form.Label>
+        <Form.Label>Käyttäjätunnus</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Enter username"
+          placeholder="Syötä käyttäjätunnus"
           value={nicknameInput}
           onChange={(e) => setNicknameInput(e.target.value)}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formRealName">
-        <Form.Label>Your Real Name</Form.Label>
+        <Form.Label>Koko Nimi</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Enter your real name"
+          placeholder="Syötä koko nimi"
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value)}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>Sähköposti</Form.Label>
         <Form.Control
           type="email"
-          placeholder="Enter email"
+          placeholder="Syötä sähköposti"
           value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
+        <Form.Label>Salasana</Form.Label>
         <Form.Control
           type="password"
-          placeholder="Password"
+          placeholder="Syötä salasana"
           value={passwordInput}
           onChange={(e) => setPasswordInput(e.target.value)}
         />
       </Form.Group>
 
       <Button variant="primary" type="submit">
-        Register
+        Rekisteröidy
       </Button>
-      <Button variant="danger" onClick={handleCloseForm}>Cancel</Button>
+      <Button variant="danger" onClick={handleCloseForm}>Peruuta</Button>
     </Form>
   );
 };

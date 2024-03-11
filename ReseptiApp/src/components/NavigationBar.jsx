@@ -46,9 +46,9 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/recipes">Recipes</Nav.Link>
-            <Nav.Link as={NavLink} to="/community">Community</Nav.Link>
+            <Nav.Link as={NavLink} to="/" exact>Etusivu</Nav.Link>
+            <Nav.Link as={NavLink} to="/recipes">Reseptit</Nav.Link>
+            <Nav.Link as={NavLink} to="/community">Yhteisö</Nav.Link>
             {isLoggedIn && isSuperAdmin && (
               <Nav.Link as={NavLink} to="/usersTable">{"("}ADMIN{")"}</Nav.Link>
             )}
@@ -62,12 +62,12 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
                 <Navbar.Text className="me-2">
                   Signed in as: {user.userName} {"("}{user.userRole}{")"} {/* Consider updating this to use NavLink or a more appropriate approach */}
                 </Navbar.Text>
-                <Button onClick={handleShowConfirmModal} variant="outline-danger">Logout</Button>
+                <Button onClick={handleShowConfirmModal} variant="outline-danger">Kirjaudu ulos</Button>
               </>
             ) : (
               <>
-                <Button onClick={onLoginClicked} variant="primary">Log In</Button> {/* Adjust as necessary for your login logic */}
-                <Button onClick={onSignUpClicked} variant="secondary">Register</Button> {/* Adjust as necessary for your signup logic */}
+                <Button onClick={onLoginClicked} variant="primary">Kirjaudu</Button> {/* Adjust as necessary for your login logic */}
+                <Button onClick={onSignUpClicked} variant="secondary">Rekisteröidy</Button> {/* Adjust as necessary for your signup logic */}
               </>
             )}
           </Nav>
@@ -77,13 +77,13 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
     <ConfirmModal
         show={showConfirmModal}
         handleClose={handleCloseConfirmModal}
-        title="Confirm Logout"
-        body="Are you sure you want to logout?"
+        title="Vahvista uloskirjautuminen"
+        body="Haluatko varmasti kirjautua ulos"
         confirmAction={handleLogout}
       />
     <Modal show={showAddRecipeModal} onHide={handleCloseAddRecipeForm}>
         <Modal.Header closeButton>
-          <Modal.Title>Add a New Recipe</Modal.Title>
+          <Modal.Title>Lisää uusi resepti</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <AddRecipeForm user={user} />

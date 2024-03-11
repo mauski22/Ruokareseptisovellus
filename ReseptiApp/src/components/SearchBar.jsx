@@ -6,11 +6,11 @@ const SearchBar = () => {
     <Container className="search-bar-container">
       <InputGroup>
         <Form.Control
-          placeholder="Search for recipes, ingredients, or more"
-          aria-label="Search for recipes, ingredients, or more"
+          placeholder="Etsi resepti tai raaka-aineen nimi..."
+          aria-label="Etsi resepti tai raaka-aineen nimi..."
         />
         <Button variant="outline-secondary" id="button-search">
-          Let's go
+          Hae
         </Button>
       </InputGroup>
     </Container>

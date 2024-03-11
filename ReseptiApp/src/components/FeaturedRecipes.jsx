@@ -5,7 +5,7 @@ import RecipeCard from './RecipeCard';
 const FeaturedRecipes = ({ recipes }) => {
   return (
     <Container>
-      <h2>Featured Recipes</h2>
+      <h2>Ruokatrendit</h2>
       <Row xs={1} md={2} lg={4} className="g-4">
         {recipes.map((recipe, idx) => (
           <Col key={idx}>
