@@ -1,51 +1,99 @@
 import React, { useState } from 'react';
 
-const AddRecipeForm = ({ user, onSave }) => {
+const AddRecipeForm = ({ user }) => {
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
   const [tags, setTags] = useState('');
+  const [visibility, setVisibility] = useState('public');
+  const [recipesData] = useState([
+    // ... Your recipes data here
+  ]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const newRecipe = {
-      user, // Assuming user is the username or user ID
-      title,
-      ingredients: ingredients.split(','), // Splitting string into an array of ingredients
-      instructions,
-      tags: tags.split(' ').filter(tag => tag.startsWith('#')), // Splitting and filtering for tags
-      // images would be handled here
-    };
-    onSave(newRecipe); // Placeholder for saving the recipe (e.g., updating state, making an API call)
-    // Reset form fields
-    setTitle('');
-    setIngredients('');
-    setInstructions('');
-    setTags('');
+  const handleVisibilityChange = (newVisibility) => {
+    setVisibility(newVisibility);
   };
 
+  const handleRecipeSubmit = async (event) => {
+    event.preventDefault();
+    const recipeData = {
+      title,
+      author_id: user, // Assuming `user` is the author_id. Adjust as necessary.
+      description: instructions,
+      visibility: visibility, // Assuming a fixed visibility for example. Adjust as necessary.
+    };
+  
+    try {
+      // First, submit the recipe details
+      const recipeResponse = await fetch('http://localhost:8081/recipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipeData),
+      });
+      console.log(recipeData);
+      
+      if (!recipeResponse.ok) {
+        throw new Error('Failed to add the recipe');
+      }
+  
+      const recipeResult = await recipeResponse.json();
+      const recipeId = recipeResult.recipeId; // Adjust according to how your API returns the new recipe ID
+  
+      // Now, submit ingredients for the new recipe
+      const ingredientsArray = ingredients.split(',').map(ingredient => ingredient.trim());
+      ingredientsArray.forEach(async (ingredientName) => {
+        const ingredientData = {
+          recipe_id: recipeId,
+          name: ingredientName,
+          // Example quantity. Adjust as necessary or modify to include quantity in the form
+        };
+  
+        await fetch('http://localhost:8081/ingredients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(ingredientData),
+        });
+      });
+  
+      alert('Recipe and ingredients added successfully!');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to add the recipe or ingredients. Please try again.');
+    }
+  }
+  
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleRecipeSubmit}>
       <div>
-        <label>Title</label>
+        <label>Title: </label>
         <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       </div>
       <div>
-        <label>Ingredients (comma-separated)</label>
+        <label>Ingredients (comma-separated): </label>
         <input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} required />
       </div>
       <div>
-        <label>Instructions</label>
+        <label>Instructions: </label>
         <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} required />
       </div>
       <div>
-        <label>Tags (space-separated, start with #)</label>
+        <label>Tags (space-separated, start with #): </label>
         <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} />
       </div>
-      {/* Image upload goes here */}
+      <div>
+        <button type="button" onClick={() => handleVisibilityChange('public')} className={visibility === 'public' ? 'selected' : ''}>Public</button>
+        <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 'private' ? 'selected' : ''}>Private</button>
+      </div>
+      {/* Image upload functionality would be integrated here */}
       <button type="submit">Add Recipe</button>
     </form>
   );
 };
 
 export default AddRecipeForm;
+

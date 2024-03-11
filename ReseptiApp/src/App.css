@@ -71,3 +71,16 @@ h1, h2, h3, h4, h5, h6 {
   background-position: center; /* Centers the image within the div */
   height: 200px; /* Or whatever height you desire */
 }
+button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+button.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
