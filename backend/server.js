@@ -147,7 +147,7 @@ app.post('/ratings', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT name, user_id FROM users WHERE email = ? AND password = ?";
+    const sql = "SELECT name, user_id, user_role FROM users WHERE email = ? AND password = ?";
     const values = [
         req.body.email,
         req.body.password
@@ -157,7 +157,8 @@ app.post('/login', (req, res) => {
         if (data.length > 0) {
             const userName = data[0].name;
             const user_id = data[0].user_id;
-            return res.json({userName, user_id});
+            const userRole = data[0].user_role;
+            return res.json({userName, user_id, userRole});
         }
         else {
             res.json("Login failed")
