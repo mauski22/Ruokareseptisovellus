@@ -34,7 +34,24 @@ const AddRecipeForm = ({ user }) => {
       }
 
       const recipeResult = await recipeResponse.json();
-      const recipeId = recipeResult.recipeId;
+      const reseptinidnhaku = {
+        title: title,
+        author_id: user.user_id,
+        description: instructions
+      }
+      const reseptiIDn = await fetch('http://localhost:8081/recipesidhaku', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reseptinidnhaku)
+      });
+      if(!reseptiIDn.ok) {
+        throw new Error("ReseptinID:n haku epäonnistui")
+      }
+      const reseptiIdtulos = await reseptiIDn.json();
+      console.log("ReseptiIdtulos: " + reseptiIdtulos);
+      const recipeId = reseptiIdtulos; 
 
       const ingredientRequests = ingredients.map(ingredient => {
         if (ingredient.name && ingredient.amount) {
@@ -46,7 +63,7 @@ const AddRecipeForm = ({ user }) => {
             body: JSON.stringify({
               recipe_id: recipeId,
               name: ingredient.name,
-              amount: ingredient.amount,
+              quantity: ingredient.amount,
             }),
           });
         }

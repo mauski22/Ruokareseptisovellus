@@ -72,6 +72,25 @@ app.listen(8081, () => {
     console.log("KUUNTELEN")
 })
 
+app.post('/recipesidhaku', (req, res) => {
+    const sql = "SELECT recipe_id FROM recipes WHERE title = ? AND author_id = ? AND description = ?"
+    const values = [
+        req.body.title,
+        req.body.author_id,
+        req.body.description
+    ]
+    db.query(sql, values, (err, data) => {
+        if(err) return res.status(500).json("Error resepti_ID:n haussa" + err)
+        if(data.length > 0 ) {
+            const recipeid = data[0].recipe_id
+            return res.json(recipeid);
+        }
+        else {
+            res.status("Error resepti_ID:n haussa")
+        }
+     })
+}
+)
 app.post('/register', (req, res) => {
     try {
     const sql = "INSERT INTO users (nickname, name, email, password, user_role) VALUES (?, ?, ?, ?, ?)";
