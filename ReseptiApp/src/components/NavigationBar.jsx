@@ -21,6 +21,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
   const location = useLocation();
   const isRecipesPage = location.pathname === '/recipes';
   const isLoggedIn = user !== null;
+  //const isSuperAdmin = user.user_role === 'superadmin';
 
   const handleShowAddRecipeForm = () => setShowAddRecipeModal(true);
   const handleCloseAddRecipeForm = () => setShowAddRecipeModal(false);
@@ -45,7 +46,10 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
             <Nav.Link as={NavLink} to="/recipes">Recipes</Nav.Link>
             <Nav.Link as={NavLink} to="/community">Community</Nav.Link>
-            <Nav.Link as={NavLink} to="/marketplace">Marketplace</Nav.Link>
+            <Nav.Link as={NavLink} to="/usersTable" >Käyttäjien hallinta</Nav.Link>
+            {/*{isSuperAdmin && isLoggedIn && (
+            )}
+            */}
             {isRecipesPage && isLoggedIn && (
               <Button variant="primary" onClick={handleShowAddRecipeForm}>Add recipe</Button>
             )}
