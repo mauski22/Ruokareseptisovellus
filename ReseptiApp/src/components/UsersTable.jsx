@@ -1,7 +1,8 @@
+//UsersTable.jsx
 import React, { useState, useEffect } from 'react';
 
 
-const usersTable = () => {
+const UsersTable = () => {
     const [data, setData] = useState([]);
     useEffect(()=>{
         fetch('http://localhost:8081/users')

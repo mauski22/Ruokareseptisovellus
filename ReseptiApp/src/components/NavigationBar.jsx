@@ -1,9 +1,11 @@
+//NavigationBar.jsx
 import React, { useState } from 'react';
 import { Container, Navbar, Nav, Button, Modal } from 'react-bootstrap';
 import { useAuth } from './AuthContext';
 import { NavLink, useLocation } from 'react-router-dom';
 import AddRecipeForm from './AddRecipeForm';
 import ConfirmModal from './Confirmation';
+
 
 
 const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
@@ -14,7 +16,6 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
     setShowConfirmModal(true);
     logout();
     setShowConfirmModal(false);
-
   };
 
   const location = useLocation();

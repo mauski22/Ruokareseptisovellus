@@ -8,6 +8,9 @@ import RegisterComponent from './components/RegisterComponent';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import UsersTable from './components/UsersTable';
+import {Route, Routes } from 'react-router-dom';
+
 
 
 const App = () => {
@@ -79,10 +82,18 @@ const App = () => {
 
   return (
       <div className="App search-bar">
-          <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
-          <SearchBar />
-          <FeaturedRecipes recipes={recipesData} />
-
+        <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
+      <Routes>
+        <Route path="/usersTable" element={<UsersTable />} />
+        {/* other routes here */}
+        <Route path="/" element={
+          <>
+            <SearchBar />
+            <FeaturedRecipes recipes={recipesData} />
+            {/* your modals here */}
+          </>
+        } />
+      </Routes>
           {/* Login Modal */}
           <Modal show={showLoginModal} onHide={toggleLoginModal}>
             <Modal.Header closeButton>
@@ -121,7 +132,7 @@ const App = () => {
             </Modal.Body>
           </Modal>
     </div>
-  );
+      );
 };
 
 export default App;
