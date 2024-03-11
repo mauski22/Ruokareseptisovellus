@@ -105,7 +105,7 @@ app.post('/photos', (req, res) => {
     }
 })
 
-app.post('/recipes', (req, res) => {
+app.post('/recipeslisays', (req, res) => {
     try {
         const sql = "INSERT INTO Recipes (title, author_id, description, visibility) VALUES (?, ?, ?, ?)"
         const values = [req.body.title, req.body.author_id, req.body.description, req.body.visibility]
@@ -147,7 +147,7 @@ app.post('/ratings', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT name FROM users WHERE email = ? AND password = ?";
+    const sql = "SELECT name, user_id FROM users WHERE email = ? AND password = ?";
     const values = [
         req.body.email,
         req.body.password
@@ -156,7 +156,8 @@ app.post('/login', (req, res) => {
         if(err) return res.json("Login Failed");
         if (data.length > 0) {
             const userName = data[0].name;
-            return res.json(userName);
+            const user_id = data[0].user_id;
+            return res.json({userName, user_id});
         }
         else {
             res.json("Login failed")

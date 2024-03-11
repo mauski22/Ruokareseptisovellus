@@ -47,7 +47,7 @@ const App = () => {
       if (tulos === "Login failed") {
         console.log(tulos);
       } else {
-        console.log("Käyttäjän ", tulos + " kirjautuminen onnistui ");
+        console.log("Käyttäjän ", tulos.userName + " kirjautuminen onnistui " + tulos.user_id);
         login(tulos);
         toggleLoginModal();
       }

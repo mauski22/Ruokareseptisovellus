@@ -58,7 +58,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  Signed in as: {user} {/* Consider updating this to use NavLink or a more appropriate approach */}
+                  Signed in as: {user.userName} {/* Consider updating this to use NavLink or a more appropriate approach */}
                 </Navbar.Text>
                 <Button onClick={handleShowConfirmModal} variant="outline-danger">Logout</Button>
               </>
