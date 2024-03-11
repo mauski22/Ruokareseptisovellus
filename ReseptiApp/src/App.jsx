@@ -52,6 +52,8 @@ const App = () => {
       } else {
         console.log("Käyttäjän ", tulos.userName + " kirjautuminen onnistui. ID = " + tulos.user_id + ", ROOLI = " + tulos.userRole);
         login(tulos);
+        setEmailInput('');
+        setPasswordInput('');
         toggleLoginModal();
       }
     }
