@@ -5,27 +5,31 @@ const AddRecipeForm = ({ user }) => {
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
   const [tags, setTags] = useState('');
-  const [visibility, setVisibility] = useState('public');
+  const [visibility, setVisibility] = useState(0);
   const [recipesData] = useState([
     // ... Your recipes data here
   ]);
 
   const handleVisibilityChange = (newVisibility) => {
-    setVisibility(newVisibility);
+    if (newVisibility === 'public') {
+      setVisibility(1);
+    } else if (newVisibility === 'private') {
+      setVisibility(0);
+    }
   };
 
   const handleRecipeSubmit = async (event) => {
     event.preventDefault();
     const recipeData = {
-      title,
-      author_id: user, // Assuming `user` is the author_id. Adjust as necessary.
+      title: title,
+      author_id: user.user_id, // Assuming `user` is the author_id. Adjust as necessary.
       description: instructions,
       visibility: visibility, // Assuming a fixed visibility for example. Adjust as necessary.
     };
   
     try {
       // First, submit the recipe details
-      const recipeResponse = await fetch('http://localhost:8081/recipes', {
+      const recipeResponse = await fetch('http://localhost:8081/recipeslisays', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,8 +90,8 @@ const AddRecipeForm = ({ user }) => {
         <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} />
       </div>
       <div>
-        <button type="button" onClick={() => handleVisibilityChange('public')} className={visibility === 'public' ? 'selected' : ''}>Public</button>
-        <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 'private' ? 'selected' : ''}>Private</button>
+        <button type="button" onClick={() => handleVisibilityChange('public')} className={visibility === 1 ? 'selected' : ''}>Public</button>
+        <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 0 ? 'selected' : ''}>Private</button>
       </div>
       {/* Image upload functionality would be integrated here */}
       <button type="submit">Add Recipe</button>
