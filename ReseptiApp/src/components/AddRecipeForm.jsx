@@ -59,24 +59,7 @@ const AddRecipeForm = ({ user }) => {
       }
 
       const recipeResult = await recipeResponse.json();
-      const recipeId = recipeResult.recipeId; // Oletetaan, että palvelin palauttaa uuden reseptin id:n
-
-      if (selectedImage) {
-        const photoResponse = await fetch('http://localhost:8081/photos', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            recipe_id: recipeId,
-            url: selectedImage, // Tämä on valitun kuvan URL
-          }),
-        });
-  
-        if (!photoResponse.ok) {
-          throw new Error('Failed to add the photo');
-        }
-      }
+      console.log(recipeResult);
 
       const reseptinidnhaku = {
         title: title,
@@ -104,7 +87,7 @@ const AddRecipeForm = ({ user }) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              recipe_id: recipeId,
+              recipe_id: reseptiIdtulos,
               name: ingredient.name,
               quantity: ingredient.amount,
             }),
@@ -113,7 +96,23 @@ const AddRecipeForm = ({ user }) => {
         return Promise.resolve(); // Ignore empty ingredient entries.
       });
 
+        const photoResponse = await fetch('http://localhost:8081/photoslisays', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            recipe_id: reseptiIdtulos,
+            url: selectedImageUrl // Tämä on valitun kuvan URL
+          })
+        });
+
+        if (!photoResponse.ok) {
+          throw new Error('Failed to add the photo');
+        }
+
       await Promise.all(ingredientRequests);
+      console.log(selectedImageUrl);
       alert('Recipe, photo and ingredients added successfully!');
     } catch (err) {
       console.error(err);

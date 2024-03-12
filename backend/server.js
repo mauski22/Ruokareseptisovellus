@@ -127,7 +127,7 @@ app.post('/register', (req, res) => {
     }
 });
 
-app.post('/photos', (req, res) => {
+app.post('/photoslisays', (req, res) => {
     const { recipe_id, url } = req.body;
     const sql = "INSERT INTO photos (recipe_id, url) VALUES (?, ?)";
     db.query(sql, [recipe_id, url], (err, result) => {
