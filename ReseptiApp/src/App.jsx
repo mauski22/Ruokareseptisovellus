@@ -9,7 +9,8 @@ import { AuthProvider, useAuth } from './components/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import UsersTable from './components/UsersTable';
-import {Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import RecipeCard from './components/RecipeCard';
 
 
 
@@ -49,6 +50,7 @@ const App = () => {
       const tulos = await vastaus.json();
       if (tulos === "Login failed") {
         console.log(tulos);
+        alert("Sähköposti tai salasana oli väärin. Yritä uudelleen.")
       } else {
         console.log("Käyttäjän ", tulos.userName + " kirjautuminen onnistui. ID = " + tulos.user_id + ", ROOLI = " + tulos.userRole);
         login(tulos);
@@ -87,11 +89,11 @@ const App = () => {
         <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
       <Routes>
         <Route path="/usersTable" element={<UsersTable />} />
+        <Route path="/recipes" element={<RecipeCard />} />
         {/* other routes here */}
         <Route path="/" element={
           <>
             <SearchBar />
-            <FeaturedRecipes recipes={recipesData} />
             {/* your modals here */}
           </>
         } />

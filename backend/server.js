@@ -47,10 +47,26 @@ app.get('/recipes', (req, res) => {
 //yksittäisen reseptin haku pelkällä id:llä 
 //postmanissa osoite pitää olla muotoa http://localhost:8081/recipes/2 esimerkiksi 
 app.get('/recipes/:id', (req, res) => {
-    const sql = "SELECT * FROM recipes WHERE recipe_id = ?"; 
+    const sql = "SELECT * FROM recipes WHERE author_id = ?"; 
+    const recipe_id = req.params.id
+    db.query(sql, [recipe_id], (err, data) => {
+        if(err) return res.status(500).json("Error käyttäjän reseptien haussa: " + err)
+        return res.status(200).json(data); 
+    })
+})
+app.get('/kayttajanreseptienhaku/:id', (req, res) => {
+    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, r.created_at, r.updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.url SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
     const recipe_id = req.params.id
     db.query(sql, [recipe_id], (err, data) => {
         if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
+        return res.status(200).json(data); 
+    })
+})
+app.get('/reseptienIDEIDENHAKU/:id', (req, res) => {
+    const sql = "SELECT recipe_id FROM recipes WHERE author_id = ?"; 
+    const recipe_id = req.params.id
+    db.query(sql, [recipe_id], (err, data) => {
+        if(err) return res.status(500).json("Error käyttäjän reseptien haussa: " + err)
         return res.status(200).json(data); 
     })
 })
