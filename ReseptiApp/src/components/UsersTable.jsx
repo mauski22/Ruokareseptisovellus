@@ -8,6 +8,7 @@ const UsersTable = () => {
     const [data, setData] = useState([]);
     const [editingRowIndex, setEditingRowIndex] = useState(null);
     const [editingData, setEditingData] = useState({});
+    const [deletingRowIndex, setDeletingRowIndex] = useState(null);
 
     useEffect(()=>{
         fetch('http://localhost:8081/users')
@@ -15,7 +16,29 @@ const UsersTable = () => {
         .then(data=>setData(data))
         .catch(err=>console.log(err));
     }, [])
-
+    const handleDelete = (index) => {
+        const userId = data[index].user_id;
+        fetch(`http://localhost:8081/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Deletion response was not ok');
+            }
+            // Assuming the server responds with a success status code
+            // Remove the deleted user from the local state
+            const updatedData = data.filter((_, i) => i !== index);
+            setData(updatedData);
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            // Optionally, show an error message to the user
+        });
+    };
+    
     const handleEdit = (index) => {
         setEditingRowIndex(index);
         setEditingData({...data[index]});
@@ -33,13 +56,11 @@ const UsersTable = () => {
             if (!response.ok) {
                 throw new Error('EDITING response was not ok');
             }
-            return response.json();
+            return fetch('http://localhost:8081/users');
         })
-        .then(data => {
-            // Assuming the server responds with the updated user data
-            // Update the local state to reflect the changes
-            const updatedData = [...data];
-            updatedData[index] = editingData;
+        .then(res => res.json())
+        .then(updatedData => {
+            // Update the local state with the updated list of users
             setData(updatedData);
             setEditingRowIndex(null);
         })
@@ -47,6 +68,7 @@ const UsersTable = () => {
             console.error('There has been a problem with your fetch operation:', error);
             // Optionally, show an error message to the user
         });
+  
     };
     const handleCancel = () => {
         setEditingRowIndex(null);
@@ -109,7 +131,7 @@ const UsersTable = () => {
                                     <button className='btn btn-warning' onClick={() => handleEdit(i)}>Edit</button>
                                 )}
                                 {editingRowIndex === null && (
-                                    <button className='btn btn-danger'>Delete</button>
+                                    <button className='btn btn-danger' onClick={() => handleDelete(i)}>Delete</button>
                                 )}
                             </td>
                         </tr>

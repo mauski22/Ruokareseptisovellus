@@ -202,16 +202,18 @@ app.post('/login', (req, res) => {
     })
 })
 //postmanissa osoite pitää olla muotoa http://localhost:8081/users/delete/2, Postman poistaa käyttäjän id:llä = 2 tässä tapauksessa   
-app.delete('/users/delete/:id', (req, res) => {
+app.delete('/users/:id', (req, res) => {
     const sql = "DELETE FROM users WHERE user_id = ?";
-    const user_id = req.params.id; 
-    db.query (sql, [user_id], (err, result) => {
-        if(err) {return res.status(500).json("Error käyttäjän poistossa: " + err);}
-        else { return res.status(200).json("Poisto onnistui: " + result);
+    const userId = req.params.id; 
+    db.query(sql, [userId], (err, result) => {
+        if(err) {
+            return res.status(500).json("Error in user deletion: " + err);
+        } else {
+            return res.status(200).json("User deletion successful: " + result);
         }
-    }
-    )
-})
+    });
+});
+
 
 app.delete('/recipes/delete/:id', (req, res) => {
     const sql = "DELETE FROM recipes WHERE recipe_id = ?";
