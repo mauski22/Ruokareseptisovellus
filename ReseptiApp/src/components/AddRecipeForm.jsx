@@ -112,7 +112,7 @@ const AddRecipeForm = ({ user }) => {
         }
 
       await Promise.all(ingredientRequests);
-      console.log(selectedImageUrl);
+
       alert('Recipe, photo and ingredients added successfully!');
     } catch (err) {
       console.error(err);
