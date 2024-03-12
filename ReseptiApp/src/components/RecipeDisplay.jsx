@@ -1,48 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import RecipeCard from './RecipeCard';
+import React from 'react';
 import { useAuth } from './AuthContext';
-
-const RecipeDisplay = () => {
-  const [recipes, setRecipes] = useState([]);
+import { Card } from 'react-bootstrap';
+import { useState } from 'react';
+import { useEffect } from 'react';
+export const RecipeDisplay = () => {
   const { user } = useAuth();
-
+  const [recipes, setRecipes] = useState([]);
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        // Ensure the URL is correct and you're correctly passing the user ID
         const response = await fetch(`http://localhost:8081/reseptienIDEIDENHAKU/${user.user_id}`);
         if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        setRecipes(data); // Assuming 'data' is an array of recipe objects
+        const recipeIds = await response.json();
+        const recipeData = [];
+
+        for (let recipe of recipeIds) {
+          const recipeResponse = await fetch(`http://localhost:8081/kayttajanreseptienhaku/${recipe.recipe_id}`);
+          if (!recipeResponse.ok) throw new Error('Network response was not ok');
+          const recipeDetails = await recipeResponse.json();
+          console.log(recipeDetails);
+          recipeData.push(recipeDetails);
+        }
+        console.log("Reseptidata komponentin tiedot pitäisi näkyä tässä", recipeData)
+        setRecipes(recipeData);
       } catch (error) {
         console.error("Error fetching recipe data:", error);
       }
     };
 
-    if (user && user.user_id) {
-      fetchRecipes();
-    }
-  }, [user]); // Re-fetch when the user object changes
-
+    fetchRecipes();
+  }, []);
+  useEffect(() => {
+    console.log("Reseptien data on päivittynyt:", recipes);
+  }, [recipes]);
   return (
     <div>
-      {recipes.length > 0 ? (
-        recipes.map(recipe => (
-          <RecipeCard
-            key={recipe.recipe_id} // Ensure 'recipe_id' is the correct identifier
-            title={recipe.title}
-            time={recipe.time} // Adjust based on your data fields
-            ingredients={recipe.ingredients} // Might need processing if not a string
-            instructions={recipe.instructions}
-            tags={recipe.tags} // Might need processing if not a string
-            imageUrl={recipe.image_url} // Ensure this is correct based on your data
-          />
-        ))
-      ) : (
-        <p>No recipes found for this user.</p>
-      )}
+      {console.log("RENDERING WITH RECIPES", recipes)}
+      {recipes.flat().map((recipe, index) => (
+        <div key={index}>
+          <h2>{recipe.title}</h2>
+          {console.log("RESEPTIN TITTELIIIIII", recipe.recipe_id)}
+          <p>{recipe.description}</p>
+          <p>Author ID: {recipe.author_id}</p>
+          <p>Visibility: {recipe.visibility}</p>
+          <p>Created at: {recipe.created_at}</p>
+          <p>Updated at: {recipe.updated_at}</p>
+        </div>
+      ))}
     </div>
   );
 };
 
 export default RecipeDisplay;
+
