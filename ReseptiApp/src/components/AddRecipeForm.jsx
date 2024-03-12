@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { createApi } from 'unsplash-js';
+
+const unsplash = createApi({
+  accessKey: 'Z8MTDQ_WIdVPpD-W_zSpEi_Fw6MlgTIf_NjqVsarWK0', // Korvaa tämä omalla avaimellasi
+});
 
 const AddRecipeForm = ({ user }) => {
   const [title, setTitle] = useState('');
@@ -6,10 +11,30 @@ const AddRecipeForm = ({ user }) => {
   const [instructions, setInstructions] = useState('');
   const [tags, setTags] = useState('');
   const [visibility, setVisibility] = useState(1);
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageUrl, setSelectedImageUrl] = useState('');
+
 
   const handleVisibilityChange = (newVisibility) => {
     setVisibility(newVisibility === 'public' ? 1 : 0);
   };
+
+  const searchImages = async (query) => {
+    if (!query) return;
+
+    try {
+      const response = await unsplash.search.getPhotos({ query, perPage: 3 });
+      setSearchResults(response.response.results);
+    } catch (error) {
+      console.error('Error fetching images from Unsplash:', error);
+    }
+  };
+
+  const handleImageSelect = (url) => {
+    setSelectedImageUrl(url);
+  };
+
 
   const handleRecipeSubmit = async (event) => {
     event.preventDefault();
@@ -19,7 +44,7 @@ const AddRecipeForm = ({ user }) => {
       description: instructions,
       visibility,
     };
-
+  
     try {
       const recipeResponse = await fetch('http://localhost:8081/recipeslisays', {
         method: 'POST',
@@ -34,6 +59,25 @@ const AddRecipeForm = ({ user }) => {
       }
 
       const recipeResult = await recipeResponse.json();
+      const recipeId = recipeResult.recipeId; // Oletetaan, että palvelin palauttaa uuden reseptin id:n
+
+      if (selectedImage) {
+        const photoResponse = await fetch('http://localhost:8081/photos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            recipe_id: recipeId,
+            url: selectedImage, // Tämä on valitun kuvan URL
+          }),
+        });
+  
+        if (!photoResponse.ok) {
+          throw new Error('Failed to add the photo');
+        }
+      }
+
       const reseptinidnhaku = {
         title: title,
         author_id: user.user_id,
@@ -51,7 +95,6 @@ const AddRecipeForm = ({ user }) => {
       }
       const reseptiIdtulos = await reseptiIDn.json();
       console.log("ReseptiIdtulos: " + reseptiIdtulos);
-      const recipeId = reseptiIdtulos; 
 
       const ingredientRequests = ingredients.map(ingredient => {
         if (ingredient.name && ingredient.amount) {
@@ -71,10 +114,10 @@ const AddRecipeForm = ({ user }) => {
       });
 
       await Promise.all(ingredientRequests);
-      alert('Recipe and ingredients added successfully!');
+      alert('Recipe, photo and ingredients added successfully!');
     } catch (err) {
       console.error(err);
-      alert('Failed to add the recipe or ingredients. Please try again.');
+      alert('Failed to add the recipe, photo or ingredients. Please try again.');
     }
   };
 
@@ -146,6 +189,31 @@ const AddRecipeForm = ({ user }) => {
       <div>
         <button type="button" onClick={() => handleVisibilityChange('public')} className={visibility === 1 ? 'selected' : ''}>Public</button>
         <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 0 ? 'selected' : ''}>Private</button>
+      </div>
+      <div>
+        <label>Image Search: </label>
+        <input
+          type="text"
+          onChange={(e) => searchImages(e.target.value)}
+          placeholder="Search image on Unsplash"
+        />
+        <div>
+          {searchResults.map((img) => (
+            <img 
+              key={img.id}
+              src={img.urls.small}
+              alt={img.alt_description}
+              onClick={() => handleImageSelect(img.urls.small)}
+              style={{
+                width: 100,
+                height: 100,
+                margin: 5,
+                cursor: 'pointer',
+                border: selectedImageUrl === img.urls.small ? '3px solid blue' : 'none' // Korostus valitulle kuvalle
+              }} 
+            />
+          ))}
+        </div>
       </div>
       <button type="submit">Add Recipe</button>
     </form>
