@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import { Card } from 'react-bootstrap';
 
 const RecipeCard = ({ title, time, ingredients, instructions, tags, imageUrl }) => {
+  console.log({ title, time, ingredients, instructions, tags, imageUrl });
   const { user } = useAuth();
 
   return (
