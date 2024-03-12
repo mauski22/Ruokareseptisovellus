@@ -126,21 +126,21 @@ app.post('/register', (req, res) => {
         return res.status(500).json("Error rekisteröinnissä: " + error);
     }
 });
-app.post('/photos', (req, res) => {
-    try {
-        const sql = "INSERT INTO photos (recipe_id, url) VALUES (?, ?)"
-        const values = [req.body.recipe_id, req.body.url]
-        db.query(sql, values, (err) => {
-            if (err) return res.status(500).json("Kuvien lisäys epäonnistui" + err);
-            return res.status(200).json("Kuvien lisäys onnistui")
-        })
-    }
-    catch (error) {
-        return res.status(500).json("Kuvien lisäys epäonnistui" + error)
-    }
-})
 
-app.post('/recipeslisays', (req, res) => {
+app.post('/photos', (req, res) => {
+    const { recipe_id, url } = req.body;
+    const sql = "INSERT INTO photos (recipe_id, url) VALUES (?, ?)";
+    db.query(sql, [recipe_id, url], (err, result) => {
+      if (err) {
+        console.error("Kuvan lisäys epäonnistui", err);
+        return res.status(500).json("Kuvan lisäys epäonnistui");
+      }
+      return res.status(200).json({ message: "Kuvan lisäys onnistui", photoId: result.insertId });
+    });
+  });
+  
+
+  app.post('/recipeslisays', (req, res) => {
     try {
         const sql = "INSERT INTO Recipes (title, author_id, description, visibility) VALUES (?, ?, ?, ?)"
         const values = [req.body.title, req.body.author_id, req.body.description, req.body.visibility]
@@ -153,6 +153,7 @@ app.post('/recipeslisays', (req, res) => {
         return res.status(500).json("Reseptin lisäys epäonnistui" + error)
     }
 })
+
 app.post('/ingredients', (req, res) => {
     try {
         const sql = "INSERT INTO ingredients (recipe_id, name, quantity) VALUES (?, ?, ?)"
@@ -222,3 +223,23 @@ app.delete('/recipes/delete/:id', (req, res) => {
     }
     )
 })
+app.put('/users/:id', (req, res) => {
+    try {
+        const sql = "UPDATE users SET nickname = ?, name = ?, email = ?, password = ?, user_role = ? WHERE user_id = ?";
+        const values = [
+            req.body.nickname,
+            req.body.name,
+            req.body.email,
+            req.body.password,
+            req.body.user_role,
+            req.params.id
+        ];
+        db.query(sql, values, (err) => {
+            if(err) return res.status(500).json("Error updating user" + err);
+            return res.status(200).json("User updated successfully")
+        }); 
+    }
+    catch (error) {
+        return res.status(500).json("Error updating user: " + error);
+    }
+});
