@@ -18,11 +18,6 @@ export const RecipeDisplay = () => {
         const recipeIds = await response.json();
         const recipeData = [];
 
-        const resp = await fetch(`http://localhost:8081/users/${user.user_id}`);
-        if(!response.ok)throw new Error('Ongelma nickName haussa(1)');
-        const authorData = await resp.json();
-        setAuthorInfo(authorData);
-
         for (let recipe of recipeIds) {
           const recipeResponse = await fetch(`http://localhost:8081/kayttajanreseptienhaku/${recipe.recipe_id}`);
           if (!recipeResponse.ok) throw new Error('Network response was not ok');
@@ -48,13 +43,17 @@ export const RecipeDisplay = () => {
           <div className="card" style={{ width: '43rem', height: '40rem' }}>
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-                <img className="card-img-top" src=".../100px180/" alt="Card image cap" />
+              <img src={recipe.photos} alt="Recipe" /> {/* Lisätty kuva */}
+
+                {console.log("Ainesosat: ", recipe.ingredients)}
+                {console.log("reseptien kuvat: ", recipe.photos)}
                 <h5 className="card-title">{recipe.title}</h5>
-                <p>Author: {authorInfo.nickname}</p>
+                <p>Author: {user.userName}</p>
                 <p>Created at: {recipe.created_at}</p>
+                
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                {/* Placeholder for Ingredients content */}
+                <p>Ainesosat: {recipe.ingredients}</p>
               </Tab>
               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                 <p className="card-text">{recipe.description}</p>

@@ -127,7 +127,7 @@ app.post('/register', (req, res) => {
     }
 });
 
-app.post('/photos', (req, res) => {
+app.post('/photoslisays', (req, res) => {
     const { recipe_id, url } = req.body;
     const sql = "INSERT INTO photos (recipe_id, url) VALUES (?, ?)";
     db.query(sql, [recipe_id, url], (err, result) => {
@@ -135,7 +135,7 @@ app.post('/photos', (req, res) => {
         console.error("Kuvan lisäys epäonnistui", err);
         return res.status(500).json("Kuvan lisäys epäonnistui");
       }
-      return res.status(200).json({ message: "Kuvan lisäys onnistui", photoId: result.insertId });
+      return res.status(200).json("Kuvan lisäys onnistui");
     });
   });
   
