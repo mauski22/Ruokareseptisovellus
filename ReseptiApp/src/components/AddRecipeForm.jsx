@@ -11,9 +11,8 @@ const AddRecipeForm = ({ user }) => {
   const [instructions, setInstructions] = useState('');
   const [tags, setTags] = useState('');
   const [visibility, setVisibility] = useState(1);
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedImage, setSelectedImage] = useState('');
-  const [selectedImageUrl, setSelectedImageUrl] = useState('');
+  const [file, setFile] = useState();
+ 
 
 
   const handleVisibilityChange = (newVisibility) => {
@@ -31,9 +30,7 @@ const AddRecipeForm = ({ user }) => {
     }
   };
 
-  const handleImageSelect = (url) => {
-    setSelectedImageUrl(url);
-  };
+
 
 
   const handleRecipeSubmit = async (event) => {
@@ -90,29 +87,39 @@ const AddRecipeForm = ({ user }) => {
               recipe_id: reseptiIdtulos,
               name: ingredient.name,
               quantity: ingredient.amount,
-            }),
+            })
           });
         }
         return Promise.resolve(); // Ignore empty ingredient entries.
       });
-
-        const photoResponse = await fetch('http://localhost:8081/photoslisays', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            recipe_id: reseptiIdtulos,
-            url: selectedImageUrl // Tämä on valitun kuvan URL
-          })
+      const keywordsResponse = await fetch ('http://localhost:8081/keywordslisays', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: reseptiIdtulos,
+          keyword: tags
+        }),
+      })
+      const keywordvastaus = await keywordsResponse.json();
+      console.log(keywordvastaus);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('recipe_id', reseptiIdtulos);
+      const photoResponse = await fetch('http://localhost:8081/photoslisays', {
+      method: 'POST',      
+      body: formData
         });
-
         if (!photoResponse.ok) {
-          throw new Error('Failed to add the photo');
+          throw new Error(photoResponse);
         }
+      const kuvanlisaystulos  = await photoResponse.json(); 
+      console.log(kuvanlisaystulos); 
+      
 
+      console.log("Tässä kuva", file);
       await Promise.all(ingredientRequests);
-
       alert('Recipe, photo and ingredients added successfully!');
     } catch (err) {
       console.error(err);
@@ -137,7 +144,7 @@ const AddRecipeForm = ({ user }) => {
   };
 
   return (
-    <form onSubmit={handleRecipeSubmit}>
+    <form onSubmit={handleRecipeSubmit} enctype="multipart/form-data">
       <div>
         <label>Title: </label>
         <input
@@ -190,29 +197,8 @@ const AddRecipeForm = ({ user }) => {
         <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 0 ? 'selected' : ''}>Private</button>
       </div>
       <div>
-        <label>Image Search: </label>
-        <input
-          type="text"
-          onChange={(e) => searchImages(e.target.value)}
-          placeholder="Search image on Unsplash"
-        />
-        <div>
-          {searchResults.map((img) => (
-            <img 
-              key={img.id}
-              src={img.urls.small}
-              alt={img.alt_description}
-              onClick={() => handleImageSelect(img.urls.small)}
-              style={{
-                width: 100,
-                height: 100,
-                margin: 5,
-                cursor: 'pointer',
-                border: selectedImageUrl === img.urls.small ? '3px solid blue' : 'none' // Korostus valitulle kuvalle
-              }} 
-            />
-          ))}
-        </div>
+      <label>Valitse kuva: </label>
+        <input type="file" onChange={(e) => setFile(e.target.files[0])}/>
       </div>
       <button type="submit">Add Recipe</button>
     </form>
