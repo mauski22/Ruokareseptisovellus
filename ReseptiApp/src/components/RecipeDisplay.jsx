@@ -43,7 +43,7 @@ export const RecipeDisplay = () => {
           <div className="card" style={{ width: '43rem', height: '40rem' }}>
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-              <img src={recipe.photos} alt="Recipe" /> {/* Lisätty kuva */}
+              <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" /> {/* Lisätty kuva */}
 
                 {console.log("Ainesosat: ", recipe.ingredients)}
                 {console.log("reseptien kuvat: ", recipe.photos)}

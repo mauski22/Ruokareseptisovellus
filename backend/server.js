@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql')
 const cors = require('cors')
-
+const multer  = require('multer')
 
 
 const db = mysql.createConnection({
@@ -17,6 +17,21 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.listen(8081, () => {
+    console.log("KUUNTELEN")
+})
+app.use('/images', express.static('public/images'));
+
+const storage  = multer.diskStorage({
+    destination: function(req, file, cb) {
+        return cb(null, "./public/images")
+    },
+    filename: function(req, file, cb) {
+        return cb(null, `${Date.now()}_${file.originalname}`)
+    }
+})
+
+const upload = multer({storage})
 
 app.get('/', (re, res)=> {
     return res.json("From backend");
@@ -55,7 +70,7 @@ app.get('/recipes/:id', (req, res) => {
     })
 })
 app.get('/kayttajanreseptienhaku/:id', (req, res) => {
-    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, r.created_at, r.updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.url SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
+    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, r.created_at, r.updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
     const recipe_id = req.params.id
     db.query(sql, [recipe_id], (err, data) => {
         if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
@@ -84,10 +99,6 @@ app.get('/photos', (req, res) => {
         return res.status(200).json(data)
     })
 })
-app.listen(8081, () => {
-    console.log("KUUNTELEN")
-})
-
 app.post('/recipesidhaku', (req, res) => {
     const sql = "SELECT recipe_id FROM recipes WHERE title = ? AND author_id = ? AND description = ?"
     const values = [
@@ -127,15 +138,18 @@ app.post('/register', (req, res) => {
     }
 });
 
-app.post('/photoslisays', (req, res) => {
-    const { recipe_id, url } = req.body;
-    const sql = "INSERT INTO photos (recipe_id, url) VALUES (?, ?)";
-    db.query(sql, [recipe_id, url], (err, result) => {
+app.post('/photoslisays', upload.single('file'), (req, res) => {
+    const sql = "INSERT INTO photos (recipe_id, image) VALUES (?)";
+    const values = [
+        req.body.recipe_id,
+        req.file.filename
+    ]
+    db.query(sql, [values], (err, result) => {
       if (err) {
         console.error("Kuvan lisäys epäonnistui", err);
-        return res.status(500).json("Kuvan lisäys epäonnistui");
+        return res.status(500).json({message: "Kuvan lisäys epäonnistui"});
       }
-      return res.status(200).json("Kuvan lisäys onnistui");
+      return res.status(200).json({message: "Kuvan lisäys onnistui", result});
     });
   });
   
@@ -270,6 +284,19 @@ app.get('/keywordshaku', (req, res) => {
         })
     }
     catch (error) {
-        return res.status(500).json("Error keywordien haussa")
+        return res.status(500).json("Error keywordien haussa", error)
+    }
+})
+app.post('/tietynreseptinhakukeywordilla', (req, res) => {
+    try {
+        const sql = "Select recipe_id from keywords WHERE keyword = ?"
+        const keyword = req.body.keyword
+        db.query(sql, keyword, (err, data) => {
+            if (err) return res.status(500).json("Error recipe_id:n haussa keywordilla" + err)
+            return res.status(200).json(data);
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Tietyn reseptin haku keywordilla ei onnistunut", error)
     }
 })
