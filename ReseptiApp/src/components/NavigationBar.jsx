@@ -5,16 +5,19 @@ import { useAuth } from './AuthContext';
 import { NavLink, useLocation } from 'react-router-dom';
 import AddRecipeForm from './AddRecipeForm';
 import ConfirmModal from './Confirmation';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showAddRecipeModal, setShowAddRecipeModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const handleLogout = () => {
     setShowConfirmModal(true);
     logout();
+    navigate('/');
     setShowConfirmModal(false);
   };
 

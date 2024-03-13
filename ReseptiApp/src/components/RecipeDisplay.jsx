@@ -42,29 +42,38 @@ export const RecipeDisplay = () => {
     console.log("Reseptien data on päivittynyt:", recipes);
   }, [recipes]);
   return (
-    <div className="row" style={{ display: 'flex', flexWrap: 'wrap', padding: '1rem' }}>
-      {recipes.flat().map((recipe, index) => (
-        <div className="col-md-4" key={index} style={{ padding: '10px' }}>
-          <div className="card" style={{ width: '43rem', height: '40rem' }}>
-            <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
-              <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-                <img className="card-img-top" src=".../100px180/" alt="Card image cap" />
-                <h5 className="card-title">{recipe.title}</h5>
-                <p>Author: {authorInfo.nickname}</p>
-                <p>Created at: {recipe.created_at}</p>
-              </Tab>
-              <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                {/* Placeholder for Ingredients content */}
-              </Tab>
-              <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
-                <p className="card-text">{recipe.description}</p>
-              </Tab>
-            </Tabs>
+    <div className="container mt-3"> {/* Added container for better spacing and alignment */}
+      <div className="row g-3"> {/* Added gutter for spacing between grid items */}
+        {recipes.flat().map((recipe, index) => (
+          <div className="col-12 col-md-4" key={index}> {/* Adjust for better responsiveness */}
+            <div className="card h-100"> {/* Remove inline styles for width and height, use h-100 for equal height */}
+              <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`} className="flex-column">
+                <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
+                  <img src={recipe.photos} className="card-img-top" alt="Recipe" /> {/* Use Bootstrap classes for images */}
+                  <div className="card-body">
+                    <h5 className="card-title">{recipe.title}</h5>
+                    <p>Author: {user.userName}</p>
+                    <p>Created at: {recipe.created_at}</p>
+                  </div>
+                </Tab>
+                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
+                  <div className="card-body">
+                    <p>Ainesosat: {recipe.ingredients}</p>
+                  </div>
+                </Tab>
+                <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
+                  <div className="card-body">
+                    <p className="card-text">{recipe.description}</p>
+                  </div>
+                </Tab>
+              </Tabs>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
+  
 };
 
 export default RecipeDisplay;
