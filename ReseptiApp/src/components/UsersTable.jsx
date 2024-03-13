@@ -1,6 +1,8 @@
 //UsersTable.jsx
 import React, { useState, useEffect } from 'react';
 import { Button, InputGroup, Container } from 'react-bootstrap';
+import ConfirmModal from './Confirmation';
+
 
 
 
@@ -8,8 +10,7 @@ const UsersTable = () => {
     const [data, setData] = useState([]);
     const [editingRowIndex, setEditingRowIndex] = useState(null);
     const [editingData, setEditingData] = useState({});
-    const [deletingRowIndex, setDeletingRowIndex] = useState(null);
-
+    
     useEffect(()=>{
         fetch('http://localhost:8081/users')
         .then(res=>res.json())
@@ -17,6 +18,11 @@ const UsersTable = () => {
         .catch(err=>console.log(err));
     }, [])
     const handleDelete = (index) => {
+        const confirmDelete = window.confirm('Haluatko varmasti poistaa käyttäjän?');
+        if (!confirmDelete) {
+            // User canceled deletion
+            return;
+        }    
         const userId = data[index].user_id;
         fetch(`http://localhost:8081/users/${userId}`, {
             method: 'DELETE',
