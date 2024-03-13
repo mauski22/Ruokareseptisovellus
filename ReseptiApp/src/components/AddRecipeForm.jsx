@@ -90,18 +90,29 @@ const AddRecipeForm = ({ user }) => {
               recipe_id: reseptiIdtulos,
               name: ingredient.name,
               quantity: ingredient.amount,
-            }),
+            })
           });
         }
         return Promise.resolve(); // Ignore empty ingredient entries.
       });
-
+      const keywordsResponse = await fetch ('http://localhost:8081/keywordslisays', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: reseptiIdtulos,
+          keyword: tags
+        }),
+      })
+      const keywordvastaus = await keywordsResponse.json();
+      console.log(keywordvastaus);
       const photoResponse = await fetch('http://localhost:8081/photoslisays', {
       method: 'POST',
       headers: {
       'Content-Type': 'application/json',
       },
-          
+        
       body: JSON.stringify({
       recipe_id: reseptiIdtulos,
       url: selectedImageUrl // Tämä on valitun kuvan URL

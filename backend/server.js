@@ -245,3 +245,31 @@ app.put('/users/:id', (req, res) => {
         return res.status(500).json("Error updating user: " + error);
     }
 });
+app.post('/keywordslisays', (req, res) => {
+    try {
+        const sql = "INSERT INTO keywords (recipe_id, keyword) VALUES (?, ?)";
+        const values = [
+            req.body.recipe_id,
+            req.body.keyword
+        ]
+        db.query(sql, values, (err) => {
+            if (err) return res.status(500).json("Error keywordin lisäämisessä" + err);
+            return res.status(200).json("Keyword lisätty")
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Error keywordien lisäyksessä");
+    }
+})
+app.get('/keywordshaku', (req, res) => { 
+    try {
+        const sql = "SELECT keyword from keywords";
+        db.query(sql, (err, data) => {
+            if (err) return res.status(500).json("Error keywordin haussa" + err)
+            return res.status(200).json(data)
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Error keywordien haussa")
+    }
+})
