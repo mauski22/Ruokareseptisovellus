@@ -23,6 +23,7 @@ const App = () => {
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  const [emailError, setEmailError] = useState("");
   const { login } = useAuth();
   // Placeholder for recipes data
   const [recipesData] = useState([
@@ -66,7 +67,7 @@ const App = () => {
     }
   };
 
-  // Register submit handler
+  
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -75,13 +76,22 @@ const App = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nickname: nicknameInput, name: nameInput, email: emailInput, password: passwordInput, user_role: 'user' }),
       });
+
+      if (!response.ok){
       const result = await response.json();
-      console.log("Registration Success:", result);
+      console.log("Registration Failed:", result);
+      if(result === "Sähköposti on jo käytössä") {
+        setEmailError(result);
+      }
+      throw new Error(result);
+      }
+      const result = await response.json();
+      console.log("Registration Success: ", result);
+      setEmailError("");
       toggleRegisterModal();
-      // Handle success (e.g., navigating to a different page, showing a success message)
+      
     } catch (error) {
       console.error("Registration Failed:", error);
-      // Handle error (e.g., showing an error message)
     }
   };
 
@@ -129,10 +139,12 @@ const App = () => {
                 setNicknameInput={setNicknameInput}
                 setNameInput={setNameInput}
                 setEmailInput={setEmailInput}
+                setEmailError={setEmailError}
                 setPasswordInput={setPasswordInput}
                 nicknameInput={nicknameInput}
                 nameInput={nameInput}
                 emailInput={emailInput}
+                emailError={emailError}
                 passwordInput={passwordInput}
                 handleCloseForm={toggleRegisterModal}
               />

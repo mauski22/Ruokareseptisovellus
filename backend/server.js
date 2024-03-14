@@ -124,20 +124,27 @@ app.post('/recipesidhaku', (req, res) => {
 )
 app.post('/register', (req, res) => {
     try {
-    const sql = "INSERT INTO users (nickname, name, email, password, user_role) VALUES (?, ?, ?, ?, ?)";
-    const values = [
-        req.body.nickname,
-        req.body.name,
-        req.body.email,
-        req.body.password,
-        req.body.user_role  /*USER ROLE VOI OLLA AINOASTAAN JOKO 'superadmin', 'user' tai 'viewer'          */
-    ];
-    db.query(sql, values, (err) => {
-        if(err) return res.status(500).json("Error rekisteröinnissä" + err);
-        return res.status(200).json("Rekisteröinti onnistui")
-    }); 
-    }
-    catch (error) {
+        const checkEmailSql = "SELECT * FROM users WHERE email = ?";
+        db.query(checkEmailSql, [req.body.email], (err, result) => {
+            if (err) return res.status(500).json("Error rekisteröinnissä: " + err);
+            if (result.length > 0) {
+                return res.status(400).json("Sähköposti on jo käytössä");
+            } else {
+                const sql = "INSERT INTO users (nickname, name, email, password, user_role) VALUES (?, ?, ?, ?, ?)";
+                const values = [
+                    req.body.nickname,
+                    req.body.name,
+                    req.body.email,
+                    req.body.password,
+                    req.body.user_role
+                ];
+                db.query(sql, values, (err) => {
+                    if(err) return res.status(500).json("Error rekisteröinnissä: " + err);
+                    return res.status(200).json("Rekisteröinti onnistui");
+                });
+            }
+        });
+    } catch (error) {
         return res.status(500).json("Error rekisteröinnissä: " + error);
     }
 });

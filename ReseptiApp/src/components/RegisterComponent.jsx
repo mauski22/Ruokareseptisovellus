@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 const RegisterComponent = ({
@@ -7,9 +7,11 @@ const RegisterComponent = ({
   setNameInput,
   setEmailInput,
   setPasswordInput,
+  setEmailError,
   nicknameInput,
   nameInput,
   emailInput,
+  emailError,
   passwordInput,
   handleCloseForm,
 }) => {
@@ -41,8 +43,11 @@ const RegisterComponent = ({
           type="email"
           placeholder="Syötä sähköposti"
           value={emailInput}
-          onChange={(e) => setEmailInput(e.target.value)}
+          onChange={(e) => {setEmailInput(e.target.value), setEmailError("")} } isInvalid ={!!emailError}
         />
+         <Form.Control.Feedback type="invalid">
+        {emailError}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
