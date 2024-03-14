@@ -11,6 +11,7 @@ import './App.css';
 import UsersTable from './components/UsersTable';
 import { Route, Routes } from 'react-router-dom';
 import RecipeCard from './components/RecipeCard';
+import ResetPassword from './components/ResetPassword';
 
 
 
@@ -90,6 +91,7 @@ const App = () => {
       <Routes>
         <Route path="/usersTable" element={<UsersTable />} />
         <Route path="/recipes" element={<RecipeCard />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* other routes here */}
         <Route path="/" element={
           <>
@@ -111,6 +113,7 @@ const App = () => {
                 emailInput={emailInput}
                 passwordInput={passwordInput}
                 handleCloseForm={toggleLoginModal}
+                handleResetLinkClick={!showLoginModal}
               />
             </Modal.Body>
           </Modal>

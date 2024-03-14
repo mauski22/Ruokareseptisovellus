@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, emailInput, passwordInput, handleCloseForm }) => {
+const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, emailInput, passwordInput, handleCloseForm, handleResetLinkClick }) => {
 
+  const onResetPasswordClick = (e) => {
+    handleResetLinkClick(); // This will close the modal
+    // If you're not using React Router or need to do additional logic before redirecting, handle it here
+  };
   return (
     <Form onSubmit={handleLoginSubmit}>
       <Form.Group>
@@ -27,6 +32,9 @@ const LoginComponent = ({ handleLoginSubmit, setEmailInput, setPasswordInput, em
         Login
       </Button>
       <Button variant="danger" onClick={handleCloseForm}>Cancel</Button>
+      <div className="mt-3">
+        <Link to="/reset-password" onClick={onResetPasswordClick}>Unohditko salasanasi?</Link>
+      </div>
     </Form>
   );
 };
