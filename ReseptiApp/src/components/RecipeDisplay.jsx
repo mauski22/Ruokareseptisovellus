@@ -9,6 +9,24 @@ export const RecipeDisplay = () => {
   const { user } = useAuth();
   const [recipes, setRecipes] = useState([]);
   const [authorInfo, setAuthorInfo] = useState([]);
+  const [votes, setVotes] = useState({});
+  const [favorites, setFavorites] = useState([]);
+
+  const handleVote = (index, type) => {
+    const newVotes = { ...votes };
+    const voteKey = `${index}_${type}`; // Unique key for each recipe and vote type
+    newVotes[voteKey] = (newVotes[voteKey] || 0) + 1;
+    setVotes(newVotes);
+  };
+  const addToFavorites = (recipe) => {
+    alert(`${recipe.title} has been added to favorite recipes!`);
+    // Here you can also update the state if you want to track favorites within the app
+    // For example, to prevent adding the same recipe multiple times, check if it's already a favorite
+    if (!favorites.includes(recipe)) {
+      setFavorites([...favorites, recipe]);
+    }
+  };
+  
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -50,6 +68,18 @@ export const RecipeDisplay = () => {
                 <h5 className="card-title">{recipe.title}</h5>
                 <p>Author: {user.userName}</p>
                 <p>Created at: {recipe.created_at}</p>
+                <button onClick={() => handleVote(index, 'up')} style={{ marginRight: '10px' }}>
+                👍
+                </button>
+                {votes[`${index}_up`] || 0}
+                {/* Thumbs Down Button */}
+                <button onClick={() => handleVote(index, 'down')} style={{ marginRight: '10px' }}>
+                  👎
+                </button>
+                {votes[`${index}_down`] || 0}
+                <button onClick={() => addToFavorites(recipe)} style={{ marginRight: '5px' }}>
+                ⭐
+                </button>
                 
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
