@@ -5,6 +5,9 @@ const multer  = require('multer');
 const nodemailer = require('nodemailer'); 
 
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+
 const db = mysql.createConnection({
     host: "127.0.0.1",
     port: 3307,
@@ -34,28 +37,74 @@ const storage  = multer.diskStorage({
 })
 
 const upload = multer({storage})
-/* const html = `<h1>Hello world </h1>
-<p>Ins't this useful </p>
+ const html = `<h1>Hello</h1>
+<p>Tässä salasanan vaihto :) </p>
+<a href="$resetpassword">Vaihda salasana</a>
 `
-async function main() {
-    let transporter = nodemailer.createTransport({
-        host: 'jotain',
-        port: 465, 
-        secure: true,
-        auth: {
-            user: 'jotain',
-            pass: 'jotain'
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465, 
+    secure: true,
+    auth: {
+            user: 'bearmario2@gmail.com',
+            pass: 'qnve boaa bixt ddkg'
+    }
+    });
+const mailOptions = {
+        from: {name: 'Haute-Cuisine backendpro 666', address: 'bearmario2@gmail.com'},
+        to: 'jiojiojiojiojoij',
+        subject: 'Salasananpalautus',
+        html: html
+
+}
+
+const sendMail = async (transporter, mailOptions) => {
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log("Email has been sended")
+    }
+    catch (error) {
+        console.error(error)
+    }
+}
+
+app.post("/sendrecoveryemail", (req, res) => {
+    // Oletetaan, että sähköpostiosoite lähetetään pyynnön rungossa nimellä "email"
+    const recipientEmail = req.body.email;
+
+    // Tarkista ensin tietokannasta, löytyykö sähköpostiosoite
+    const checkEmailSql = "SELECT * FROM users WHERE email = ?";
+    db.query(checkEmailSql, [recipientEmail], (err, result) => {
+        if (err) {
+            console.error("Error sähköpostiosoitteessa: " + err);
+            return res.status(500).json("Error sähköpostiosoitteessa: " + err);
+        }
+        if (result.length > 0) {
+            try {
+                // Päivitä mailOptions vastaanottajan sähköpostiosoitteella
+                mailOptions.to = recipientEmail;
+                mailOptions.html = `<p>Hei, ${result[0].name},</p>
+                <p>Näyttää siltä, että haluat vaihtaa salasanasi. Voit tehdä sen napsauttamalla alla olevaa linkkiä:</p>
+                <a href="http://localhost:5173/PasswordReset/${result[0].user_id}/${result[0].name}">Vaihda salasana</a>
+                <p>Jos et pyytänyt salasanan vaihtoa, voit jättää tämän viestin huomiotta.</p>
+                <p>Ystävällisin terveisin,</p>
+                <p>Haute Cuisine backend ;D</p>`;
+
+                sendMail(transporter, mailOptions);
+                console.log("Email has been sent to " + recipientEmail);
+                res.status(200).send({message: "Email sent successfully",});
+            } catch (error) {
+                console.error(error);
+                res.status(500).send("Error sending email");
+            }
+        } else {
+            res.status(404).send("Email not found in the database");
         }
     });
-    const info = await transporter.sendMail({
-        from: 'OpenPasswordRest <asdasdasdads>',
-        to: 'asdadasda',
-        subject: 'Testing testing 123',
-        html: html
-    })
-    console.log("Message sent: " + info.messageId);
-} 
- */
+});
+
 app.get('/', (re, res)=> {
     return res.json("From backend");
 })
@@ -337,8 +386,8 @@ app.post('/tietynreseptinhakukeywordilla', (req, res) => {
 })
 app.put("/salasananpalautus", (req, res) => {
     try {
-        const sql  = "UPDATE users SET password = ? WHERE email = ?"
-        values = [req.body.password, req.body.email]
+        const sql  = "UPDATE users SET password = ? WHERE user_id = ?"
+        values = [req.body.password, req.body.user_id]
         db.query(sql, values, (err) => {
             if (err) return res.status(500).json("Salasanan vaihto epäonnistui", err)
             return res.status(200).json("Salasanan vaihto onnistui")
@@ -348,3 +397,4 @@ app.put("/salasananpalautus", (req, res) => {
         return res.status(500).json("Salasan vaihto epäonnistui", error)
     }
 })
+//sendMail(transporter, mailOptions)

@@ -12,7 +12,7 @@ import UsersTable from './components/UsersTable';
 import { Route, Routes } from 'react-router-dom';
 import RecipeCard from './components/RecipeCard';
 import ResetPassword from './components/ResetPassword';
-
+import Changepassword from './components/Changepasswordform';
 
 
 const App = () => {
@@ -102,8 +102,10 @@ const App = () => {
         <Route path="/usersTable" element={<UsersTable />} />
         <Route path="/recipes" element={<RecipeCard />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path='/PasswordReset/:id/:name' element ={<Changepassword/>}/>
         {/* other routes here */}
         <Route path="/" element={
+        
           <>
             <SearchBar />
             {/* your modals here */}
