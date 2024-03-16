@@ -1,7 +1,8 @@
 const express = require('express');
-const mysql = require('mysql')
-const cors = require('cors')
-const multer  = require('multer')
+const mysql = require('mysql');
+const cors = require('cors');
+const multer  = require('multer');
+const nodemailer = require('nodemailer'); 
 
 
 const db = mysql.createConnection({
@@ -12,6 +13,7 @@ const db = mysql.createConnection({
     database: "reseptisovellus",
     waitForConnections: true
 });
+
 
 const app = express();
 app.use(express.json());
@@ -32,7 +34,28 @@ const storage  = multer.diskStorage({
 })
 
 const upload = multer({storage})
-
+/* const html = `<h1>Hello world </h1>
+<p>Ins't this useful </p>
+`
+async function main() {
+    let transporter = nodemailer.createTransport({
+        host: 'jotain',
+        port: 465, 
+        secure: true,
+        auth: {
+            user: 'jotain',
+            pass: 'jotain'
+        }
+    });
+    const info = await transporter.sendMail({
+        from: 'OpenPasswordRest <asdasdasdads>',
+        to: 'asdadasda',
+        subject: 'Testing testing 123',
+        html: html
+    })
+    console.log("Message sent: " + info.messageId);
+} 
+ */
 app.get('/', (re, res)=> {
     return res.json("From backend");
 })
@@ -310,5 +333,18 @@ app.post('/tietynreseptinhakukeywordilla', (req, res) => {
     }
     catch (error) {
         return res.status(500).json("Tietyn reseptin haku keywordilla ei onnistunut", error)
+    }
+})
+app.put("/salasananpalautus", (req, res) => {
+    try {
+        const sql  = "UPDATE users SET password = ? WHERE email = ?"
+        values = [req.body.password, req.body.email]
+        db.query(sql, values, (err) => {
+            if (err) return res.status(500).json("Salasanan vaihto epäonnistui", err)
+            return res.status(200).json("Salasanan vaihto onnistui")
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Salasan vaihto epäonnistui", error)
     }
 })
