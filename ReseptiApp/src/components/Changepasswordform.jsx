@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Form, Container } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 const PasswordReset = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     let {id} = useParams();  
+    let navigate = useNavigate();
     const handlePasswordChange = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
@@ -25,6 +26,7 @@ const PasswordReset = () => {
     
             if (response.status === 200) {
                 alert('Salasana on vaihdettu onnistuneesti!');
+                navigate('/'); 
             } else {
                 alert('Salasanan vaihto epäonnistui. Yritä uudelleen.');
             }
