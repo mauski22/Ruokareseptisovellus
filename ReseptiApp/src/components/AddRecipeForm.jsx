@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import { createApi } from 'unsplash-js';
 
-const unsplash = createApi({
-  accessKey: 'Z8MTDQ_WIdVPpD-W_zSpEi_Fw6MlgTIf_NjqVsarWK0', // Korvaa tämä omalla avaimellasi
-});
 
 const AddRecipeForm = ({ user }) => {
   const [title, setTitle] = useState('');
@@ -18,18 +14,6 @@ const AddRecipeForm = ({ user }) => {
   const handleVisibilityChange = (newVisibility) => {
     setVisibility(newVisibility === 'public' ? 1 : 0);
   };
-
-  const searchImages = async (query) => {
-    if (!query) return;
-
-    try {
-      const response = await unsplash.search.getPhotos({ query, perPage: 3 });
-      setSearchResults(response.response.results);
-    } catch (error) {
-      console.error('Error fetching images from Unsplash:', error);
-    }
-  };
-
 
 
 
