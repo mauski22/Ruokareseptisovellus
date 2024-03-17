@@ -389,6 +389,7 @@ app.post('/tietynreseptinhakukeywordilla', (req, res) => {
         const keyword = req.body.keyword
         db.query(sql, [keyword], (err, data) => {
             if (err) return res.status(500).json("Error recipe_id:n haussa keywordilla" + err)
+            if (data.length === 0) return res.status(404).json("Avainsanaa ei löytynyt");
             const id = data[0].recipe_id;
             return res.status(200).json(id);
         })
