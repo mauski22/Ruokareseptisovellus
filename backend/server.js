@@ -358,7 +358,7 @@ app.post('/keywordslisays', (req, res) => {
         return res.status(500).json("Error keywordien lisäyksessä");
     }
 })
-app.get('/keywordshaku', (req, res) => { 
+app.get('/kaikkienkeywordshaku', (req, res) => { 
     try {
         const sql = "SELECT keyword from keywords";
         db.query(sql, (err, data) => {
@@ -370,11 +370,24 @@ app.get('/keywordshaku', (req, res) => {
         return res.status(500).json("Error keywordien haussa", error)
     }
 })
+
+app.get('/julkistenreseptienkeywordsienhaku', (req, res) => {
+    try {
+        const sql = "SELECT k.keyword FROM keywords k INNER JOIN recipes r ON k.recipe_id = r.recipe_id WHERE r.visibility = 1;"
+        db.query(sql, (err, data) => {
+            if (err) return res.status(500).json("Error julkisten keywordien haussa", err)
+            return res.status(200).json(data); 
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Error julkisten keywordsien haussa", error)
+    }
+})
 app.post('/tietynreseptinhakukeywordilla', (req, res) => {
     try {
         const sql = "Select recipe_id from keywords WHERE keyword = ?"
         const keyword = req.body.keyword
-        db.query(sql, keyword, (err, data) => {
+        db.query(sql, [keyword], (err, data) => {
             if (err) return res.status(500).json("Error recipe_id:n haussa keywordilla" + err)
             const id = data[0].recipe_id;
             return res.status(200).json(id);
@@ -396,5 +409,18 @@ app.put("/salasananpalautus", (req, res) => {
     catch (error) {
         return res.status(500).json("Salasan vaihto epäonnistui", error)
     }
+})
+
+app.get('/julkisetreseptit/:id', (req, res) => {
+    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
+    const recipe_id = req.params.id
+    db.query(sql, [recipe_id], (err, data) => {
+        if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
+        data.forEach(row => {
+            row.created_at = row.created_at.toISOString().split('T')[0];
+            row.updated_at = row.updated_at.toISOString().split('T')[0];
+        });
+        return res.status(200).json(data); 
+    })
 })
 //sendMail(transporter, mailOptions)

@@ -1,20 +1,41 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
-const RegisterComponent = ({
-  handleRegisterSubmit,
-  setNicknameInput,
-  setNameInput,
-  setEmailInput,
-  setPasswordInput,
-  setEmailError,
-  nicknameInput,
-  nameInput,
-  emailInput,
-  emailError,
-  passwordInput,
-  handleCloseForm,
-}) => {
+const RegisterComponent = ({ handleCloseForm }) => {
+  const [nicknameInput, setNicknameInput] = useState('');
+  const [nameInput, setNameInput] = useState('');
+  const [emailError, setEmailError] = useState("");
+  const [emailInput, setEmailInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+
+  const handleRegisterSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8081/register", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname: nicknameInput, name: nameInput, email: emailInput, password: passwordInput, user_role: 'user' }),
+      });
+
+      if (!response.ok){
+        const result = await response.json();
+        console.log("Registration Failed:", result);
+        if(result === "Sähköposti on jo käytössä") {
+          setEmailError(result);
+        }
+        throw new Error(result);
+      }
+
+      const result = await response.json();
+      console.log("Registration Success: ", result);
+      setEmailError("");
+      handleCloseForm();
+      
+    } catch (error) {
+      console.error("Registration Failed:", error);
+    }
+  };
+
   return (
     <Form onSubmit={handleRegisterSubmit}>
       <Form.Group className="mb-3" controlId="formNickname">
@@ -43,10 +64,11 @@ const RegisterComponent = ({
           type="email"
           placeholder="Syötä sähköposti"
           value={emailInput}
-          onChange={(e) => {setEmailInput(e.target.value), setEmailError("")} } isInvalid ={!!emailError}
+          onChange={(e) => { setEmailInput(e.target.value); setEmailError("") }}
+          isInvalid={!!emailError}
         />
-         <Form.Control.Feedback type="invalid">
-        {emailError}
+        <Form.Control.Feedback type="invalid">
+          {emailError}
         </Form.Control.Feedback>
       </Form.Group>
 

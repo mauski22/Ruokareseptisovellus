@@ -19,82 +19,12 @@ const App = () => {
   // State for the homepage
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [nicknameInput, setNicknameInput] = useState('');
-  const [nameInput, setNameInput] = useState('');
-  const [emailInput, setEmailInput] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
-  const [emailError, setEmailError] = useState("");
-  const { login } = useAuth();
-  // Placeholder for recipes data
-  const [recipesData] = useState([
-    // ... Your recipes data here
-  ]);
-
   // Toggle modal visibility
   const toggleLoginModal = () => setShowLoginModal(!showLoginModal);
   const toggleRegisterModal = () => setShowRegisterModal(!showRegisterModal);
 
   // Login submit handler
-  const handleLoginSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const vastaus = await fetch("http://localhost:8081/login",  {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: emailInput,
-          password: passwordInput
-        })
-      }
-      )
-      const tulos = await vastaus.json();
-      if (tulos === "Login failed") {
-        console.log(tulos);
-        alert("Sähköposti tai salasana oli väärin. Yritä uudelleen.")
-      } else {
-        console.log("Käyttäjän ", tulos.userName + " kirjautuminen onnistui. ID = " + tulos.user_id + ", ROOLI = " + tulos.userRole);
-        login(tulos);
-        setEmailInput('');
-        setPasswordInput('');
-        toggleLoginModal();
-      }
-    }
-    catch (error) {
-      console.log("Jokin meni pieleen login hommelissa")
-      console.log("ERROR LOGIN ", error);
-    }
-  };
-
   
-  const handleRegisterSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch("http://localhost:8081/register", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nicknameInput, name: nameInput, email: emailInput, password: passwordInput, user_role: 'user' }),
-      });
-
-      if (!response.ok){
-      const result = await response.json();
-      console.log("Registration Failed:", result);
-      if(result === "Sähköposti on jo käytössä") {
-        setEmailError(result);
-      }
-      throw new Error(result);
-      }
-      const result = await response.json();
-      console.log("Registration Success: ", result);
-      setEmailError("");
-      toggleRegisterModal();
-      
-    } catch (error) {
-      console.error("Registration Failed:", error);
-    }
-  };
-
   return (
       <div className="App search-bar">
         <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
@@ -119,11 +49,6 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
               <LoginComponent
-                handleLoginSubmit={handleLoginSubmit}
-                setEmailInput={setEmailInput}
-                setPasswordInput={setPasswordInput}
-                emailInput={emailInput}
-                passwordInput={passwordInput}
                 handleCloseForm={toggleLoginModal}
                 handleResetLinkClick={!showLoginModal}
               />
@@ -137,17 +62,6 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
               <RegisterComponent
-                handleRegisterSubmit={handleRegisterSubmit}
-                setNicknameInput={setNicknameInput}
-                setNameInput={setNameInput}
-                setEmailInput={setEmailInput}
-                setEmailError={setEmailError}
-                setPasswordInput={setPasswordInput}
-                nicknameInput={nicknameInput}
-                nameInput={nameInput}
-                emailInput={emailInput}
-                emailError={emailError}
-                passwordInput={passwordInput}
                 handleCloseForm={toggleRegisterModal}
               />
             </Modal.Body>

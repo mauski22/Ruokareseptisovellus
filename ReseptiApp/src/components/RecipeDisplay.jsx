@@ -40,7 +40,6 @@ export const RecipeDisplay = () => {
           const recipeResponse = await fetch(`http://localhost:8081/kayttajanreseptienhaku/${recipe.recipe_id}`);
           if (!recipeResponse.ok) throw new Error('Network response was not ok');
           const recipeDetails = await recipeResponse.json();
-          console.log(recipeDetails);
           recipeData.push(recipeDetails);
         }
         console.log("Reseptidata komponentin tiedot pitäisi näkyä tässä", recipeData)

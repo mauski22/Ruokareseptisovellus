@@ -7,7 +7,7 @@ const SearchBar = () => {
   const [details, setRecipedetails] = useState(null);
   // Hae avainsanat palvelimelta, kun komponentti ladataan
   useEffect(() => {
-    fetch('http://localhost:8081/keywordshaku')
+    fetch('http://localhost:8081/julkistenreseptienkeywordsienhaku')
       .then(response => response.json())
       .then(data => setKeywords(data.map(item => item.keyword)));
   }, []);
