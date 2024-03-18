@@ -99,8 +99,8 @@ export const RecipeDisplay = () => {
                 {console.log("Ainesosat: ", recipe.ingredients)}
                 {console.log("reseptien kuvat: ", recipe.photos)}
                 <h5 className="card-title">{recipe.title}</h5>
-                <p>Author: {user.userName}</p>
-                <p>Created at: {recipe.created_at}</p>
+                <p>Tekijä: {user.userName}</p>
+                <p>Resepti luotu: {recipe.created_at}</p>
                 <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/> {/* Lisätty kuva */}
                 <button onClick={() => handleVote(index, 'up')} style={{ marginRight: '10px' }}>
                 👍
@@ -122,7 +122,7 @@ export const RecipeDisplay = () => {
                 )}
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                <p>Ainesosat: {recipe.ingredients}</p>
+                <p>Raaka-aineet: {recipe.ingredients}</p>
               </Tab>
               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                 <p className="card-text">{recipe.description}</p>
@@ -133,7 +133,7 @@ export const RecipeDisplay = () => {
       ))}
       <Modal show={showEditModal} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Edit Recipe</Modal.Title>
+          <Modal.Title>Muokkaa reseptiä</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentRecipe && (

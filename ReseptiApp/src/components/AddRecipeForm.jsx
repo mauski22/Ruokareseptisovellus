@@ -130,7 +130,7 @@ const AddRecipeForm = ({ user }) => {
   return (
     <form onSubmit={handleRecipeSubmit} enctype="multipart/form-data">
       <div>
-        <label>Title: </label>
+        <label>Nimi: </label>
         <input
           type="text"
           value={title}
@@ -139,29 +139,29 @@ const AddRecipeForm = ({ user }) => {
         />
       </div>
       <div>
-        <label>Ingredients: </label>
+        <label>Raaka-aineet: </label>
         {ingredients.map((ingredient, index) => (
           <div key={index}>
             <input
               type="text"
               value={ingredient.name}
               onChange={(e) => handleIngredientNameChange(index, e.target.value)}
-              placeholder="Ingredient Name"
+              placeholder="Raaka-aine"
               required
             />
             <input
               type="text"
               value={ingredient.amount}
               onChange={(e) => handleIngredientAmountChange(index, e.target.value)}
-              placeholder="Amount"
+              placeholder="Määrä"
               required
             />
           </div>
         ))}
-        <button type="button" onClick={addIngredient}>+ Add Ingredient</button>
+        <button type="button" onClick={addIngredient}>Lisää raaka-aine</button>
       </div>
       <div>
-        <label>Instructions: </label>
+        <label>Ohjeet: </label>
         <textarea
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
@@ -169,7 +169,7 @@ const AddRecipeForm = ({ user }) => {
         />
       </div>
       <div>
-        <label>Tags (space-separated, start with #): </label>
+        <label>Hashtagit (#): </label>
         <input
           type="text"
           value={tags}
@@ -177,14 +177,14 @@ const AddRecipeForm = ({ user }) => {
         />
       </div>
       <div>
-        <button type="button" onClick={() => handleVisibilityChange('public')} className={visibility === 1 ? 'selected' : ''}>Public</button>
-        <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 0 ? 'selected' : ''}>Private</button>
+        <button type="button" onClick={() => handleVisibilityChange('public')} className={visibility === 1 ? 'selected' : ''}>Julkinen</button>
+        <button type="button" onClick={() => handleVisibilityChange('private')} className={visibility === 0 ? 'selected' : ''}>Yksityinen</button>
       </div>
       <div>
       <label>Valitse kuva: </label>
         <input type="file" onChange={(e) => setFile(e.target.files[0])}/>
       </div>
-      <button type="submit">Add Recipe</button>
+      <button type="submit">Lisää resepti</button>
     </form>
   );
 };

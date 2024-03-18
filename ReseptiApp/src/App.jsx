@@ -45,7 +45,7 @@ const App = () => {
           {/* Login Modal */}
           <Modal show={showLoginModal} onHide={toggleLoginModal}>
             <Modal.Header closeButton>
-              <Modal.Title>Login</Modal.Title>
+              <Modal.Title>Kirjaudu</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <LoginComponent
@@ -58,7 +58,7 @@ const App = () => {
           {/* Register Modal */}
           <Modal show={showRegisterModal} onHide={toggleRegisterModal}>
             <Modal.Header closeButton>
-              <Modal.Title>Register</Modal.Title>
+              <Modal.Title>Rekisteröidy</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <RegisterComponent

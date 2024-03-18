@@ -26,17 +26,17 @@ const ResetPassword = () => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group>
-        <Form.Label>Email Address</Form.Label>
+        <Form.Label>Sähköposti</Form.Label>
         <Form.Control
           type="email"
-          placeholder="Enter your email"
+          placeholder="Anna sähköpostiosoite"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Send Reset Link
+        Lähetä palautuslinkki
       </Button>
     </Form>
   );

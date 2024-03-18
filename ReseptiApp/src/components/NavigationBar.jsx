@@ -56,14 +56,14 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
               <Nav.Link as={NavLink} to="/usersTable">{"("}ADMIN{")"}</Nav.Link>
             )}
             {isRecipesPage && isLoggedIn && (
-              <Button variant="primary" onClick={handleShowAddRecipeForm}>Add recipe</Button>
+              <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää resepti</Button>
             )}
           </Nav>
           <Nav>
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  Signed in as: {user.userName} {"("}{user.userRole}{")"} {/* Consider updating this to use NavLink or a more appropriate approach */}
+                  Kirjauduttu sisään: {user.userName} {"("}{user.userRole}{")"} {/* Consider updating this to use NavLink or a more appropriate approach */}
                 </Navbar.Text>
                 <Button onClick={handleShowConfirmModal} variant="outline-danger">Kirjaudu ulos</Button>
               </>
