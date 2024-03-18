@@ -2,8 +2,8 @@ import React from 'react';
 import { useAuth } from './AuthContext';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Card, Tab, Tabs } from 'react-bootstrap';
-
+import { Card, Tab, Tabs, Modal } from 'react-bootstrap';
+import  EditRecipeForm  from './EditRecipeForm';
 
 export const RecipeDisplay = () => {
   const { user } = useAuth();
@@ -11,6 +11,19 @@ export const RecipeDisplay = () => {
   const [authorInfo, setAuthorInfo] = useState([]);
   const [votes, setVotes] = useState({});
   const [favorites, setFavorites] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentRecipe, setCurrentRecipe] = useState(null);
+
+  const handleEditClick = (recipe) => {
+    setCurrentRecipe(recipe);
+    setShowEditModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowEditModal(false);
+    setCurrentRecipe(null); // Optional: Clear current recipe
+    // Optional: Refresh or update your recipes list here if needed
+  };
 
   const handleVote = (index, type) => {
     const newVotes = { ...votes };
@@ -101,7 +114,7 @@ export const RecipeDisplay = () => {
                 <button onClick={() => addToFavorites(recipe)} style={{ marginRight: '5px' }}>
                 ⭐
                 </button>
-                <button>Muokkaa reseptiä</button>
+                <button onClick={() => handleEditClick(recipe)}>Muokkaa reseptiä</button>
                 {user.user_id === recipe.author_id && (
                   <button onClick={() => handleDelete(recipe.recipe_id, index)}>
                   Poista resepti
@@ -118,6 +131,24 @@ export const RecipeDisplay = () => {
           </Card>
         </div>
       ))}
+      <Modal show={showEditModal} onHide={handleCloseModal} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Recipe</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {currentRecipe && (
+            <EditRecipeForm
+              user={user}
+              recipe={currentRecipe}
+              onSave={() => {
+                setShowEditModal(false);
+                // Optional: Refresh or update your recipes list here
+              }}
+              onClose={handleCloseModal}
+            />
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
