@@ -10,9 +10,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import UsersTable from './components/UsersTable';
 import { Route, Routes } from 'react-router-dom';
-import RecipeDisplay from './components/RecipeDisplay';
 import ResetPassword from './components/ResetPassword';
 import Changepassword from './components/Changepasswordform';
+import RecipeMenu from './components/RecipeMenu';
+import RecipeDisplay from './components/RecipeDisplay';
+import PublicRecipeDisplay from './components/PublicRecipeDisplay';
 
 
 const App = () => {
@@ -29,10 +31,13 @@ const App = () => {
       <div className="App search-bar">
         <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
       <Routes>
+
         <Route path="/usersTable" element={<UsersTable />} />
-        <Route path="/recipes" element={<RecipeDisplay />} />
+        <Route path="/recipes" element={<RecipeMenu />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path='/PasswordReset/:id/:name' element ={<Changepassword/>}/>
+        <Route path="/usersOwnRecipes" element={<RecipeDisplay />} />
+        <Route path="/publicRecipes" element={<PublicRecipeDisplay />} />
         {/* other routes here */}
         <Route path="/" element={
         

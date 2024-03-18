@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAuth } from './AuthContext';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Tab, Tabs, Modal } from 'react-bootstrap';
 import  EditRecipeForm  from './EditRecipeForm';
 
@@ -123,8 +122,13 @@ export const RecipeDisplay = () => {
                 )}
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                <p>Ainesosat: {recipe.ingredients}</p>
+              <p>Ainesosat: {recipe.ingredients}</p>
               </Tab>
+              {/**                <ul>
+                  {recipe.ingredients.split(',').map((ingredient, index) => (
+                    <li key={index}>{ingredient.trim()}</li>
+                  ))}
+                </ul> */}
               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                 <p className="card-text">{recipe.description}</p>
               </Tab>
