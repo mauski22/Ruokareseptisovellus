@@ -41,12 +41,11 @@ export const RecipeDisplay = () => {
   };
   const handleDelete = async (recipe_id, index) => {
     try {
-      const response = await fetch(`http://localhost:8081/recipes/delete/${recipes.recipe_id}`, {
+      const response = await fetch(`http://localhost:8081/recipes/delete/${recipe_id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-        },
-        // Include authentication tokens/credentials if needed
+        }
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
@@ -95,12 +94,10 @@ export const RecipeDisplay = () => {
           <Card className="recipe-card">
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-
-                {console.log("Ainesosat: ", recipe.ingredients)}
-                {console.log("reseptien kuvat: ", recipe.photos)}
                 <h5 className="card-title">{recipe.title}</h5>
                 <p>Author: {user.userName}</p>
                 <p>Created at: {recipe.created_at}</p>
+                <p>Visiblity: {recipe.visibility === 1 ? 'Näkyy muille' : 'Ei näy muille'}</p>
                 <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/> {/* Lisätty kuva */}
                 <button onClick={() => handleVote(index, 'up')} style={{ marginRight: '10px' }}>
                 👍

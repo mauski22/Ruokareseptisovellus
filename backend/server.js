@@ -313,15 +313,69 @@ app.delete('/users/:id', (req, res) => {
 
 
 app.delete('/recipes/delete/:id', (req, res) => {
-    const sql = "DELETE FROM recipes WHERE recipe_id = ?";
     const recipe_id = req.params.id; 
-    db.query (sql, [recipe_id], (err, result) => {
-        if(err) {return res.status(500).json("Error reseptin poistossa: " + err);}
-        else { return res.status(200).json("Reseptin poisto onnistui: " + result);
-        }
-    }
-    )
-})
+
+    db.beginTransaction(function(err) {
+        if (err) { return res.status(500).json("Virhe transaktion aloittamisessa: " + err); }
+
+        db.query('DELETE FROM ratings WHERE recipe_id = ?', [recipe_id], function(err, result) {
+            if (err) { 
+                db.rollback(function() {
+                    return res.status(500).json("Virhe arvioiden poistossa: " + err);
+                });
+            }
+
+            db.query('DELETE FROM photos WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                if (err) { 
+                    db.rollback(function() {
+                        return res.status(500).json("Virhe valokuvien poistossa: " + err);
+                    });
+                }
+
+                db.query('DELETE FROM keywords WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                    if (err) { 
+                        db.rollback(function() {
+                            return res.status(500).json("Virhe avainsanojen poistossa: " + err);
+                        });
+                    }
+
+                    db.query('DELETE FROM ingredients WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                        if (err) { 
+                            db.rollback(function() {
+                                return res.status(500).json("Virhe ainesosien poistossa: " + err);
+                            });
+                        }
+
+                        db.query('DELETE FROM favorites WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                            if (err) { 
+                                db.rollback(function() {
+                                    return res.status(500).json("Virhe suosikkien poistossa: " + err);
+                                });
+                            }
+
+                            db.query('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                                if (err) { 
+                                    db.rollback(function() {
+                                        return res.status(500).json("Virhe reseptin poistossa: " + err);
+                                    });
+                                }
+
+                                db.commit(function(err) {
+                                    if (err) { 
+                                        db.rollback(function() {
+                                            return res.status(500).json("Virhe transaktion vahvistamisessa: " + err);
+                                        });
+                                    }
+                                    return res.status(200).json("Reseptin poisto onnistui: " + result);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
 app.put('/users/:id', (req, res) => {
     try {
         const sql = "UPDATE users SET nickname = ?, name = ?, email = ?, password = ?, user_role = ? WHERE user_id = ?";
