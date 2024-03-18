@@ -95,12 +95,11 @@ export const RecipeDisplay = () => {
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
 
-                {console.log("Ainesosat: ", recipe.ingredients)}
-                {console.log("reseptien kuvat: ", recipe.photos)}
+                {console.log("Ainesosaidt: ", recipe.ingredient_ids)}
                 <h5 className="card-title">{recipe.title}</h5>
-                <p>Author: {user.userName}</p>
-                <p>Created at: {recipe.created_at}</p>
-                <p>Visiblity: {recipe.visibility === 1 ? 'Näkyy muille' : 'Ei näy muille'}</p>
+                <p>Tekijä: {user.userName}</p>
+                <p>Luotu: {recipe.created_at}</p>
+                <p>Näkyvyys: {recipe.visibility === 1 ? 'Näkyy muille' : 'Ei näy muille'}</p>
                 <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/> {/* Lisätty kuva */}
                 <button onClick={() => handleVote(index, 'up')} style={{ marginRight: '10px' }}>
                 👍

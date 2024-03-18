@@ -142,7 +142,7 @@ app.get('/recipes/:id', (req, res) => {
     })
 })
 app.get('/kayttajanreseptienhaku/:id', (req, res) => {
-    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
+    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT i.ingredient_id) AS ingredient_ids, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos, GROUP_CONCAT(DISTINCT k.keyword_id) AS keyword_id, GROUP_CONCAT(DISTINCT k.keyword) AS keywords FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id LEFT JOIN keywords k ON r.recipe_id = k.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"
     const recipe_id = req.params.id
     db.query(sql, [recipe_id], (err, data) => {
         if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
@@ -482,7 +482,7 @@ app.put("/salasananpalautus", (req, res) => {
 })
 
 app.get('/julkisetreseptit/:id', (req, res) => {
-    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
+    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.ingedient_id, ': ' i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
     const recipe_id = req.params.id
     db.query(sql, [recipe_id], (err, data) => {
         if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
@@ -493,4 +493,43 @@ app.get('/julkisetreseptit/:id', (req, res) => {
         return res.status(200).json(data); 
     })
 })
+
+app.put('/reseptinpaivitys', (req, res) => {
+    const sql = "UPDATE recipes SET title = ?, description = ?, visibility = ? WHERE recipe_id = ?;"
+    const values = [req.body.title, req.body.description, req.body.visibility, req.body.recipe_id];
+    db.query(sql, values, (err, result) => {
+        if(err || result.affectedRows == 0) return res.status(500).json({message: "Error reseptin päivityksessä", err})
+        return res.status(200).json("Reseptin päivitys onnistui")
+    })
+})
+app.put('/ingredientspaivitys', (req, res) => {
+    const sql = "UPDATE ingredients set name = ?, quantity = ? WHERE ingredient_id = ? AND recipe_id = ?;"
+    const values = [req.body.name, req.body.quantity, req.body.ingredient_id, req.body.recipe_id];
+    db.query(sql, values, (err, results) => {
+        if(err || results.affectedRows == 0) return res.status(500).json({message: "Ainesosien päivitys epäonnistui", error: err})
+        return res.status(200).json("Ainestosien päivitys onnistui")
+    })
+})
+app.put('/keywordspaivitys', (req, res) => {
+    const sql = "UPDATE keywords set keyword = ? WHERE recipe_id = ?;"
+    const values = [req.body.keyword, req.body.recipe_id];
+    db.query(sql, values, (err, results) => {
+        if(err || results.affectedRows == 0) return res.status(500).json({message: "Keywordsien päivitys epäonnistui", error: err})
+        return res.status(200).json("Keywordsien päivitys onnistui")
+    })
+})
+app.put('/photospaivitys', upload.single('file'), (req, res) => {
+    const sql = "Update photos set image = ? WHERE recipe_id = ?;";
+    
+    const values = [req.file.filename, req.body.recipe_id]
+    
+    db.query(sql, [req.file.filename, req.body.recipe_id], (err, result) => {
+      if (err) {
+        console.error({message: "Kuvan päivitys epäonnistui", err});
+        return res.status(500).json({message: "Kuvan lisäys epäonnistui"});
+      }
+      return res.status(200).json({message: "Kuvan lisäys onnistui", result});
+    });
+  });
+  
 //sendMail(transporter, mailOptions)
