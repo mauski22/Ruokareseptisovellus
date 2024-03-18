@@ -51,7 +51,6 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/" exact>Etusivu</Nav.Link>
             <Nav.Link as={NavLink} to="/recipes">Reseptit</Nav.Link>
-            <Nav.Link as={NavLink} to="/community">Yhteisö</Nav.Link>
             {isLoggedIn && isSuperAdmin && (
               <Nav.Link as={NavLink} to="/usersTable">{"("}ADMIN{")"}</Nav.Link>
             )}
