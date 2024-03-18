@@ -26,7 +26,29 @@ export const RecipeDisplay = () => {
       setFavorites([...favorites, recipe]);
     }
   };
-  
+  const handleDelete = async (recipe_id, index) => {
+    try {
+      const response = await fetch(`http://localhost:8081/recipes/delete/${recipes.recipe_id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Include authentication tokens/credentials if needed
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      // Update state to remove the recipe from the UI
+      const updatedRecipes = [...recipes];
+      updatedRecipes.splice(index, 1);
+      setRecipes(updatedRecipes);
+
+      alert('Recipe has been deleted successfully!');
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+      alert('Failed to delete the recipe.');
+    }
+  };
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -54,19 +76,19 @@ export const RecipeDisplay = () => {
     console.log("Reseptien data on päivittynyt:", recipes);
   }, [recipes]);
   return (
-    <div className="row" style={{ display: 'flex', flexWrap: 'wrap', padding: '1rem' }}>
+    <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
       {recipes.flat().map((recipe, index) => (
-        <div className="col-md-4" key={index} style={{ padding: '10px' }}>
-          <div className="card" style={{ width: '43rem', height: '40rem' }}>
+          <div className="col-lg-4 col-md-6 col-sm-12" key={index} style={{ marginBottom: '1rem' }}> {/* Responsive classes and margin added */}
+          <Card className="recipe-card">
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-              <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/> {/* Lisätty kuva */}
 
                 {console.log("Ainesosat: ", recipe.ingredients)}
                 {console.log("reseptien kuvat: ", recipe.photos)}
                 <h5 className="card-title">{recipe.title}</h5>
                 <p>Author: {user.userName}</p>
                 <p>Created at: {recipe.created_at}</p>
+                <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/> {/* Lisätty kuva */}
                 <button onClick={() => handleVote(index, 'up')} style={{ marginRight: '10px' }}>
                 👍
                 </button>
@@ -79,7 +101,12 @@ export const RecipeDisplay = () => {
                 <button onClick={() => addToFavorites(recipe)} style={{ marginRight: '5px' }}>
                 ⭐
                 </button>
-                
+                <button>Muokkaa reseptiä</button>
+                {user.user_id === recipe.author_id && (
+                  <button onClick={() => handleDelete(recipe.recipe_id, index)}>
+                  Poista resepti
+                </button>
+                )}
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
                 <p>Ainesosat: {recipe.ingredients}</p>
@@ -88,7 +115,7 @@ export const RecipeDisplay = () => {
                 <p className="card-text">{recipe.description}</p>
               </Tab>
             </Tabs>
-          </div>
+          </Card>
         </div>
       ))}
     </div>

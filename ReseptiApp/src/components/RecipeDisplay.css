@@ -1,0 +1,6 @@
+.recipe-card {
+    /* Adjust width to your preference, this is just an example */
+    width: 100%; /* This makes the card responsive within the column */
+    /* If you want a max-width, you can specify like this: max-width: 20rem; */
+    /* Remove height to make it auto-adjust to content */
+  }

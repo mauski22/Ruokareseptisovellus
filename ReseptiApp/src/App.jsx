@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import UsersTable from './components/UsersTable';
 import { Route, Routes } from 'react-router-dom';
-import RecipeCard from './components/RecipeCard';
+import RecipeDisplay from './components/RecipeDisplay';
 import ResetPassword from './components/ResetPassword';
 import Changepassword from './components/Changepasswordform';
 
@@ -30,7 +30,7 @@ const App = () => {
         <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
       <Routes>
         <Route path="/usersTable" element={<UsersTable />} />
-        <Route path="/recipes" element={<RecipeCard />} />
+        <Route path="/recipes" element={<RecipeDisplay />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path='/PasswordReset/:id/:name' element ={<Changepassword/>}/>
         {/* other routes here */}
