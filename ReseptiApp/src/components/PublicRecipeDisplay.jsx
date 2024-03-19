@@ -26,6 +26,8 @@ export const PublicRecipeDisplay = () => {
   return (
 <div className="container" style={{ maxHeight: '1200px', overflowY: 'auto' }}>
       <h2>Julkiset Reseptit</h2>
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
+
       {recipes.map((recipe, index) => (
   <Card key={index} className="recipe-card">
     <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
@@ -46,6 +48,7 @@ export const PublicRecipeDisplay = () => {
   </Card>
 ))}
 
+    </div>
     </div>
   );
 };
