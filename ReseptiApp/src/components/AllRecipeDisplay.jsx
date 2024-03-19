@@ -24,6 +24,7 @@ export const AllRecipeDisplay = () => {
       setFavorites([...favorites, recipe]);
     }
   };
+
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -90,11 +91,11 @@ export const AllRecipeDisplay = () => {
                   </Button>
                </Tab>
                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                  <ul>
+                  {/**<ul>
                     {recipe.ingredients.split(',').map((ingredient, index) => (
                       <li key={index}>{ingredient.trim()}</li>
                     ))}
-                  </ul>
+                  </ul> */}
                </Tab>
                <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                   <p className="card-text">{recipe.description}</p>

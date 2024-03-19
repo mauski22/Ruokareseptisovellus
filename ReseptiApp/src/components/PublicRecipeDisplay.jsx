@@ -22,7 +22,6 @@ export const PublicRecipeDisplay = () => {
     };
     fetchRecipes();
   }, []);
-
   return (
     <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <h2>Kaikki Reseptit</h2>
@@ -40,11 +39,11 @@ export const PublicRecipeDisplay = () => {
                   <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                </Tab>
                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                  <ul>
+                  {/**<ul>
                     {recipe.ingredients.split(',').map((ingredient, index) => (
                       <li key={index}>{ingredient.trim()}</li>
                     ))}
-                  </ul>
+                  </ul> */}
                </Tab>
                <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                   <p className="card-text">{recipe.description}</p>

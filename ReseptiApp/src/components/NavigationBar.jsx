@@ -82,7 +82,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {!isLoggedIn && (
               <Nav.Link as={NavLink} to="/publicRecipes">Selaa Reseptejä</Nav.Link>
             )}
-                        {isRecipesPage && isLoggedIn && (
+            {isLoggedIn && (
               <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää resepti</Button>
             )}
             {isLoggedIn && isSuperAdmin && (

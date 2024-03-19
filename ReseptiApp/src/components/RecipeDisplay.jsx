@@ -124,11 +124,11 @@ export const RecipeDisplay = () => {
                 )}
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-              <ul>
-                  {recipe.ingredients.split(',').map((ingredient, index) => (
-                    <li key={index}>{ingredient.trim()}</li>
-                  ))}
-                </ul>
+                  {/**<ul>
+                    {recipe.ingredients.split(',').map((ingredient, index) => (
+                      <li key={index}>{ingredient.trim()}</li>
+                    ))}
+                  </ul> */}
               </Tab>
               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                 <p className="card-text">{recipe.description}</p>
