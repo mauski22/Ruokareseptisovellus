@@ -286,24 +286,34 @@ app.post('/ingredients', (req, res) => {
         return res.status(500).json("Ainesosien lisäys epäonnistui"+ error)
     }
 })
-app.post('/ratings', (req, res) => {
+app.post('/ratingLisays', (req, res) => {
     try {
         const sql = "INSERT INTO ratings (recipe_id, user_id, rating) VALUES (?, ?, ?)"
         const values  = [req.body.recipe_id, req.body.user_id, req.body.rating]
         db.query (sql, values, (err) => {
             if(err) return res.status(500).json("Rating epäonnistui" + err)
-            return res.status(200).json("Ratingin lisäys onnistui onnistui")
+            return res.status(200).json("Ratingin lisäys onnistui")
         })
     }
     catch (error) {
         return res.status(500).json("Rating epäonnistui" + error)
     }
 })
-/*app.get('/ratingsHaku', (req,res) => {
+app.get('/getRatings', (req, res) => {
     try {
-        const sql = "GET * FROM ratings"
+       const sql = "SELECT * FROM ratings";
+       db.query(sql, (err, data) => {
+         if (err) {
+           console.error("Error fetching ratings:", err);
+           return res.status(500).json("Error fetching ratings: " + err);
+         }
+         return res.status(200).json(data);
+       });
+    } catch (error) {
+       console.error("Error fetching ratings:", error);
+       return res.status(500).json("Error fetching ratings: " + error);
     }
-})*/
+   });
 
 app.post('/login', (req, res) => {
     const sql = "SELECT name, user_id, user_role FROM users WHERE email = ? AND password = ?";
