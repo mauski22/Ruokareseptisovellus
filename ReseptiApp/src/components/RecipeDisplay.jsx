@@ -96,9 +96,6 @@ export const RecipeDisplay = () => {
           <Card className="recipe-card">
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-
-                {console.log("Ainesosat: ", recipe.ingredients)}
-                {console.log("reseptien kuvat: ", recipe.photos)}
                 <h5 className="card-title">{recipe.title}</h5>
                 <p>Author: {user.userName}</p>
                 <p>Created at: {recipe.created_at}</p>

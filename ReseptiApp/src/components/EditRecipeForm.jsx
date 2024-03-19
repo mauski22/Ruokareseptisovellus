@@ -3,15 +3,27 @@ import React, { useState, useEffect } from 'react';
 const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
   const [title, setTitle] = useState(recipe.title);
   const [ingredients, setIngredients] = useState([recipe.ingredients]); // This should be an array of { name: '', amount: '' }
-  const [instructions, setInstructions] = useState(recipe.instructions);
-  const [tags, setTags] = useState(recipe.tags); // Assuming tags are an array of strings
+  const [description, setDescription] = useState(recipe.description);
+  const [tags, setTags] = useState(recipe.keywords); // Assuming tags are an array of strings
   const [visibility, setVisibility] = useState(recipe.visibility);
+  const [ingredientideet, setIngredientideet] = useState([recipe.ingredient_ids])
   const [file, setFile] = useState(null);
+  const [testilista, setTestilista] = useState([]); 
+  const recipe_id = recipe.recipe_id
 
   const handleVisibilityChange = (newVisibility) => {
     setVisibility(newVisibility === 'public' ? 1 : 0);
   };
+  useEffect(() => {
+     const uuttaainesosaa = recipe.ingredients.split(',').map(ingredient => {
+      const [name, amount] = ingredient.split(' (');
+      return { name: name.trim(), amount: parseInt(amount) };
+    });
+    setIngredients(uuttaainesosaa);
+    const uuttaainesosaidt = recipe.ingredient_ids.split(',').map(id => parseInt(id.trim()));
 
+    setIngredientideet(uuttaainesosaidt);
+  }, []);
   const handleIngredientChange = (index, field, value) => {
     const newIngredients = [...ingredients];
     newIngredients[index] = { ...newIngredients[index], [field]: value };
@@ -22,26 +34,61 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
     setIngredients([...ingredients, { name: '', amount: '' }]);
   };
 
+  const handledeleteingredient = async (index) => {
+    // Remove the ingredient from the local state
+    const updatedIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(updatedIngredients);
+
+    // Get the ingredient ID to delete from the database
+    const ingredientIdToDelete = await fetch('http://localhost:8081/ingredientidhaku', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({recipe_id, name: ingredients[index].name, quantity: ingredients[index].amount })
+    }
+    )
+    const ingredient_id = await ingredientIdToDelete.json(); 
+    console.log("Tässä ainesosa id", ingredient_id); 
+    try {
+       // Make an API call to delete the ingredient from the database
+       const response = await fetch(`http://localhost:8081/ingredients/${ingredient_id}`, {
+         method: 'DELETE',
+       });
+   
+       if (!response.ok) {
+         throw new Error('Failed to delete ingredient');
+       }
+   
+       // Optionally, remove the ingredient ID from the ingredientideet state
+       const updatedIngredientIds = ingredientideet.filter((_, i) => i !== index);
+       setIngredientideet(updatedIngredientIds);
+   
+       alert('Ingredient deleted successfully');
+    } catch (error) {
+       console.error('Error deleting ingredient:', error);
+       alert('Failed to delete ingredient');
+    }
+   };
   const handleRecipeUpdate = async (event) => {
     event.preventDefault();
 
     // Prepare recipe data
     const recipeData = {
       title,
-      author_id: user.user_id,
-      instructions,
+      description,
       visibility,
+      recipe_id
     };
 
     // Prepare ingredients data
     const ingredientsData = ingredients.filter(i => i.name && i.amount);
 
-    // Prepare tags data
-    const tagsData = tags.trim().split(' ');
+
 
     try {
       // Update recipe information
-      const recipeResponse = await fetch(`PUT_ENDPOINT_FOR_RECIPE/${recipe.recipe_id}`, {
+      const recipeResponse = await fetch('http://localhost:8081/reseptinpaivitys', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -53,14 +100,34 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
         throw new Error('Failed to update the recipe info');
       }
 
-      // Update ingredients
-      const ingredientsResponse = await Promise.all(ingredientsData.map(ingredient =>
-        fetch(`PUT_ENDPOINT_FOR_INGREDIENTS/${recipe.recipe_id}`, {
+      const newIngredients = ingredientsData.filter((ingredient, index) => !ingredientideet[index]);
+
+      // Create new ingredients in the database
+      const newIngredientResponses = await Promise.all(newIngredients.map(ingredient =>
+        fetch('http://localhost:8081/ingredients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({recipe_id: recipe_id, name: ingredient.name, quantity: ingredient.amount }),
+        })
+      ));
+      // Update ingredientideet with new IDs
+      const newIngredientIds = await Promise.all(newIngredientResponses.map(response => response.json()));
+      console.log("UUDET AINESOSA ID:T ", newIngredientIds);
+      const uudetidt = [...ingredientideet, ...newIngredientIds]
+      console.log("Koko lista olevinaan", uudetidt)
+      setTestilista([...testilista, ...uudetidt]);
+      console.log("KAIKKI AINESOSA ID:T ", testilista)
+      // Update existing ingredients
+
+      const ingredientsResponse = await Promise.all(ingredientsData.map((ingredient, index) =>
+        fetch('http://localhost:8081/ingredientspaivitys', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(ingredient),
+          body: JSON.stringify({ name: ingredient.name, quantity: ingredient.amount, ingredient_id: uudetidt[index], recipe_id: recipe_id }),
         })
       ));
 
@@ -71,12 +138,12 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
       }
 
       // Update tags
-      const tagsResponse = await fetch(`PUT_ENDPOINT_FOR_TAGS/${recipe.recipe_id}`, {
+      const tagsResponse = await fetch('http://localhost:8081/keywordspaivitys', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ tags: tagsData }),
+        body: JSON.stringify({ keyword: tags, recipe_id: recipe_id}),
       });
 
       if (!tagsResponse.ok) {
@@ -87,9 +154,9 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
-
-        const photoResponse = await fetch(`POST_ENDPOINT_FOR_PHOTO/${recipe.recipe_id}`, {
-          method: 'POST',
+        formData.append('recipe_id', recipe_id)
+        const photoResponse = await fetch('http://localhost:8081/photospaivitys', {
+          method: 'PUT',
           body: formData,
         });
 
@@ -99,6 +166,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
       }
 
       onSave(); // Callback function to handle post-update actions
+      alert("Päivitys onnistui ;)")
     } catch (error) {
       console.error(error);
       alert('An error occurred while updating the recipe: ' + error.message);
@@ -112,6 +180,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
         <div>
           <label>Nimi: </label>
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          {console.log("Ainesosat " + recipe.ingredients, "Ohjeet: " +  recipe.description, "AINESOSAIDT: " + recipe.ingredient_ids + " Photoes: " + recipe.photos,  + recipe_id +recipe.keywords)}
         </div>
         <div>
           <label>Raaka-aineet: </label>
@@ -120,24 +189,25 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
               <input
                 type="text"
                 value={ingredient.name}
-                onChange={(e) => handleIngredientChange(index, e.target.value)}
+                onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
                 placeholder="Raaka-aine"
                 required
               />
               <input
                 type="text"
                 value={ingredient.amount}
-                onChange={(e) => handleIngredientChange(index, e.target.value)}
+                onChange={(e) => handleIngredientChange(index, 'amount', e.target.value)}
                 placeholder="Määrä"
                 required
               />
+              <button type='button' onClick={() => handledeleteingredient(index)}>Poista</button>
             </div>
           ))}
           <button type="button" onClick={handleIngredientAdd}>Lisää raaka-aine</button>
         </div>
         <div>
           <label>Ohjeet: </label>
-          <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} required />
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
         </div>
         <div>
           <label>Hashtagit (#): </label>
