@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Modal } from 'react-bootstrap';
 
-export const PublicRecipeDisplay = () => {
+export const AllRecipeDisplay = () => {
   // Oletetaan, että useAuth on konteksti, joka tarjoaa kirjautuneen käyttäjän tiedot
   const { user } = useAuth();
   const [recipes, setRecipes] = useState([]);
@@ -10,7 +10,7 @@ export const PublicRecipeDisplay = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/julkisetReseptitHaku`);
+        const response = await fetch(`http://localhost:8081/allrecipes`);
         if (!response.ok) throw new Error('Julkiset reseptit haku network error');
         
         const recipeData = await response.json();
@@ -24,12 +24,13 @@ export const PublicRecipeDisplay = () => {
   }, []);
 
   return (
-<div className="container" style={{ maxHeight: '1200px', overflowY: 'auto' }}>
-      <p>Liity jäseneksi nähdäksesi kaikki reseptit</p>
+    <div className="container" style={{ maxHeight: '1200px', overflowY: 'auto' }}>
+      <h2>Kaikki Reseptit</h2>
+      <p> {"(Jäsenreseptit on merkattu keltaisella)"}</p>
       <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
 
       {recipes.map((recipe, index) => (
-  <Card key={index} className="recipe-card">
+  <Card key={index} className={`recipe-card ${recipe.visibility === 1 ? '' : 'member-only'}`}>
     <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
       <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
         <h5 className="card-title">{recipe.title}</h5>
@@ -52,4 +53,4 @@ export const PublicRecipeDisplay = () => {
   );
 };
 
-export default PublicRecipeDisplay;
+export default AllRecipeDisplay;

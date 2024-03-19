@@ -55,7 +55,10 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Pacifico', cursive;
+  font-family: 'Times New Roman', Serif;
+}
+p, p1, p2 {
+  font-family: 'Arial',Sans-serif
 }
 
 .search-bar {
@@ -83,4 +86,7 @@ button.selected {
   background-color: #007bff;
   color: white;
   border-color: #007bff;
+}
+.member-only .nav-tabs .nav-link {
+  background-color: #fff09b; /* Golden color */
 }

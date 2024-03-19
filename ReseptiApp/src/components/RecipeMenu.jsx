@@ -1,19 +1,16 @@
 // RecipeMenu.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import RecipeDisplay from './RecipeDisplay';
-import PublicRecipeDisplay from './PublicRecipeDisplay';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export const RecipeMenu = () => {
-    const navigate = useNavigate();
 
+const RecipeMenu = ({ onClick }) => {
+    const navigate = useNavigate();
     return (
         <div>
-            <button onClick={() => navigate('/usersOwnRecipes')}>OMAT RESEPTIT</button>
-            <button onClick={() => navigate('/publicRecipes')}>JULKISET RESEPTIT</button>            
+            <button onClick={() =>{ navigate('/usersOwnRecipes'); onClick(); }}>OMAT RESEPTIT</button>
+            <button onClick={() =>{ navigate('/allRecipes'); onClick(); }}>KAIKKI RESEPTIT</button>            
         </div>
     );
 }
-
 export default RecipeMenu;
