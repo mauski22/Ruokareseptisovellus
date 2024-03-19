@@ -88,7 +88,7 @@ export const RecipeDisplay = () => {
     console.log("Reseptien data on päivittynyt:", recipes);
   }, [recipes]);
   return (
-    <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
+<div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       {recipes.flat().map((recipe, index) => (
           <div className="col-lg-4 col-md-6 col-sm-12" key={index} style={{ marginBottom: '1rem' }}> {/* Responsive classes and margin added */}
           <Card className="recipe-card">
