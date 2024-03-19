@@ -88,5 +88,22 @@ button.selected {
   border-color: #007bff;
 }
 .member-only .nav-tabs .nav-link {
-  background-color: #fff09b; /* Golden color */
+  background-color: #FAF3DD; /* Golden color */
 }
+.image-container {
+  width: 425px; /* Set the desired width */
+  height: 400px; /* Set the desired height */
+  overflow: hidden; /* Ensures the image does not overflow the container */
+  position: right; /* Allows absolute positioning of the image */
+ }
+ 
+ .custom-image {
+  width: 100%; /* Ensures the image takes the full width of the container */
+  height: 100%; /* Ensures the image takes the full height of the container */
+  object-fit: cover; /* Ensures the image covers the container without stretching */
+  object-position: center; /* Centers the image within the container */
+ }
+ .align-right {
+  text-align: right; /* Aligns the image to the right */
+ }
+ 
