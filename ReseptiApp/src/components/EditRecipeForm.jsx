@@ -8,6 +8,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
   const [visibility, setVisibility] = useState(recipe.visibility);
   const [ingredientideet, setIngredientideet] = useState([recipe.ingredient_ids])
   const [file, setFile] = useState(null);
+  const [testilista, setTestilista] = useState([]); 
   const recipe_id = recipe.recipe_id
 
   const handleVisibilityChange = (newVisibility) => {
@@ -33,6 +34,42 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
     setIngredients([...ingredients, { name: '', amount: '' }]);
   };
 
+  const handledeleteingredient = async (index) => {
+    // Remove the ingredient from the local state
+    const updatedIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(updatedIngredients);
+
+    // Get the ingredient ID to delete from the database
+    const ingredientIdToDelete = await fetch('http://localhost:8081/ingredientidhaku', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({recipe_id, name: ingredients[index].name, quantity: ingredients[index].amount })
+    }
+    )
+    const ingredient_id = await ingredientIdToDelete.json(); 
+    console.log("Tässä ainesosa id", ingredient_id); 
+    try {
+       // Make an API call to delete the ingredient from the database
+       const response = await fetch(`http://localhost:8081/ingredients/${ingredient_id}`, {
+         method: 'DELETE',
+       });
+   
+       if (!response.ok) {
+         throw new Error('Failed to delete ingredient');
+       }
+   
+       // Optionally, remove the ingredient ID from the ingredientideet state
+       const updatedIngredientIds = ingredientideet.filter((_, i) => i !== index);
+       setIngredientideet(updatedIngredientIds);
+   
+       alert('Ingredient deleted successfully');
+    } catch (error) {
+       console.error('Error deleting ingredient:', error);
+       alert('Failed to delete ingredient');
+    }
+   };
   const handleRecipeUpdate = async (event) => {
     event.preventDefault();
 
@@ -47,8 +84,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
     // Prepare ingredients data
     const ingredientsData = ingredients.filter(i => i.name && i.amount);
 
-    // Prepare tags data
-    const tagsData = tags.trim().split(' ');
+
 
     try {
       // Update recipe information
@@ -64,15 +100,36 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
         throw new Error('Failed to update the recipe info');
       }
 
-      // Update ingredients
+      const newIngredients = ingredientsData.filter((ingredient, index) => !ingredientideet[index]);
+
+      // Create new ingredients in the database
+      const newIngredientResponses = await Promise.all(newIngredients.map(ingredient =>
+        fetch('http://localhost:8081/ingredients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({recipe_id: recipe_id, name: ingredient.name, quantity: ingredient.amount }),
+        })
+      ));
+      // Update ingredientideet with new IDs
+      const newIngredientIds = await Promise.all(newIngredientResponses.map(response => response.json()));
+      console.log("UUDET AINESOSA ID:T ", newIngredientIds);
+      const uudetidt = [...ingredientideet, ...newIngredientIds]
+      console.log("Koko lista olevinaan", uudetidt)
+      setTestilista([...testilista, ...uudetidt]);
+      console.log("KAIKKI AINESOSA ID:T ", testilista)
+      // Update existing ingredients
+
       const ingredientsResponse = await Promise.all(ingredientsData.map((ingredient, index) =>
-             fetch('http://localhost:8081/ingredientspaivitys', {
-             method: 'PUT',
-             headers: {
-                  'Content-Type': 'application/json', },
-             body: JSON.stringify({name: ingredient.name, quantity: ingredient.amount, ingredient_id: ingredientideet[index], recipe_id: recipe_id }),
-            })
-          ));
+        fetch('http://localhost:8081/ingredientspaivitys', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: ingredient.name, quantity: ingredient.amount, ingredient_id: uudetidt[index], recipe_id: recipe_id }),
+        })
+      ));
 
       for (const response of ingredientsResponse) {
         if (!response.ok) {
@@ -143,6 +200,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
                 placeholder="Määrä"
                 required
               />
+              <button type='button' onClick={() => handledeleteingredient(index)}>Poista</button>
             </div>
           ))}
           <button type="button" onClick={handleIngredientAdd}>Lisää raaka-aine</button>

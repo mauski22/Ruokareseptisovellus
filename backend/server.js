@@ -266,15 +266,14 @@ app.post('/ingredients', (req, res) => {
     try {
         const sql = "INSERT INTO ingredients (recipe_id, name, quantity) VALUES (?, ?, ?)"
         const values  = [req.body.recipe_id, req.body.name, req.body.quantity];
-        db.query(sql, values, (err) => {
-            if(err) return res.status(500).json("Ainesosien lisäys epäonnistui" + err)
-            return res.status(200).json("Ainesosan lisäys onnistui")
+        db.query(sql, values, (err, result) => {
+            if(err) return res.status(500).json({ message: "Ainesosien lisäys epäonnistui", error: err });
+            return res.status(200).json(result.insertId);
         })
+    } catch (error) {
+        return res.status(500).json({ message: "Ainesosien lisäys epäonnistui", error: error });
     }
-    catch (error) {
-        return res.status(500).json("Ainesosien lisäys epäonnistui"+ error)
-    }
-})
+});
 app.post('/ratings', (req, res) => {
     try {
         const sql = "INSERT INTO ratings (recipe_id, user_id, rating) VALUES (?, ?, ?)"
@@ -325,7 +324,18 @@ app.delete('/users/:id', (req, res) => {
         }
     });
 });
-
+app.delete('/ingredients/:id', (req, res) => {
+    const sql = "DELETE FROM ingredients WHERE ingredient_id = ?"
+    const ingredient_id = req.params.id;
+    db.query(sql, [ingredient_id], (err, result) => {
+        if(err) {
+            return res.status(500).json({message: "Ainesosan poisto epäonnistui", err})
+        }
+        else {
+            return res.status(200).json({message: "Ainesosan poisto onnistui"+ result})
+        }
+    })
+})
 
 app.delete('/recipes/delete/:id', (req, res) => {
     const recipe_id = req.params.id; 
@@ -531,5 +541,18 @@ app.put('/photospaivitys', upload.single('file'), (req, res) => {
       return res.status(200).json({message: "Kuvan lisäys onnistui", result});
     });
   });
-  
+app.post('/ingredientidhaku', (req, res) => {
+    const sql = "Select ingredient_id from ingredients WHERE recipe_id = ? AND name = ? AND quantity = ?;"
+    const values = [req.body.recipe_id, req.body.name, req.body.quantity]
+
+    db.query(sql, values, (err, result) => {
+        if(err) {
+            res.status(500).json({message: "Haku epäonnistui", err});
+        }
+        else {
+            const ingedient_id = result[0].ingredient_id
+            res.status(200).json(ingedient_id);
+        }
+    })
+})
 //sendMail(transporter, mailOptions)
