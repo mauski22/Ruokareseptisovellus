@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button } from 'react-bootstrap';
-import FavoriteRecipes from './FavoriteRecipes';
 
 export const AllRecipeDisplay = () => {
   // Oletetaan, että useAuth on konteksti, joka tarjoaa kirjautuneen käyttäjän tiedot
@@ -164,7 +163,6 @@ export const AllRecipeDisplay = () => {
           </Row>
         </Card>
 ))}
-    <FavoriteRecipes favorites={favorites} />
     </div>
     </div>
   );
