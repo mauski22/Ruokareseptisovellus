@@ -32,9 +32,9 @@ const FavoriteRecipes = ({favorites}) => {
 
   return (
     <div>
-      <h2>My Favorite Recipes</h2>
+      <h2>Suosikki reseptini</h2>
       <ul>
-        {favorites.map((recipe, index) => (
+        {favoriteRecipes.map((recipe, index) => (
           <li key={index}>
             <p>{recipe.title}</p>
             {/* Tässä voit lisätä lisää reseptin tietoja */}
