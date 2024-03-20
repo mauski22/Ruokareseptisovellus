@@ -314,7 +314,21 @@ app.get('/getRatings', (req, res) => {
        return res.status(500).json("Error fetching ratings: " + error);
     }
    });
-
+   app.get('/getPublicRatings', (req, res) => {
+    try {
+        const sql = "SELECT r.* FROM ratings r INNER JOIN recipes re ON r.recipe_id = re.recipe_id WHERE re.visibility = 1";
+        db.query(sql, (err, data) => {
+            if (err) {
+                console.error("Error fetching public ratings:", err);
+                return res.status(500).json("Error fetching public ratings: " + err);
+            }
+            return res.status(200).json(data);
+        });
+    } catch (error) {
+        console.error("Error fetching public ratings:", error);
+        return res.status(500).json("Error fetching public ratings: " + error);
+    }
+});
 app.post('/login', (req, res) => {
     const sql = "SELECT name, user_id, user_role FROM users WHERE email = ? AND password = ?";
     const values = [

@@ -146,11 +146,8 @@ export const AllRecipeDisplay = () => {
                   </Button>
                </Tab>
                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                  {/**<ul>
-                    {recipe.ingredients.split(',').map((ingredient, index) => (
-                      <li key={index}>{ingredient.trim()}</li>
-                    ))}
-                  </ul> */}
+
+                    <p>{recipe.ingredients }</p>
                </Tab>
                <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                   <p className="card-text">{recipe.description}</p>
