@@ -35,8 +35,9 @@ export const RecipeDisplay = () => {
     // Here you can also update the state if you want to track favorites within the app
     // For example, to prevent adding the same recipe multiple times, check if it's already a favorite
     if (!favorites.includes(recipe)) {
-      setFavorites([...favorites, recipe]);
+      favorites.push(recipe.title);
     }
+    console.log("Lisätty resepti: " + favorites)
   };
   const handleDelete = async (recipe_id, index) => {
     try {
@@ -96,9 +97,6 @@ export const RecipeDisplay = () => {
           <Card className="recipe-card">
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-
-                {console.log("Ainesosat: ", recipe.ingredients)}
-                {console.log("reseptien kuvat: ", recipe.photos)}
                 <h5 className="card-title">{recipe.title}</h5>
                 <p>Author: {user.userName}</p>
                 <p>Created at: {recipe.created_at}</p>
@@ -108,7 +106,6 @@ export const RecipeDisplay = () => {
                 👍
                 </button>
                 {votes[`${index}_up`] || 0}
-                {/* Thumbs Down Button */}
                 <button onClick={() => handleVote(index, 'down')} style={{ marginRight: '10px' }}>
                   👎
                 </button>

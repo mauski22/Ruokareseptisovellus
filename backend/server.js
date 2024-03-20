@@ -142,7 +142,7 @@ app.get('/recipes/:id', (req, res) => {
     })
 })
 app.get('/kayttajanreseptienhaku/:id', (req, res) => {
-    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"; 
+    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT i.ingredient_id) AS ingredient_ids, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos, GROUP_CONCAT(DISTINCT k.keyword_id) AS keyword_id, GROUP_CONCAT(DISTINCT k.keyword) AS keywords FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id LEFT JOIN keywords k ON r.recipe_id = k.recipe_id WHERE r.recipe_id = ? GROUP BY r.recipe_id;"
     const recipe_id = req.params.id
     db.query(sql, [recipe_id], (err, data) => {
         if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
@@ -277,15 +277,14 @@ app.post('/ingredients', (req, res) => {
     try {
         const sql = "INSERT INTO ingredients (recipe_id, name, quantity) VALUES (?, ?, ?)"
         const values  = [req.body.recipe_id, req.body.name, req.body.quantity];
-        db.query(sql, values, (err) => {
-            if(err) return res.status(500).json("Ainesosien lisäys epäonnistui" + err)
-            return res.status(200).json("Ainesosan lisäys onnistui")
+        db.query(sql, values, (err, result) => {
+            if(err) return res.status(500).json({ message: "Ainesosien lisäys epäonnistui", error: err });
+            return res.status(200).json(result.insertId);
         })
+    } catch (error) {
+        return res.status(500).json({ message: "Ainesosien lisäys epäonnistui", error: error });
     }
-    catch (error) {
-        return res.status(500).json("Ainesosien lisäys epäonnistui"+ error)
-    }
-})
+});
 app.post('/ratingLisays', (req, res) => {
     try {
         const sql = "INSERT INTO ratings (recipe_id, user_id, rating) VALUES (?, ?, ?)"
@@ -297,6 +296,36 @@ app.post('/ratingLisays', (req, res) => {
     }
     catch (error) {
         return res.status(500).json("Rating epäonnistui" + error)
+    }
+})
+app.post('/favoritesLisays', (req, res) => {
+    try {
+        const sql = "INSERT INTO favorites (recipe_id, user_id) VALUES (?, ?)"
+        const values = [req.body.recipe_id, req.body.user_id]
+        db.query (sql, values, (err) => {
+            if(err) return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + err)
+            return res.status(200).json("Lisääminen suosikkeihin onnistui")
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + error)
+    }
+})
+app.get('/getFavoriteRecipes/:id', (req, res) => {
+    try {
+        const sql = "SELECT favorite_id, recipe_id FROM favorites WHERE user_id = ?";
+        const userid = req.params.id
+        db.query (sql, [userid], (err, data) => {
+            if(err){
+                console.error("Error fetching favorites:" + err)
+                return res.status(500).json("Error fetching favorites:" + err)
+            }
+            return res.status(200).json(data)
+        })
+    }
+    catch (error) {
+        console.error("Error fetching favorites:", error);
+        return res.status(500).json("Error fetching favorites: " + error);
     }
 })
 app.get('/getRatings', (req, res) => {
@@ -350,17 +379,142 @@ app.post('/login', (req, res) => {
 })
 //postmanissa osoite pitää olla muotoa http://localhost:8081/users/delete/2, Postman poistaa käyttäjän id:llä = 2 tässä tapauksessa   
 app.delete('/users/:id', (req, res) => {
-    const sql = "DELETE FROM users WHERE user_id = ?";
-    const userId = req.params.id; 
-    db.query(sql, [userId], (err, result) => {
-        if(err) {
-            return res.status(500).json("Error in user deletion: " + err);
-        } else {
-            return res.status(200).json("User deletion successful: " + result);
+    const userId = req.params.id;
+
+    // SQL-transaktion alku
+    db.beginTransaction(err => {
+        if (err) {
+            return res.status(500).json("Error in transaction start: " + err);
         }
+
+        // Poista Safe Update -tila käytöstä
+        db.query("SET SQL_SAFE_UPDATES = 0;", (err, result) => {
+            if (err) {
+                return db.rollback(() => {
+                    res.status(500).json("Error in disabling Safe Updates: " + err);
+                });
+            }
+
+            // Poista käyttäjän liittyvät tiedot yksi kerrallaan
+            const deleteFavoritesSQL = `
+                DELETE favorites FROM favorites
+                INNER JOIN recipes ON favorites.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteRatingsSQL = `
+                DELETE ratings FROM ratings
+                INNER JOIN recipes ON ratings.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteIngredientsSQL = `
+                DELETE ingredients FROM ingredients
+                INNER JOIN recipes ON ingredients.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteKeywordsSQL = `
+                DELETE keywords FROM keywords
+                INNER JOIN recipes ON keywords.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deletePhotosSQL = `
+                DELETE photos FROM photos
+                INNER JOIN recipes ON photos.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteRecipesSQL = `
+                DELETE FROM recipes WHERE author_id = ?;
+            `;
+            const deleteUserSQL = `
+                DELETE FROM users WHERE user_id = ?;
+            `;
+
+            // DELETE-kyselyjen arvot
+            const values = [userId];
+
+            // Suorita DELETE-kyselyt yksi kerrallaan
+            db.query(deleteFavoritesSQL, values, (err, result) => {
+                if (err) {
+                    return db.rollback(() => {
+                        res.status(500).json("Error in deleting favorites: " + err);
+                    });
+                }
+                db.query(deleteRatingsSQL, values, (err, result) => {
+                    if (err) {
+                        return db.rollback(() => {
+                            res.status(500).json("Error in deleting ratings: " + err);
+                        });
+                    }
+                    db.query(deleteIngredientsSQL, values, (err, result) => {
+                        if (err) {
+                            return db.rollback(() => {
+                                res.status(500).json("Error in deleting ingredients: " + err);
+                            });
+                        }
+                        db.query(deleteKeywordsSQL, values, (err, result) => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json("Error in deleting keywords: " + err);
+                                });
+                            }
+                            db.query(deletePhotosSQL, values, (err, result) => {
+                                if (err) {
+                                    return db.rollback(() => {
+                                        res.status(500).json("Error in deleting photos: " + err);
+                                    });
+                                }
+                                db.query(deleteRecipesSQL, values, (err, result) => {
+                                    if (err) {
+                                        return db.rollback(() => {
+                                            res.status(500).json("Error in deleting recipes: " + err);
+                                        });
+                                    }
+                                    db.query(deleteUserSQL, values, (err, result) => {
+                                        if (err) {
+                                            return db.rollback(() => {
+                                                res.status(500).json("Error in deleting user: " + err);
+                                            });
+                                        }
+
+                                        // Ota Safe Update -tila takaisin käyttöön
+                                        db.query("SET SQL_SAFE_UPDATES = 1;", (err, result) => {
+                                            if (err) {
+                                                return db.rollback(() => {
+                                                    res.status(500).json("Error in enabling Safe Updates: " + err);
+                                                });
+                                            }
+
+                                            // Vahvista transaktio
+                                            db.commit(err => {
+                                                if (err) {
+                                                    return db.rollback(() => {
+                                                        res.status(500).json("Error in transaction commit: " + err);
+                                                    });
+                                                }
+                                                res.status(200).json("User deletion successful");
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 });
-
+app.delete('/ingredients/:id', (req, res) => {
+    const sql = "DELETE FROM ingredients WHERE ingredient_id = ?"
+    const ingredient_id = req.params.id;
+    db.query(sql, [ingredient_id], (err, result) => {
+        if(err) {
+            return res.status(500).json({message: "Ainesosan poisto epäonnistui", err})
+        }
+        else {
+            return res.status(200).json({message: "Ainesosan poisto onnistui"+ result})
+        }
+    })
+})
 
 app.delete('/recipes/delete/:id', (req, res) => {
     const recipe_id = req.params.id; 
@@ -526,6 +680,58 @@ app.get('/julkisetreseptit/:id', (req, res) => {
             row.updated_at = row.updated_at.toISOString().split('T')[0];
         });
         return res.status(200).json(data); 
+    })
+})
+
+app.put('/keywordspaivitys', (req, res) => {
+    const sql = "UPDATE keywords set keyword = ? WHERE recipe_id = ?;"
+    const values = [req.body.keyword, req.body.recipe_id];
+    db.query(sql, values, (err, results) => {
+        if(err || results.affectedRows == 0) return res.status(500).json({message: "Keywordsien päivitys epäonnistui", error: err})
+        return res.status(200).json("Keywordsien päivitys onnistui")
+    })
+})
+app.put('/photospaivitys', upload.single('file'), (req, res) => {
+    const sql = "Update photos set image = ? WHERE recipe_id = ?;";
+    
+    const values = [req.file.filename, req.body.recipe_id]
+    
+    db.query(sql, [req.file.filename, req.body.recipe_id], (err, result) => {
+      if (err) {
+        console.error({message: "Kuvan päivitys epäonnistui", err});
+        return res.status(500).json({message: "Kuvan lisäys epäonnistui"});
+      }
+      return res.status(200).json({message: "Kuvan lisäys onnistui", result});
+    });
+  });
+app.post('/ingredientidhaku', (req, res) => {
+    const sql = "Select ingredient_id from ingredients WHERE recipe_id = ? AND name = ? AND quantity = ?;"
+    const values = [req.body.recipe_id, req.body.name, req.body.quantity]
+
+    db.query(sql, values, (err, result) => {
+        if(err) {
+            res.status(500).json({message: "IngredientID haku epäonnistui", err});
+        }
+        else {
+            const ingedient_id = result[0].ingredient_id
+            res.status(200).json(ingedient_id);
+        }
+    })
+})
+app.put('/reseptinpaivitys', (req, res) => {
+    const sql = "UPDATE recipes SET title = ?, description = ?, visibility = ? WHERE recipe_id = ?;"
+    const values = [req.body.title, req.body.description, req.body.visibility, req.body.recipe_id];
+    db.query(sql, values, (err, result) => {
+        if(err || result.affectedRows == 0) return res.status(500).json({message: "Error reseptin päivityksessä", err})
+        return res.status(200).json("Reseptin päivitys onnistui")
+    })
+})
+app.put('/ingredientspaivitys', (req, res) => {
+    const sql = "UPDATE ingredients set name = ?, quantity = ? WHERE ingredient_id = ? AND recipe_id = ?;"
+    const values = [req.body.name, req.body.quantity, req.body.ingredient_id, req.body.recipe_id];
+    db.query(sql, values, (err, results) => {
+        if(err || results.affectedRows == 0) return res.status(500).json({message: "Ainesosien päivitys epäonnistui", error: err})
+        return res.status(200).json("Ainestosien päivitys onnistui")
     })
 })
 //sendMail(transporter, mailOptions)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button } from 'react-bootstrap';
+import FavoriteRecipes from './FavoriteRecipes';
 
 export const AllRecipeDisplay = () => {
   // Oletetaan, että useAuth on konteksti, joka tarjoaa kirjautuneen käyttäjän tiedot
@@ -14,8 +15,6 @@ export const AllRecipeDisplay = () => {
 
   const addToFavorites = (recipe) => {
     alert(`${recipe.title} has been added to favorite recipes!`);
-    // Here you can also update the state if you want to track favorites within the app
-    // For example, to prevent adding the same recipe multiple times, check if it's already a favorite
     if (!favorites.includes(recipe)) {
       setFavorites([...favorites, recipe]);
     }
@@ -165,6 +164,7 @@ export const AllRecipeDisplay = () => {
           </Row>
         </Card>
 ))}
+    <FavoriteRecipes favorites={favorites} />
     </div>
     </div>
   );

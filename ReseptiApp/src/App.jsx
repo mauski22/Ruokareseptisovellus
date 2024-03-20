@@ -16,6 +16,7 @@ import RecipeMenu from './components/RecipeMenu';
 import RecipeDisplay from './components/RecipeDisplay';
 import PublicRecipeDisplay from './components/PublicRecipeDisplay';
 import AllRecipeDisplay from './components/AllRecipeDisplay';
+import FavoriteRecipes from './components/FavoriteRecipes';
 
 
 const App = () => {
@@ -40,6 +41,8 @@ const App = () => {
         <Route path="/usersOwnRecipes" element={<RecipeDisplay />} />
         <Route path="/publicRecipes" element={<PublicRecipeDisplay />} />
         <Route path="/allRecipes" element={<AllRecipeDisplay />} />
+        <Route path="/favoriteRecipes" element={<FavoriteRecipes />} />
+        <Route path='/recipe/:id' element={<SearchBar/>}></Route>
         {/* other routes here */}
         <Route path="/" element={
         

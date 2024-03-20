@@ -128,7 +128,7 @@ const AddRecipeForm = ({ user }) => {
   };
 
   return (
-    <form onSubmit={handleRecipeSubmit} enctype="multipart/form-data">
+    <form onSubmit={handleRecipeSubmit} enctype="multipart/form-data" style={{flex: "auto"}}>
       <div>
         <label>Nimi: </label>
         <input
@@ -164,7 +164,7 @@ const AddRecipeForm = ({ user }) => {
         <label>Ohjeet: </label>
         <textarea
           value={instructions}
-          onChange={(e) => setInstructions(e.target.value)}
+          onChange={(e) => setInstructions(e.target.value)} style={{height: "400px", width: "100%"}}
           required
         />
       </div>
