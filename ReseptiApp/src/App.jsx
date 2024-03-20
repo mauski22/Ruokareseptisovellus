@@ -42,6 +42,7 @@ const App = () => {
         <Route path="/publicRecipes" element={<PublicRecipeDisplay />} />
         <Route path="/allRecipes" element={<AllRecipeDisplay />} />
         <Route path="/favoriteRecipes" element={<FavoriteRecipes />} />
+        <Route path='/recipe/:id' element={<SearchBar/>}></Route>
         {/* other routes here */}
         <Route path="/" element={
         

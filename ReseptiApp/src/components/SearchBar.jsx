@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, InputGroup, Container, Tabs, Tab } from 'react-bootstrap';
-
+import { useNavigate } from 'react-router-dom';
 const SearchBar = () => {
   const [keywords, setKeywords] = useState([]);
   const [selectedKeyword, setSelectedKeyword] = useState('');
   const [userInput, setUserInput] = useState('');
   const [details, setRecipedetails] = useState(null);
   const [searchError, setSearchError] = useState(false); 
+  const navigate = useNavigate(); 
   useEffect(() => {
     fetch('http://localhost:8081/julkistenreseptienkeywordsienhaku')
       .then(response => response.json())
@@ -39,6 +40,7 @@ const SearchBar = () => {
       setSearchError(false);
       console.log(tiedot); 
       setRecipedetails(tiedot[0]); 
+      navigate(`/recipe/${reseptiID}`);     
     } catch (error) {
       console.log("Reseptin haku epäonnistui: ", error);
     }
