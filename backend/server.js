@@ -313,14 +313,19 @@ app.post('/favoritesLisays', (req, res) => {
 })
 app.get('/getFavoriteRecipes/:id', (req, res) => {
     try {
-        const sql = "SELECT favorite_id, recipe_id FROM favorites WHERE user_id = ?";
+        const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id JOIN favorites f ON r.recipe_id = f.recipe_id WHERE f.user_id = ? GROUP BY r.recipe_id;";
         const userid = req.params.id
         db.query (sql, [userid], (err, data) => {
             if(err){
                 console.error("Error fetching favorites:" + err)
-                return res.status(500).json("Error fetching favorites:" + err)
             }
+            else {
+                data.forEach(row => {
+                    row.created_at = row.created_at.toISOString().split('T')[0];
+                    row.updated_at = row.updated_at.toISOString().split('T')[0];
+                });
             return res.status(200).json(data)
+            }
         })
     }
     catch (error) {
