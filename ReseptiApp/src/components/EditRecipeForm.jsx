@@ -35,6 +35,10 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
   };
 
   const handledeleteingredient = async (index) => {
+    if (ingredients.length === 1) {
+      alert("Reseptillä on oltava vähintään yksi ainesosa.");
+      return; 
+    }
     // Remove the ingredient from the local state
     const updatedIngredients = ingredients.filter((_, i) => i !== index);
     setIngredients(updatedIngredients);
@@ -207,7 +211,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
         </div>
         <div>
           <label>Ohjeet: </label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} style={{height: "300px", width: "700px"}}required />
         </div>
         <div>
           <label>Hashtagit (#): </label>
