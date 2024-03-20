@@ -35,8 +35,9 @@ export const RecipeDisplay = () => {
     // Here you can also update the state if you want to track favorites within the app
     // For example, to prevent adding the same recipe multiple times, check if it's already a favorite
     if (!favorites.includes(recipe)) {
-      setFavorites([...favorites, recipe]);
+      favorites.push(recipe.title);
     }
+    console.log("Lisätty resepti: " + favorites)
   };
   const handleDelete = async (recipe_id, index) => {
     try {
@@ -105,7 +106,6 @@ export const RecipeDisplay = () => {
                 👍
                 </button>
                 {votes[`${index}_up`] || 0}
-                {/* Thumbs Down Button */}
                 <button onClick={() => handleVote(index, 'down')} style={{ marginRight: '10px' }}>
                   👎
                 </button>

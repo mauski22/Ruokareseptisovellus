@@ -298,6 +298,35 @@ app.post('/ratingLisays', (req, res) => {
         return res.status(500).json("Rating epäonnistui" + error)
     }
 })
+app.post('/favoritesLisays', (req, res) => {
+    try {
+        const sql = "INSERT INTO favorites (recipe_id, user_id) VALUES (?, ?)"
+        const values = [req.body.recipe_id, req.body.user_id]
+        db.query (sql, values, (err) => {
+            if(err) return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + err)
+            return res.status(200).json("Lisääminen suosikkeihin onnistui")
+        })
+    }
+    catch (error) {
+        return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + error)
+    }
+})
+app.get('/getFavoriteRecipes', (req, res) => {
+    try {
+        const sql = "SELECT * FROM favorites";
+        db.query (sql, (err, data) => {
+            if(err){
+                console.error("Error fetching favorites:" + err)
+                return res.status(500).json("Error fetching favorites:" + err)
+            }
+            return res.status(200).json(data)
+        })
+    }
+    catch (error) {
+        console.error("Error fetching favorites:", error);
+        return res.status(500).json("Error fetching favorites: " + error);
+    }
+})
 app.get('/getRatings', (req, res) => {
     try {
        const sql = "SELECT * FROM ratings";

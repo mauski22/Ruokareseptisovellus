@@ -9,7 +9,8 @@ const RecipeMenu = ({ onClick }) => {
     return (
         <div>
             <button onClick={() =>{ navigate('/usersOwnRecipes'); onClick(); }}>OMAT RESEPTIT</button>
-            <button onClick={() =>{ navigate('/allRecipes'); onClick(); }}>KAIKKI RESEPTIT</button>            
+            <button onClick={() =>{ navigate('/allRecipes'); onClick(); }}>KAIKKI RESEPTIT</button>      
+            <button onClick={() =>{ navigate('/favoriteRecipes'); onClick(); }}>SUOSIKIT</button>      
         </div>
     );
 }
