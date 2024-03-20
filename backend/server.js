@@ -311,10 +311,11 @@ app.post('/favoritesLisays', (req, res) => {
         return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + error)
     }
 })
-app.get('/getFavoriteRecipes', (req, res) => {
+app.get('/getFavoriteRecipes/:id', (req, res) => {
     try {
-        const sql = "SELECT * FROM favorites";
-        db.query (sql, (err, data) => {
+        const sql = "SELECT favorite_id, recipe_id FROM favorites WHERE user_id = ?";
+        const userid = req.params.id
+        db.query (sql, [userid], (err, data) => {
             if(err){
                 console.error("Error fetching favorites:" + err)
                 return res.status(500).json("Error fetching favorites:" + err)
