@@ -358,6 +358,21 @@ app.get('/getRatings', (req, res) => {
         return res.status(500).json("Error fetching public ratings: " + error);
     }
 });
+app.get('/getUserOwnRecipeRatings/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const sql = `
+        SELECT r.* FROM ratings r
+        INNER JOIN recipes re ON r.recipe_id = re.recipe_id
+        WHERE re.author_id = ?
+    `;
+    db.query(sql, [userId, userId], (err, data) => {
+        if (err) {
+            console.error("Error fetching user recipe ratings:", err);
+            return res.status(500).json("Error fetching user recipe ratings: " + err);
+        }
+        return res.status(200).json(data);
+    });
+});
 app.post('/login', (req, res) => {
     const sql = "SELECT name, user_id, user_role FROM users WHERE email = ? AND password = ?";
     const values = [

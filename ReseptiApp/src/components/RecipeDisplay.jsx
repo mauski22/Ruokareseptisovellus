@@ -12,6 +12,10 @@ export const RecipeDisplay = () => {
   const [favorites, setFavorites] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentRecipe, setCurrentRecipe] = useState(null);
+  const [ratings, setRatings] = useState([]);
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+
 
   const handleEditClick = (recipe) => {
     setCurrentRecipe(recipe);
@@ -83,49 +87,50 @@ export const RecipeDisplay = () => {
         console.error("Error fetching recipe data:", error);
       }
     };
+    const fetchUserRecipeRatings = async () => {
+      try {
+          const response = await fetch(`http://localhost:8081/getUserOwnRecipeRatings/${user.user_id}`);
+          if (!response.ok) {
+              throw new Error('Failed to fetch user recipe ratings');
+          }
+          const ratingsData = await response.json();
+          console.log("ratingsdata :",ratingsData);
+          delay(200);
+          setRatings(ratingsData);
+      } catch (error) {
+          console.error('Error fetching user recipe ratings:', error);
+      }
+    }
     fetchRecipes();
+    fetchUserRecipeRatings();
   }, []);
-  useEffect(() => {
-    console.log("Reseptien data on päivittynyt:", recipes);
-  }, [recipes]);
-  return (
+return (
 <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
 <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
-
-      {recipes.flat().map((recipe, index) => (
-          <div className="col-lg-4 col-md-6 col-sm-12" key={index} style={{ marginBottom: '1rem' }}> {/* Responsive classes and margin added */}
+    {recipes.flat().map((recipe, index) => {
+                      const recipeRatings = ratings.filter(rating => rating.recipe_id === recipe.recipe_id);
+                      const likes = recipeRatings.filter(rating => rating.rating === 5).length;
+                      const dislikes = recipeRatings.filter(rating => rating.rating === 1).length;
+        return (
+          <div className="col-lg-4 col-md-6 col-sm-12" key={index} style={{ marginBottom: '1rem' }}>
           <Card className="recipe-card">
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
                 <h5 className="card-title">{recipe.title}</h5>
-                <p>Author: {user.userName}</p>
-                <p>Created at: {recipe.created_at}</p>
-                <p>Visiblity: {recipe.visibility === 1 ? 'Näkyy muille' : 'Ei näy muille'}</p>
-                <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/> {/* Lisätty kuva */}
-                <button onClick={() => handleVote(index, 'up')} style={{ marginRight: '10px' }}>
-                👍
-                </button>
-                {votes[`${index}_up`] || 0}
-                <button onClick={() => handleVote(index, 'down')} style={{ marginRight: '10px' }}>
-                  👎
-                </button>
-                {votes[`${index}_down`] || 0}
-                <button onClick={() => addToFavorites(recipe)} style={{ marginRight: '5px' }}>
-                ⭐
-                </button>
                 <button onClick={() => handleEditClick(recipe)}>Muokkaa reseptiä</button>
-                {user.user_id === recipe.author_id && (
-                  <button onClick={() => handleDelete(recipe.recipe_id, index)}>
+                  {user.user_id === recipe.author_id && (
+                <button onClick={() => handleDelete(recipe.recipe_id, index)}>
                   Poista resepti
                 </button>
                 )}
+                <p>Kuinka moni tykkäsi: {likes}</p>
+                <p>Kuinka moni ei tykännyt: {dislikes}</p>
+                <p>Resepti lisätty: {recipe.created_at}</p>
+                <p>Reseptisi näkyvyys: {recipe.visibility === 1 ? 'Kaikille' : 'Vain jäsenet'}</p>
+                <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }}/>
               </Tab>
               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                  {/**<ul>
-                    {recipe.ingredients.split(',').map((ingredient, index) => (
-                      <li key={index}>{ingredient.trim()}</li>
-                    ))}
-                  </ul> */}
+                    {recipe.ingredients}
               </Tab>
               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                 <p className="card-text">{recipe.description}</p>
@@ -133,7 +138,8 @@ export const RecipeDisplay = () => {
             </Tabs>
           </Card>
         </div>
-      ))}
+      );
+    })}
       <Modal show={showEditModal} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Edit Recipe</Modal.Title>
