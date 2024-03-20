@@ -365,17 +365,130 @@ app.post('/login', (req, res) => {
 })
 //postmanissa osoite pitää olla muotoa http://localhost:8081/users/delete/2, Postman poistaa käyttäjän id:llä = 2 tässä tapauksessa   
 app.delete('/users/:id', (req, res) => {
-    const sql = "DELETE FROM users WHERE user_id = ?";
-    const userId = req.params.id; 
-    db.query(sql, [userId], (err, result) => {
-        if(err) {
-            return res.status(500).json("Error in user deletion: " + err);
-        } else {
-            return res.status(200).json("User deletion successful: " + result);
+    const userId = req.params.id;
+
+    // SQL-transaktion alku
+    db.beginTransaction(err => {
+        if (err) {
+            return res.status(500).json("Error in transaction start: " + err);
         }
+
+        // Poista Safe Update -tila käytöstä
+        db.query("SET SQL_SAFE_UPDATES = 0;", (err, result) => {
+            if (err) {
+                return db.rollback(() => {
+                    res.status(500).json("Error in disabling Safe Updates: " + err);
+                });
+            }
+
+            // Poista käyttäjän liittyvät tiedot yksi kerrallaan
+            const deleteFavoritesSQL = `
+                DELETE favorites FROM favorites
+                INNER JOIN recipes ON favorites.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteRatingsSQL = `
+                DELETE ratings FROM ratings
+                INNER JOIN recipes ON ratings.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteIngredientsSQL = `
+                DELETE ingredients FROM ingredients
+                INNER JOIN recipes ON ingredients.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteKeywordsSQL = `
+                DELETE keywords FROM keywords
+                INNER JOIN recipes ON keywords.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deletePhotosSQL = `
+                DELETE photos FROM photos
+                INNER JOIN recipes ON photos.recipe_id = recipes.recipe_id
+                WHERE recipes.author_id = ?;
+            `;
+            const deleteRecipesSQL = `
+                DELETE FROM recipes WHERE author_id = ?;
+            `;
+            const deleteUserSQL = `
+                DELETE FROM users WHERE user_id = ?;
+            `;
+
+            // DELETE-kyselyjen arvot
+            const values = [userId];
+
+            // Suorita DELETE-kyselyt yksi kerrallaan
+            db.query(deleteFavoritesSQL, values, (err, result) => {
+                if (err) {
+                    return db.rollback(() => {
+                        res.status(500).json("Error in deleting favorites: " + err);
+                    });
+                }
+                db.query(deleteRatingsSQL, values, (err, result) => {
+                    if (err) {
+                        return db.rollback(() => {
+                            res.status(500).json("Error in deleting ratings: " + err);
+                        });
+                    }
+                    db.query(deleteIngredientsSQL, values, (err, result) => {
+                        if (err) {
+                            return db.rollback(() => {
+                                res.status(500).json("Error in deleting ingredients: " + err);
+                            });
+                        }
+                        db.query(deleteKeywordsSQL, values, (err, result) => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json("Error in deleting keywords: " + err);
+                                });
+                            }
+                            db.query(deletePhotosSQL, values, (err, result) => {
+                                if (err) {
+                                    return db.rollback(() => {
+                                        res.status(500).json("Error in deleting photos: " + err);
+                                    });
+                                }
+                                db.query(deleteRecipesSQL, values, (err, result) => {
+                                    if (err) {
+                                        return db.rollback(() => {
+                                            res.status(500).json("Error in deleting recipes: " + err);
+                                        });
+                                    }
+                                    db.query(deleteUserSQL, values, (err, result) => {
+                                        if (err) {
+                                            return db.rollback(() => {
+                                                res.status(500).json("Error in deleting user: " + err);
+                                            });
+                                        }
+
+                                        // Ota Safe Update -tila takaisin käyttöön
+                                        db.query("SET SQL_SAFE_UPDATES = 1;", (err, result) => {
+                                            if (err) {
+                                                return db.rollback(() => {
+                                                    res.status(500).json("Error in enabling Safe Updates: " + err);
+                                                });
+                                            }
+
+                                            // Vahvista transaktio
+                                            db.commit(err => {
+                                                if (err) {
+                                                    return db.rollback(() => {
+                                                        res.status(500).json("Error in transaction commit: " + err);
+                                                    });
+                                                }
+                                                res.status(200).json("User deletion successful");
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 });
-
 app.delete('/ingredients/:id', (req, res) => {
     const sql = "DELETE FROM ingredients WHERE ingredient_id = ?"
     const ingredient_id = req.params.id;
