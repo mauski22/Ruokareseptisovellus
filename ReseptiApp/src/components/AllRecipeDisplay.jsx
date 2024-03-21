@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button } from 'react-bootstrap';
+import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button, ListGroup } from 'react-bootstrap';
 
 export const AllRecipeDisplay = () => {
   // Oletetaan, että useAuth on konteksti, joka tarjoaa kirjautuneen käyttäjän tiedot
@@ -199,20 +199,30 @@ const removeRating = async (recipeId, userId) => {
   }
  };
   return (
-    <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
-      <h2>Kaikki Reseptit</h2>
-      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1px' }}>
+    <div className="container" style={{ maxHeight: '95vh', overflowY: 'scroll'}}>
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1px'}}>
 
       {recipesWithRatings.map((recipe, index) => (
-          <Card key={index} className={`recipe-card ${recipe.visibility === 1 ? '' : 'member-only'}`} style={{ width: '100vh%', height: '50%' }}>
-          <Row noGutters>
-            <Col md={8}>
+          <Card key={index} className={`recipe-card ${recipe.visibility === 1 ? 'public' : 'member-only'}`} style={{ width: '100vh%', height: '50%'}}>
+          <Row>
+            <Col md={5} style={{ marginBottom: '20px'}}>
               <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
                <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-                  <h5 className="card-title">{recipe.title}</h5>
+                <ListGroup variant="center">
+                  <ListGroup.Item>
+                  <Card.Title as="h2"style={{marginTop:'30px'}}>{recipe.title}</Card.Title>
+                  </ListGroup.Item>
+                <ListGroup>
+                  <ListGroup.Item>
                   <p>Julkaisija: {recipe.author_nickname}</p>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
                   <p>Resepti luotu: {recipe.created_at}</p>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
                   <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
                   <Button onClick={() => submitRating(recipe.recipe_id, user.user_id, 5)}
                   style={{ 
                     marginRight: '10px', 
@@ -235,7 +245,7 @@ const removeRating = async (recipeId, userId) => {
                     👎
                   </Button>
                   {recipe.dislikes}
-                  <Button 
+                  <Button
                     onClick={() => addToFavorites(recipe)} 
                     style={{ 
                       marginRight: '10px', 
@@ -246,6 +256,10 @@ const removeRating = async (recipeId, userId) => {
                     size="sm">
                     ⭐
                   </Button>
+                  </ListGroup.Item>
+                </ListGroup>
+                </ListGroup>
+
                </Tab>
                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
 
@@ -257,8 +271,8 @@ const removeRating = async (recipeId, userId) => {
               </Tabs>
             </Col>
             <Col md={4} className="image-container">
-              <img 
-               variant="bottom"
+              <Card.Img 
+               variant="right"
                src={`http://localhost:8081/images/${recipe.photos}`}
                alt="Recipe"
                className="custom-image"
