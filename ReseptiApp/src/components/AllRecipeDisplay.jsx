@@ -12,8 +12,6 @@ export const AllRecipeDisplay = () => {
   const [userRatings, setUserRatings] = useState({});
 
 
-
-
   const addToFavorites = async (recipe) => {
     try {
       const response = await fetch('http://localhost:8081/favoritesLisays', {
@@ -37,7 +35,19 @@ export const AllRecipeDisplay = () => {
       alert('Failed to add recipe to favorites');
     }
   };
+  const sendEmail = (recipe) => {
+    const emailBody = `
+      Hei,
   
+      Katso tätä maukasta reseptiä: ${recipe.title}
+  
+      Tässä on linkki reseptiin: ${window.location.origin}/recipes/${recipe.recipe_id}
+  
+      Lähetetty Ruokareseptisovelluksesta.
+    `;
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(`Katso tätä reseptiä: ${recipe.title}`)}&body=${encodeURIComponent(emailBody)}`;
+    window.location.href = mailtoLink;
+  };
   
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -256,6 +266,9 @@ const removeRating = async (recipeId, userId) => {
                     size="sm">
                     ⭐
                   </Button>
+                  <Button variant="info" onClick={() => sendEmail(recipe)}>
+                  Jaa Sähköpostilla
+                    </Button>
                   </ListGroup.Item>
                 </ListGroup>
                 </ListGroup>
