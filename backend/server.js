@@ -153,8 +153,16 @@ app.get('/kayttajanreseptienhaku/:id', (req, res) => {
         return res.status(200).json(data); 
     })
 })
-app.get('/allrecipes', (req, res) => {
-    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id GROUP BY r.recipe_id;"; 
+
+app.get('/allRecipesWithAuthors', (req, res) => {
+    const sql = `
+        SELECT r.recipe_id, r.title, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos, u.nickname AS author_nickname
+        FROM recipes r
+        LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id
+        LEFT JOIN photos p ON r.recipe_id = p.recipe_id
+        LEFT JOIN users u ON r.author_id = u.user_id
+        GROUP BY r.recipe_id;
+    `;
     db.query(sql, (err, data) => {
         if(err) return res.status(500).json("Error fetching all recipes: " + err);
         data.forEach(row => {
@@ -164,8 +172,16 @@ app.get('/allrecipes', (req, res) => {
         return res.status(200).json(data); 
     });
 });
-app.get('/julkisetReseptitHaku', (req, res) => {
-    const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id WHERE r.visibility = 1 GROUP BY r.recipe_id;"; 
+app.get('/publicRecipesWithAuthors', (req, res) => {
+    const sql = `
+    SELECT r.recipe_id, r.title, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos, u.nickname AS author_nickname
+    FROM recipes r
+    LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id
+    LEFT JOIN photos p ON r.recipe_id = p.recipe_id
+    LEFT JOIN users u ON r.author_id = u.user_id
+    WHERE r.visibility = 1
+    GROUP BY r.recipe_id;
+`;
     db.query(sql, (err, data) => {
         if(err) return res.status(500).json("Error julkisen reseptin haussa: " + err)
         data.forEach(row => {

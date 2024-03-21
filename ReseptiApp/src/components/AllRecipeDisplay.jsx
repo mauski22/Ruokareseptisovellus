@@ -20,20 +20,18 @@ export const AllRecipeDisplay = () => {
   };
   useEffect(() => {
     const fetchRecipes = async () => {
-       try {
-         const response = await fetch(`http://localhost:8081/allrecipes`);
-         if (!response.ok) throw new Error('Julkiset reseptit haku network error');
-         
-         const recipeData = await response.json();
-         console.log("Haettu nämä reseptit tietokannasta: , recipeData");
-         setRecipes(recipeData);
-       } catch (error) {
-         console.error("Error fetching public recipe data:", error);
-       }
+      try {
+          const response = await fetch(`http://localhost:8081/allRecipesWithAuthors`);
+          if (!response.ok) throw new Error('Failed to fetch recipes with authors');
+          const recipeData = await response.json();
+          console.log("Fetched recipes with authors:", recipeData);
+          setRecipes(recipeData);
+      } catch (error) {
+          console.error("Error fetching recipes with authors:", error);
+      }
     };
-   
     fetchRecipes();
-   }, []); // This effect runs once on component mount
+   }, []);
 
    const fetchRatings = async () => {
     try {
@@ -106,7 +104,7 @@ export const AllRecipeDisplay = () => {
               <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
                <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
                   <h5 className="card-title">{recipe.title}</h5>
-                  <p>Julkaisija: {recipe.author_id}</p>
+                  <p>Julkaisija: {recipe.author_nickname}</p>
                   <p>Resepti luotu: {recipe.created_at}</p>
                   <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                   <Button onClick={() => submitRating(recipe.recipe_id, user.user_id, 5)}

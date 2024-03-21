@@ -9,7 +9,7 @@ export const PublicRecipeDisplay = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/julkisetReseptitHaku`);
+        const response = await fetch(`http://localhost:8081/publicRecipesWithAuthors`);
         if (!response.ok) throw new Error('Julkiset reseptit haku network error');
         
         const recipeData = await response.json();
@@ -57,7 +57,7 @@ export const PublicRecipeDisplay = () => {
               <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
                <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
                   <h5 className="card-title">{recipe.title}</h5>
-                  <p>Julkaisija: {recipe.author_id}</p>
+                  <p>Julkaisija: {recipe.author_nickname}</p>
                   <p>Resepti luotu: {recipe.created_at}</p>
                   <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                   <Button onClick={() => registerAlert()}
