@@ -82,7 +82,7 @@ const App = () => {
         </Modal.Body>
       </Modal>
       <SearchBar searchQuery={setSearchQuery}/>
-      <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+     {/* <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
         <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
           {searchQuery && <h1>Suosittuja Reseptejä</h1>}
           {recipes.flat().map((recipe, index) => {
@@ -114,8 +114,8 @@ const App = () => {
             }
           })}
         </div>
-      </div>
-    </div>
+      </div>  */}
+    </div> 
   );
 };
 export default App;
