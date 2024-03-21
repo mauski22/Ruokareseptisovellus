@@ -1,6 +1,7 @@
 /* App.css or the respective CSS file */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 
 
@@ -54,12 +55,22 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+/* Import a new font from Google Fonts */
+
+/* Apply the new font to the body and other elements */
+body {
+ font-family: 'Roboto', sans-serif;
+}
+
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Times New Roman', Serif;
+ font-family: 'Roboto', sans-serif;
 }
+
 p, p1, p2 {
-  font-family: 'Arial',Sans-serif
+ font-family: 'Roboto', sans-serif;
 }
+
+/* Other styles remain the same */
 
 .search-bar {
   position: fixed;
@@ -87,26 +98,23 @@ button.selected {
   color: white;
   border-color: #007bff;
 }
-.member-only .nav-tabs .nav-link {
-  background-color: #FAF3DD; /* Golden color */
-}
+
 .image-container {
-  width: 425px; /* Set the desired width */
-  height: 400px; /* Set the desired height */
+  width: 743px; /* Set the desired width */
+  height: 500px; /* Set the desired height */
   overflow: hidden; /* Ensures the image does not overflow the container */
   position: right; /* Allows absolute positioning of the image */
  }
  
  .custom-image {
+  border-radius: 10px;
   width: 100%; /* Ensures the image takes the full width of the container */
   height: 100%; /* Ensures the image takes the full height of the container */
   object-fit: cover; /* Ensures the image covers the container without stretching */
   object-position: center; /* Centers the image within the container */
  }
- .align-right {
-  text-align: right; /* Aligns the image to the right */
- }
- 
+
+
 .my-favorite-button {
   font-size: 1rem;
   padding: 0.5rem 1rem;
@@ -120,3 +128,70 @@ button.selected {
   color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
 }
+/* Add styles for the recipe cards */
+.recipe-card {
+  border-radius: 10px; /* Rounded corners for a softer look */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  margin-bottom: 20px; /* Space between cards */
+  overflow: hidden; /* Ensures the card content does not overflow */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+ }
+ 
+ .recipe-card:hover {
+  transform: translateY(+2px);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+ }
+ 
+ .recipe-card .card-title {
+  color: #333; /* Dark text for the title */
+  font-size: 1.5rem; /* Larger font size for the title */
+  font-weight: bold; /* Bold font weight for the title */
+ }
+ 
+ .recipe-card .card-body {
+  padding: 20px; /* Increased padding for the card body */
+ }
+ 
+ .recipe-card .list-group-item {
+  border-top: none; /* Removes the border between list group items */
+  border-bottom: none; /* Removes the border between list group items */
+  border-left: none;
+  border-right: none;
+ }
+ .recipe-card .list-group-item:first-child {
+  border-top: none; /* Removes the border at the top of the first list group item */
+ }
+ 
+ .recipe-card .list-group-item:last-child {
+  border-bottom: none; /* Removes the border at the bottom of the last list group item */
+ }
+ 
+ .recipe-card .btn {
+  margin-top: 10px; /* Space between buttons and the rest of the card content */
+ }
+ 
+ .recipe-card.member-only {
+  background-color: #f5f5f5; /* Light background color for member-only recipes */
+ }
+ .recipe-card.public {
+  background-color: #ffffff; /* Light background color for member-only recipes */
+ }
+ .recipe-card.member-only .card-title {
+  color: #666; /* Darker text color for member-only recipes */
+ }
+ 
+ .recipe-card.member-only .card-body {
+  color: #666; /* Darker text color for member-only recipes */
+ }
+ 
+ .recipe-card.member-only .btn {
+  background-color: #f8f8f8; /* Light background color for buttons in member-only recipes */
+  border-color: #ddd; /* Light border color for buttons in member-only recipes */
+  color: #666; /* Darker text color for buttons in member-only recipes */
+ }
+ 
+ .recipe-card.member-only .btn:hover {
+  background-color: #ddd; /* Darker background color on hover for buttons in member-only recipes */
+  border-color: #ccc; /* Darker border color on hover for buttons in member-only recipes */
+  color: #333; /* Darker text color on hover for buttons in member-only recipes */
+ }
