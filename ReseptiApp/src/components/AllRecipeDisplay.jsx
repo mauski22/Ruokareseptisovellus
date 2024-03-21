@@ -9,6 +9,8 @@ export const AllRecipeDisplay = () => {
   const [favorites, setFavorites] = useState([]);
   const [recipesWithRatings, setRecipesWithRatings] = useState([]);
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const [userRatings, setUserRatings] = useState({});
+
 
 
 
@@ -40,7 +42,7 @@ export const AllRecipeDisplay = () => {
         throw new Error('Failed to fetch ratings');
       }
       const ratingsData = await response.json();
-      console.log('Fetched ratings:', ratingsData);
+      //console.log('Fetched ratings:', ratingsData);
 
       const updatedRecipes = recipes.map(recipe => {
         const recipeRatings = ratingsData.filter(rating => rating.recipe_id === recipe.recipe_id);
@@ -60,14 +62,41 @@ export const AllRecipeDisplay = () => {
     }
  };
    useEffect(() => {
-  
-   
     if (recipes.length > 0) { // Ensure recipes have been fetched before fetching ratings
        fetchRatings();
     }
    }, [recipes]); // This effect runs whenever the recipes state changes
-   
+useEffect(() => {
+  const fetchUserRatings = async () => {
+     try {
+       const response = await fetch(`http://localhost:8081/getUserRatings/${user.user_id}`);
+       if (!response.ok) {
+         throw new Error('Failed to fetch user ratings');
+       }
+       const ratingsData = await response.json();
+       const userRatingsMap = {};
+       ratingsData.forEach(rating => {
+         userRatingsMap[rating.recipe_id] = rating.rating;
+       });
+       setUserRatings(userRatingsMap);
+     } catch (error) {
+       console.error('Error fetching user ratings:', error);
+     }
+  };
+ 
+  if (user) {
+     fetchUserRatings();
+  }
+ }, [user]); // This effect runs whenever the user state changes
   const submitRating = async (recipeId, userId, ratingValue) => {
+ if (userRatings[recipeId] !== undefined) {
+  if (userRatings[recipeId] === ratingValue) {
+      removeRating(recipeId, userId);
+  } else {
+      updateRating(recipeId, userId, ratingValue);
+  }
+  return;
+}
     try {
        const response = await fetch('http://localhost:8081/ratingLisays', {
          method: 'POST',
@@ -80,18 +109,76 @@ export const AllRecipeDisplay = () => {
            rating: ratingValue,
          }),
        });
-   
        if (!response.ok) {
-         throw new Error('Rating submission failed');
+         throw new Error('Käyttäjä on jo arvostellut tämän reseptin');
        }
        const responseData = await response.json();
-       console.log('Rating submitted successfully: responseData');
+       console.log('Rating submitted successfully:', responseData);
        await delay(50);
        fetchRatings();
     } catch (error) {
        console.error('Error submitting rating:', error);
     }
+    setUserRatings(prevState => ({
+      ...prevState,
+      [recipeId]: ratingValue
+   }));
    };
+   const updateRating = async (recipeId, userId, newRatingValue) => {
+    try {
+       const response = await fetch(`http://localhost:8081/updateRating`, {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({
+           recipe_id: recipeId,
+           user_id: userId,
+           rating: newRatingValue,
+         }),
+       });
+   
+       if (!response.ok) {
+         throw new Error('Rating update failed');
+       }
+       setUserRatings(prevState => ({
+         ...prevState,
+         [recipeId]: newRatingValue
+       }));
+   
+       fetchRatings();
+    } catch (error) {
+       console.error('Error updating rating:', error);
+    }
+   };
+const removeRating = async (recipeId, userId) => {
+  try {
+     const response = await fetch(`http://localhost:8081/removeRating`, {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         recipe_id: recipeId,
+         user_id: userId,
+       }),
+     });
+ 
+     if (!response.ok) {
+       throw new Error('Rating removal failed');
+     }
+     // Update the userRatings state to reflect the removal
+     setUserRatings(prevState => {
+       const newState = { ...prevState };
+       delete newState[recipeId];
+       return newState;
+     });
+     fetchRatings();
+
+  } catch (error) {
+     console.error('Error removing rating:', error);
+  }
+ };
   return (
     <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <h2>Kaikki Reseptit</h2>
@@ -110,7 +197,7 @@ export const AllRecipeDisplay = () => {
                   <Button onClick={() => submitRating(recipe.recipe_id, user.user_id, 5)}
                   style={{ 
                     marginRight: '10px', 
-                    backgroundColor: 'white', 
+                    backgroundColor: userRatings[recipe.recipe_id] === 5 ? 'lightgreen' : 'white',
                     borderColor: 'green', 
                     color: 'black' }} 
                   size="sm">
@@ -122,7 +209,7 @@ export const AllRecipeDisplay = () => {
                     style={{ 
                       marginRight: '10px', 
                       marginLeft: '20px', 
-                      backgroundColor: 'white', 
+                      backgroundColor: userRatings[recipe.recipe_id] === 1 ? 'lightcoral' : 'white',
                       borderColor: 'red', 
                       color: 'black' }} 
                     size="sm">

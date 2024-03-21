@@ -303,17 +303,43 @@ app.post('/ingredients', (req, res) => {
 });
 app.post('/ratingLisays', (req, res) => {
     try {
-        const sql = "INSERT INTO ratings (recipe_id, user_id, rating) VALUES (?, ?, ?)"
-        const values  = [req.body.recipe_id, req.body.user_id, req.body.rating]
-        db.query (sql, values, (err) => {
-            if(err) return res.status(500).json("Rating epäonnistui" + err)
-            return res.status(200).json("Ratingin lisäys onnistui")
-        })
+        const checkRatingSql = "SELECT * FROM ratings WHERE recipe_id = ? AND user_id = ?";
+        db.query(checkRatingSql, [req.body.recipe_id, req.body.user_id], (err, result) => {
+        if (err) {
+            return res.status(500).json("Error checking for existing rating: " + err);
+        }
+        if (result.length > 0) {
+            return res.status(400).json("You have already rated this recipe!");
+        }
+            const sql = "INSERT INTO ratings (recipe_id, user_id, rating) VALUES (?, ?, ?)"
+            const values  = [req.body.recipe_id, req.body.user_id, req.body.rating]
+            db.query (sql, values, (err) => {
+                if(err) return res.status(500).json("Rating epäonnistui" + err)
+                return res.status(200).json("Ratingin lisäys onnistui")
+            })
+        });
     }
     catch (error) {
-        return res.status(500).json("Rating epäonnistui" + error)
+        return res.status(500).json("CATCH:Rating epäonnistui" + error)
     }
 })
+app.post('/removeRating', (req, res) => {
+    try {
+       const sql = "DELETE FROM ratings WHERE recipe_id = ? AND user_id = ?";
+       const values = [req.body.recipe_id, req.body.user_id];
+       db.query(sql, values, (err, result) => {
+         if (err) {
+           return res.status(500).json("Error removing rating: " + err);
+         }
+         if (result.affectedRows === 0) {
+           return res.status(404).json("No rating found to remove");
+         }
+         return res.status(200).json("Rating removed successfully");
+       });
+    } catch (error) {
+       return res.status(500).json("Error removing rating: " + error);
+    }
+   });
 app.post('/favoritesLisays', (req, res) => {
     try {
         const sql = "INSERT INTO favorites (recipe_id, user_id) VALUES (?, ?)"
@@ -327,6 +353,37 @@ app.post('/favoritesLisays', (req, res) => {
         return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + error)
     }
 })
+app.get('/getUserRatings/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const sql = `
+       SELECT r.recipe_id, r.rating FROM ratings r
+       WHERE r.user_id = ?;
+    `;
+    db.query(sql, [userId], (err, data) => {
+       if (err) {
+         console.error("Error fetching user ratings:", err);
+         return res.status(500).json("Error fetching user ratings: " + err);
+       }
+       return res.status(200).json(data);
+    });
+   });
+app.post('/updateRating', (req, res) => {
+    try {
+       const sql = "UPDATE ratings SET rating = ? WHERE recipe_id = ? AND user_id = ?";
+       const values = [req.body.rating, req.body.recipe_id, req.body.user_id];
+       db.query(sql, values, (err, result) => {
+         if (err) {
+           return res.status(500).json("Error updating rating: " + err);
+         }
+         if (result.affectedRows === 0) {
+           return res.status(404).json("No rating found to update");
+         }
+         return res.status(200).json("Rating updated successfully");
+       });
+    } catch (error) {
+       return res.status(500).json("Error updating rating: " + error);
+    }
+   });
 app.get('/getFavoriteRecipes/:id', (req, res) => {
     try {
         const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id JOIN favorites f ON r.recipe_id = f.recipe_id WHERE f.user_id = ? GROUP BY r.recipe_id;";
