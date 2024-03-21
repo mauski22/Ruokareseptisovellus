@@ -353,6 +353,23 @@ app.post('/favoritesLisays', (req, res) => {
         return res.status(500).json("Lisääminen suosikkeihin epäonnistui" + error)
     }
 })
+app.delete('/favoritesPoisto/:userId/:recipeId', (req, res) => {
+    const { userId, recipeId } = req.params;
+    const sql = "DELETE FROM favorites WHERE user_id = ? AND recipe_id = ?";
+    db.query(sql, [userId, recipeId], (err, result) => {
+        if(err) {
+            console.error("Error removing recipe from favorites:", err);
+            return res.status(500).json({ message: "Lisääminen suosikkeihin epäonnistui", error: err });
+        }
+        // Tarkistetaan, että rivejä todella poistettiin. Jos ei, käyttäjällä ei ehkä ollut reseptiä suosikeissa.
+        if(result.affectedRows === 0) {
+            return res.status(404).json({ message: "Reseptiä ei löydy suosikeista." });
+        } else {
+            return res.status(200).json({ message: "Resepti poistettu suosikeista onnistuneesti." });
+        }
+    });
+});
+
 app.get('/getUserRatings/:userId', (req, res) => {
     const userId = req.params.userId;
     const sql = `

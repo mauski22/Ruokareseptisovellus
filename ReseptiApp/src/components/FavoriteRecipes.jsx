@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Button, Row, Col } from 'react-bootstrap';
 
+
 const FavoriteRecipes = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const { user } = useAuth();
@@ -22,9 +23,30 @@ const FavoriteRecipes = () => {
         console.error('Error fetching favorite recipes:', error);
       }
     };
+    
 
     fetchFavoriteRecipes();
   }, [user.user_id]);
+  
+  const removeFromFavorites = async (recipeId) => {
+    try {
+      const response = await fetch(`http://localhost:8081/favoritesPoisto/${user.user_id}/${recipeId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Päivitetään favoriteRecipes-tila poistamalla siitä poistettu resepti
+      setFavoriteRecipes(favoriteRecipes.filter(recipe => recipe.recipe_id !== recipeId));
+      alert('Recipe has been removed from favorites!');
+    } catch (error) {
+      console.error('Error removing recipe from favorites:', error);
+      alert('Failed to remove recipe from favorites');
+    }
+  };
+
 
   return (
     <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
@@ -48,6 +70,7 @@ const FavoriteRecipes = () => {
                   <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
                     <p className="card-text">{recipe.description}</p>
                   </Tab>
+            
                 </Tabs>
               </Col>
               <Col md={4} className="image-container">
@@ -56,8 +79,16 @@ const FavoriteRecipes = () => {
                   alt="Recipe"
                   className="custom-image"
                   style={{ width: '100%', height: 'auto' }} />
+                                <Button
+  variant="danger"
+  onClick={() => removeFromFavorites(recipe.recipe_id)}
+  className="my-favorite-button"
+>
+  Poista Suosikeista
+</Button>
               </Col>
             </Row>
+            
           </Card>
         ))}
       </div>
