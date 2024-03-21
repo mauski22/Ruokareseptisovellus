@@ -101,7 +101,6 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             ) : (
               <>
                 <Navbar.Text className="me-2">
-                Huomenta Toni
                 </Navbar.Text>
                 <Button onClick={onLoginClicked} variant="primary">Kirjaudu</Button> {/* Adjust as necessary for your login logic */}
                 <Button onClick={onSignUpClicked} variant="secondary">Rekisteröidy</Button> {/* Adjust as necessary for your signup logic */}

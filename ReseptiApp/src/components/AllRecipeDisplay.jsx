@@ -14,12 +14,31 @@ export const AllRecipeDisplay = () => {
 
 
 
-  const addToFavorites = (recipe) => {
-    alert(`${recipe.title} has been added to favorite recipes!`);
-    if (!favorites.includes(recipe)) {
-      setFavorites([...favorites, recipe]);
+  const addToFavorites = async (recipe) => {
+    try {
+      const response = await fetch('http://localhost:8081/favoritesLisays', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.user_id, // Varmista, että tämä vastaa backendin odottamaa muotoa
+          recipe_id: recipe.recipe_id, // Samoin tämän
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to add recipe to favorites');
+      }
+  
+      alert(`${recipe.title} on lisätty suosikkeihin!`);
+    } catch (error) {
+      console.error('Error adding recipe to favorites:', error);
+      alert('Failed to add recipe to favorites');
     }
   };
+  
+  
   useEffect(() => {
     const fetchRecipes = async () => {
       try {

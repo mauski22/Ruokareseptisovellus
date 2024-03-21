@@ -60,7 +60,7 @@ export const RecipeDisplay = () => {
       updatedRecipes.splice(index, 1);
       setRecipes(updatedRecipes);
 
-      alert('Recipe has been deleted successfully!');
+      alert('Resepti poistettu onnistuneesti!');
     } catch (error) {
       console.error("Error deleting recipe:", error);
       alert('Failed to delete the recipe.');

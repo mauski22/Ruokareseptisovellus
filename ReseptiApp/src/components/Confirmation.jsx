@@ -10,10 +10,10 @@ const ConfirmModal = ({ show, handleClose, title, body, confirmAction }) => {
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Cancel
+          Ei
         </Button>
         <Button variant="danger" onClick={confirmAction}>
-          Confirm
+          Kyllä
         </Button>
       </Modal.Footer>
     </Modal>
