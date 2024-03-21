@@ -3,10 +3,8 @@ import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button } from 'react-bootstrap';
 
 export const AllRecipeDisplay = () => {
-  // Oletetaan, että useAuth on konteksti, joka tarjoaa kirjautuneen käyttäjän tiedot
   const { user } = useAuth();
   const [recipes, setRecipes] = useState([]);
-  const [favorites, setFavorites] = useState([]);
   const [recipesWithRatings, setRecipesWithRatings] = useState([]);
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   const [userRatings, setUserRatings] = useState({});
@@ -37,7 +35,19 @@ export const AllRecipeDisplay = () => {
       alert('Failed to add recipe to favorites');
     }
   };
+  const sendEmail = (recipe) => {
+    const emailBody = `
+      Hei,
   
+      Katso tätä maukasta reseptiä: ${recipe.title}
+  
+      Tässä on linkki reseptiin: ${window.location.origin}/recipes/${recipe.recipe_id}
+  
+      Lähetetty Ruokareseptisovelluksesta.
+    `;
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(`Katso tätä reseptiä: ${recipe.title}`)}&body=${encodeURIComponent(emailBody)}`;
+    window.location.href = mailtoLink;
+  };
   
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -245,7 +255,10 @@ const removeRating = async (recipeId, userId) => {
                       color: 'black' }} 
                     size="sm">
                     ⭐
-                  </Button>
+                  </Button>´
+                  <Button variant="info" onClick={() => sendEmail(recipe)}>
+                  Jaa Sähköpostilla
+                </Button>
                </Tab>
                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
 
