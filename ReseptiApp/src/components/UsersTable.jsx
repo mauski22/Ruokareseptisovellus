@@ -10,6 +10,8 @@ const UsersTable = () => {
     const [data, setData] = useState([]);
     const [editingRowIndex, setEditingRowIndex] = useState(null);
     const [editingData, setEditingData] = useState({});
+    const [visiblePasswordUserId, setVisiblePasswordUserId] = useState(null);
+
     
     useEffect(()=>{
         fetch('http://localhost:8081/users')
@@ -83,6 +85,9 @@ const UsersTable = () => {
         setEditingData({...editingData, [field]: e.target.value});
     };
 
+    const handlePasswordClick = (userId) => {
+        setVisiblePasswordUserId(visiblePasswordUserId === userId ? null : userId);
+      };
     return(
         <div style={{padding: "50px"}}>
             <table className='table'>
@@ -113,13 +118,10 @@ const UsersTable = () => {
                                 )}
                             </td>
                             <td>{d.email}</td>
-                            <td>
-                                {editingRowIndex === i ? (
-                                    <input type="text" value={editingData.password} onChange={(e) => handleChange(e, 'password')} />
-                                ) : (
-                                    d.password
-                                )}
-                            </td>
+                            <td onClick={() => handlePasswordClick(d.user_id)} style={{ cursor: 'pointer' }}>
+                {visiblePasswordUserId === d.user_id ? d.password : '*****'}
+              </td>
+                       
                             <td>
                                 {editingRowIndex === i ? (
                                     <input type="text" value={editingData.user_role} onChange={(e) => handleChange(e, 'user_role')} />
