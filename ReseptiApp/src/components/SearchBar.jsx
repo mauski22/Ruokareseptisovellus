@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, InputGroup, Container, Tabs, Tab } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-const SearchBar = () => {
+import { useNavigate, useLocation } from 'react-router-dom';
+const SearchBar = ({searchQuery}) => {
   const [keywords, setKeywords] = useState([]);
   const [selectedKeyword, setSelectedKeyword] = useState('');
   const [userInput, setUserInput] = useState('');
   const [details, setRecipedetails] = useState(null);
   const [searchError, setSearchError] = useState(false); 
+  const location = useLocation();
   const navigate = useNavigate(); 
   useEffect(() => {
     fetch('http://localhost:8081/julkistenreseptienkeywordsienhaku')
@@ -14,7 +15,14 @@ const SearchBar = () => {
       .then(data => setKeywords(data.map(item => item.keyword)));
   }, []);
 
-  const handlehaku = async (event) =>  {
+  useEffect(() => {
+    // Tyhjennä reseptitiedot kun siirrytään takaisin kotisivulle
+    if (location.pathname === '/') {
+      setRecipedetails(null);
+    }
+  }, [location]);
+
+  const handlehaku = async (event) =>  { 
     event.preventDefault(); 
     try {
       const vastaus  = await fetch("http://localhost:8081/tietynreseptinhakukeywordilla",
@@ -40,9 +48,11 @@ const SearchBar = () => {
       setSearchError(false);
       console.log(tiedot); 
       setRecipedetails(tiedot[0]); 
+      searchQuery(false);
       navigate(`/recipe/${reseptiID}`);     
     } catch (error) {
       console.log("Reseptin haku epäonnistui: ", error);
+      searchQuery(true);
     }
   }
 
@@ -71,6 +81,7 @@ const SearchBar = () => {
           Hae
         </Button>
       </InputGroup>
+  
       {searchError && <p style={{ color: 'red' }}>Hakusanalla ei löytynyt tietoa.</p>}
       {details && (
         <div className="col-md-4" style={{ padding: '10px' }}>
