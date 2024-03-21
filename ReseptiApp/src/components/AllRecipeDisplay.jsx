@@ -3,10 +3,8 @@ import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button, ListGroup } from 'react-bootstrap';
 
 export const AllRecipeDisplay = () => {
-  // Oletetaan, että useAuth on konteksti, joka tarjoaa kirjautuneen käyttäjän tiedot
   const { user } = useAuth();
   const [recipes, setRecipes] = useState([]);
-  const [favorites, setFavorites] = useState([]);
   const [recipesWithRatings, setRecipesWithRatings] = useState([]);
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   const [userRatings, setUserRatings] = useState({});
@@ -270,12 +268,10 @@ const removeRating = async (recipeId, userId) => {
                   Jaa Sähköpostilla
                     </Button>
                   </ListGroup.Item>
-                </ListGroup>
-                </ListGroup>
-
+                  </ListGroup>
+                  </ListGroup>
                </Tab>
                <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-
                     <p>{recipe.ingredients }</p>
                </Tab>
                <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
@@ -293,7 +289,7 @@ const removeRating = async (recipeId, userId) => {
             </Col>
           </Row>
         </Card>
-))}
+      ))}
     </div>
     </div>
   );
