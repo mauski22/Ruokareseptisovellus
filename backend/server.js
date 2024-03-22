@@ -565,61 +565,83 @@ app.delete('/ingredients/:id', (req, res) => {
     })
 })
 
-app.delete('/recipes/delete/:id', (req, res) => {
-    const recipe_id = req.params.id; 
+app.delete('/users/:id', (req, res) => {
+    const userId = req.params.id;
 
-    db.beginTransaction(function(err) {
-        if (err) { return res.status(500).json("Virhe transaktion aloittamisessa: " + err); }
+    // Start a transaction
+    db.beginTransaction(err => {
+        if (err) {
+            return res.status(500).json("Error in transaction start: " + err);
+        }
 
-        db.query('DELETE FROM ratings WHERE recipe_id = ?', [recipe_id], function(err, result) {
-            if (err) { 
-                db.rollback(function() {
-                    return res.status(500).json("Virhe arvioiden poistossa: " + err);
+        // Delete the user's ratings
+        db.query('DELETE FROM ratings WHERE user_id = ?', [userId], (err, result) => {
+            if (err) {
+                return db.rollback(() => {
+                    res.status(500).json("Error in deleting ratings: " + err);
                 });
             }
 
-            db.query('DELETE FROM photos WHERE recipe_id = ?', [recipe_id], function(err, result) {
-                if (err) { 
-                    db.rollback(function() {
-                        return res.status(500).json("Virhe valokuvien poistossa: " + err);
+            // Delete the user's favorites
+            db.query('DELETE FROM favorites WHERE user_id = ?', [userId], (err, result) => {
+                if (err) {
+                    return db.rollback(() => {
+                        res.status(500).json("Error in deleting favorites: " + err);
                     });
                 }
 
-                db.query('DELETE FROM keywords WHERE recipe_id = ?', [recipe_id], function(err, result) {
-                    if (err) { 
-                        db.rollback(function() {
-                            return res.status(500).json("Virhe avainsanojen poistossa: " + err);
+                // Fetch user's recipes
+                db.query('SELECT recipe_id FROM recipes WHERE author_id = ?', [userId], (err, recipes) => {
+                    if (err) {
+                        return db.rollback(() => {
+                            res.status(500).json("Error in fetching recipes: " + err);
                         });
                     }
 
-                    db.query('DELETE FROM ingredients WHERE recipe_id = ?', [recipe_id], function(err, result) {
-                        if (err) { 
-                            db.rollback(function() {
-                                return res.status(500).json("Virhe ainesosien poistossa: " + err);
+                    // Get list of recipe IDs
+                    const recipeIds = recipes.map(recipe => recipe.recipe_id);
+
+                    // Delete keywords related to user's recipes
+                    db.query('DELETE FROM keywords WHERE recipe_id IN (?)', [recipeIds], (err, result) => {
+                        if (err) {
+                            return db.rollback(() => {
+                                res.status(500).json("Error in deleting keywords: " + err);
                             });
                         }
 
-                        db.query('DELETE FROM favorites WHERE recipe_id = ?', [recipe_id], function(err, result) {
-                            if (err) { 
-                                db.rollback(function() {
-                                    return res.status(500).json("Virhe suosikkien poistossa: " + err);
+                        // Delete ingredients related to user's recipes
+                        db.query('DELETE FROM ingredients WHERE recipe_id IN (?)', [recipeIds], (err, result) => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json("Error in deleting ingredients: " + err);
                                 });
                             }
 
-                            db.query('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id], function(err, result) {
-                                if (err) { 
-                                    db.rollback(function() {
-                                        return res.status(500).json("Virhe reseptin poistossa: " + err);
+                            // Delete the user's recipes
+                            db.query('DELETE FROM recipes WHERE author_id = ?', [userId], (err, result) => {
+                                if (err) {
+                                    return db.rollback(() => {
+                                        res.status(500).json("Error in deleting recipes: " + err);
                                     });
                                 }
 
-                                db.commit(function(err) {
-                                    if (err) { 
-                                        db.rollback(function() {
-                                            return res.status(500).json("Virhe transaktion vahvistamisessa: " + err);
+                                // Delete the user
+                                db.query('DELETE FROM users WHERE user_id = ?', [userId], (err, result) => {
+                                    if (err) {
+                                        return db.rollback(() => {
+                                            res.status(500).json("Error in deleting user: " + err);
                                         });
                                     }
-                                    return res.status(200).json("Reseptin poisto onnistui: " + result);
+
+                                    // Commit the transaction
+                                    db.commit(err => {
+                                        if (err) {
+                                            return db.rollback(() => {
+                                                res.status(500).json("Error in transaction commit: " + err);
+                                            });
+                                        }
+                                        res.status(200).json("User deletion successful");
+                                    });
                                 });
                             });
                         });
