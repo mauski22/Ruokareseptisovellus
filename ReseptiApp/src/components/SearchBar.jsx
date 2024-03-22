@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, InputGroup, Container, Tabs, Tab } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
+
 const SearchBar = ({searchQuery}) => {
   const [keywords, setKeywords] = useState([]);
   const [selectedKeyword, setSelectedKeyword] = useState('');
@@ -9,6 +10,7 @@ const SearchBar = ({searchQuery}) => {
   const [searchError, setSearchError] = useState(false); 
   const location = useLocation();
   const navigate = useNavigate(); 
+
   useEffect(() => {
     fetch('http://localhost:8081/julkistenreseptienkeywordsienhaku')
       .then(response => response.json())
@@ -64,6 +66,7 @@ const SearchBar = ({searchQuery}) => {
 
   return (
     <Container className="search-bar-container">
+      <Form onSubmit={handlehaku}>
       <InputGroup>
         <Form.Control 
           type="text"
@@ -81,7 +84,7 @@ const SearchBar = ({searchQuery}) => {
           Hae
         </Button>
       </InputGroup>
-  
+      </Form>
       {searchError && <p style={{ color: 'red' }}>Hakusanalla ei löytynyt tietoa.</p>}
       {details && (
         <div className="col-md-4" style={{ padding: '10px' }}>

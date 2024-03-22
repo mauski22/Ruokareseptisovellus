@@ -28,6 +28,7 @@ const FavoriteRecipes = () => {
     fetchFavoriteRecipes();
   }, [user.user_id]);
   
+  {/*} Tässä voit lisätä toiminnallisuuden suosikkien poistamiseen
   const removeFromFavorites = async (recipeId) => {
     try {
       const response = await fetch(`http://localhost:8081/favoritesPoisto/${user.user_id}/${recipeId}`, {
@@ -46,6 +47,7 @@ const FavoriteRecipes = () => {
       alert('Failed to remove recipe from favorites');
     }
   };
+  */}
 
 
   return (
@@ -79,13 +81,6 @@ const FavoriteRecipes = () => {
                   alt="Recipe"
                   className="custom-image"
                   style={{ width: '100%', height: 'auto' }} />
-                                <Button
-  variant="danger"
-  onClick={() => removeFromFavorites(recipe.recipe_id)}
-  className="my-favorite-button"
->
-  Poista Suosikeista
-</Button>
               </Col>
             </Row>
             

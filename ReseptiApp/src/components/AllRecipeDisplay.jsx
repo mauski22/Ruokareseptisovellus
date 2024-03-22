@@ -8,7 +8,43 @@ export const AllRecipeDisplay = () => {
   const [recipesWithRatings, setRecipesWithRatings] = useState([]);
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   const [userRatings, setUserRatings] = useState({});
+  const [userFavorites, setUserFavorites] = useState(new Set()); // Oletetaan, että tämä on käyttäjän suosikit
+  const isRecipeInFavorites = (recipeId) => userFavorites.has(recipeId);
 
+  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
+
+  useEffect(() => {
+    const fetchFavoriteRecipes = async () => {
+      try {
+        // Hae käyttäjän suosikit palvelimelta
+        const response = await fetch(`http://localhost:8081/getFavoriteRecipes/${user.user_id}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const favoriteData = await response.json();
+        const favoriteIds = new Set(favoriteData.map(recipe => recipe.recipe_id));
+        setUserFavorites(favoriteIds);
+      } catch (error) {
+        console.error('Error fetching favorite recipes:', error);
+      }
+    };
+  
+    
+
+    fetchFavoriteRecipes();
+  }, [user.user_id]);
+  const toggleFavorite = async (recipe) => {
+    if (isRecipeInFavorites(recipe.recipe_id)) {
+      // Poista suosikeista
+      await removeFromFavorites(recipe.recipe_id); // Toteuta tämä funktio
+      userFavorites.delete(recipe.recipe_id);
+    } else {
+      // Lisää suosikkeihin
+      await addToFavorites(recipe); // Oletetaan, että tämä funktio on jo määritelty
+      userFavorites.add(recipe.recipe_id);
+    }
+    setUserFavorites(new Set([...userFavorites]));
+  };
 
   const addToFavorites = async (recipe) => {
     try {
@@ -33,6 +69,25 @@ export const AllRecipeDisplay = () => {
       alert('Failed to add recipe to favorites');
     }
   };
+  const removeFromFavorites = async (recipeId) => {
+    try {
+      const response = await fetch(`http://localhost:8081/favoritesPoisto/${user.user_id}/${recipeId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Päivitetään favoriteRecipes-tila poistamalla siitä poistettu resepti
+      setFavoriteRecipes(favoriteRecipes.filter(recipe => recipe.recipe_id !== recipeId));
+      alert('Resepti on poistettu suosikeista!');
+    } catch (error) {
+      console.error('Error removing recipe from favorites:', error);
+      alert('Failed to remove recipe from favorites');
+    }
+  };
+
   const sendEmail = (recipe) => {
     const emailBody = `
       Hei,
@@ -206,6 +261,29 @@ const removeRating = async (recipeId, userId) => {
      console.error('Error removing rating:', error);
   }
  };
+
+const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
+  const isFavorite = userFavorites.has(recipe.recipe_id);
+
+  return (
+    <Button 
+      onClick={() => toggleFavorite(recipe)}
+      style={{ 
+        marginRight: '10px', 
+        marginLeft: '20px',
+        backgroundColor: isFavorite ? 'yellow' : 'white', // Keltainen, jos suosikki; valkoinen, jos ei
+        borderColor: isFavorite ? 'gold' : 'grey', // Kullanvärinen reunus, jos suosikki; harmaa, jos ei
+        color: isFavorite ? 'black' : 'grey', // Tekstin väri: musta, jos suosikki; harmaa, jos ei
+      }} 
+      size="sm"
+    >
+      {isFavorite ? '⭐' : '☆'} {/* Keltainen tähti, jos suosikki; harmaa tähti, jos ei */}
+    </Button>
+  );
+};
+
+
+
   return (
     <div className="container" style={{ maxHeight: '95vh', overflowY: 'scroll'}}>
       <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1px'}}>
@@ -253,17 +331,13 @@ const removeRating = async (recipeId, userId) => {
                     👎
                   </Button>
                   {recipe.dislikes}
-                  <Button
-                    onClick={() => addToFavorites(recipe)} 
-                    style={{ 
-                      marginRight: '10px', 
-                      marginLeft: '20px', 
-                      backgroundColor: 'white', 
-                      borderColor: 'black', 
-                      color: 'black' }} 
-                    size="sm">
-                    ⭐
-                  </Button>
+                  <FavoriteStar
+        key={index}
+        recipe={recipe}
+        userFavorites={userFavorites}
+        toggleFavorite={toggleFavorite}
+      />
+
                   <Button variant="info" onClick={() => sendEmail(recipe)}>
                   Jaa Sähköpostilla
                     </Button>
