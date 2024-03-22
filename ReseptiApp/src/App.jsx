@@ -60,8 +60,8 @@ const App = () => {
         <Route path="/publicRecipes" element={<PublicRecipeDisplay />} />
         <Route path="/allRecipes" element={<AllRecipeDisplay />} />
         <Route path="/favoriteRecipes" element={<FavoriteRecipes />} />
-        <Route path='/recipe/:id'/>
-        <Route path="/"/>
+        <Route path='/recipe/:id' element={<SearchBar/>}/>
+        <Route path="/" element= {<SearchBar/>}/>
       </Routes>
 
       <Modal show={showLoginModal} onHide={toggleLoginModal}>
@@ -81,7 +81,6 @@ const App = () => {
           <RegisterComponent handleCloseForm={toggleRegisterModal} />
         </Modal.Body>
       </Modal>
-      <SearchBar searchQuery={setSearchQuery}/>
      {/* <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
         <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
           {searchQuery && <h1>Suosittuja Reseptejä</h1>}

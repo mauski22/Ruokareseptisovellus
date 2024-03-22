@@ -403,26 +403,34 @@ app.post('/updateRating', (req, res) => {
    });
 app.get('/getFavoriteRecipes/:id', (req, res) => {
     try {
-        const sql = "SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id JOIN favorites f ON r.recipe_id = f.recipe_id WHERE f.user_id = ? GROUP BY r.recipe_id;";
-        const userid = req.params.id
-        db.query (sql, [userid], (err, data) => {
-            if(err){
-                console.error("Error fetching favorites:" + err)
-            }
-            else {
+        const sql = `
+            SELECT r.recipe_id, r.title, r.author_id, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos, u.nickname AS author_nickname
+            FROM recipes r
+            LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id
+            LEFT JOIN photos p ON r.recipe_id = p.recipe_id
+            JOIN favorites f ON r.recipe_id = f.recipe_id
+            JOIN users u ON r.author_id = u.user_id
+            WHERE f.user_id = ?
+            GROUP BY r.recipe_id;
+        `;
+        const userid = req.params.id;
+        db.query(sql, [userid], (err, data) => {
+            if (err) {
+                console.error("Error fetching favorites:" + err);
+                return res.status(500).json("Error fetching favorites: " + err);
+            } else {
                 data.forEach(row => {
                     row.created_at = row.created_at.toISOString().split('T')[0];
                     row.updated_at = row.updated_at.toISOString().split('T')[0];
                 });
-            return res.status(200).json(data)
+                return res.status(200).json(data);
             }
-        })
-    }
-    catch (error) {
+        });
+    } catch (error) {
         console.error("Error fetching favorites:", error);
         return res.status(500).json("Error fetching favorites: " + error);
     }
-})
+});
 app.get('/getRatings', (req, res) => {
     try {
        const sql = "SELECT * FROM ratings";
@@ -853,6 +861,19 @@ app.get('/haetaansuositutreseptit', (req, res) => {
             row.updated_at = row.updated_at.toISOString().split('T')[0];
         });
         return res.status(200).json(result)
+    })
+})
+
+app.get('/searchbarreseptienhaku/:id', (req, res) => {
+    const sql = "SELECT r.recipe_id, r.title, r.description, r.visibility, DATE(r.created_at) AS created_at, DATE(r.updated_at) AS updated_at, GROUP_CONCAT(DISTINCT CONCAT(i.name, ' (' , i.quantity, ')')) AS ingredients, GROUP_CONCAT(DISTINCT p.image SEPARATOR ', ') AS photos, u.nickname AS author_nickname, AVG(ra.rating) AS average_rating FROM recipes r LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id LEFT JOIN photos p ON r.recipe_id = p.recipe_id LEFT JOIN users u ON r.author_id = u.user_id LEFT JOIN ratings ra ON r.recipe_id = ra.recipe_id WHERE r.visibility = 1 AND r.recipe_id = ? GROUP BY r.recipe_id"
+    const recipe_id = req.params.id
+    db.query(sql, [recipe_id], (err, data) => {
+        if(err) return res.status(500).json("Error yskittäisen reseptin haussa: " + err)
+        data.forEach(row => {
+            row.created_at = row.created_at.toISOString().split('T')[0];
+            row.updated_at = row.updated_at.toISOString().split('T')[0];
+        });
+        return res.status(200).json(data); 
     })
 })
 //sendMail(transporter, mailOptions)

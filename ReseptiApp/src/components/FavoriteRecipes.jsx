@@ -61,7 +61,7 @@ const FavoriteRecipes = () => {
                 <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
                   <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
                     <h5 className="card-title">{recipe.title}</h5>
-                    <p>Julkaisija: {recipe.author}</p> {/* Oletetaan että suosikkidatassa on julkaisijan tieto */}
+                    <p>Julkaisija: {recipe.author_nickname}</p> {/* Oletetaan että suosikkidatassa on julkaisijan tieto */}
                     <p>Resepti luotu: {recipe.created_at}</p>
                     <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                     {/* Esimerkkiä ei voi suoraan käyttää, mutta voit lisätä toiminnallisuuksia tarpeen mukaan */}
