@@ -81,39 +81,6 @@ const App = () => {
           <RegisterComponent handleCloseForm={toggleRegisterModal} />
         </Modal.Body>
       </Modal>
-     {/* <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
-        <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
-          {searchQuery && <h1>Suosittuja Reseptejä</h1>}
-          {recipes.flat().map((recipe, index) => {
-            if (searchQuery === true) {
-            return (
-              <div className="col-lg-4 col-md-6 col-sm-12" key={index} style={{ marginBottom: '1rem' }}>
-                <div className="recipe-card" style={{ backgroundColor: '#f8f9fa', padding: '1rem', borderRadius: '10px' }}>
-                  <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
-                    <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
-                      <h5 className="card-title">{recipe.title}</h5> <br></br>
-                      <p>Kuinka moni tykkäsi: {recipe.average_rating}</p>
-                      <p>Resepti lisätty: {recipe.created_at}</p>
-                      <p>Reseptin näkyvyys: {recipe.visibility === 1 ? 'Kaikille' : 'Vain jäsenet'}</p>
-                      <img src={`http://localhost:8081/images/${recipe.photos}`} alt="Recipe" style={{ width: '50%', height: 'auto' }} />
-                    </Tab>
-                    <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
-                      {recipe.ingredients}
-                    </Tab>
-                    <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
-                      <p className="card-text">{recipe.description}</p>
-                    </Tab>
-                  </Tabs>
-                </div>
-              </div>
-            ); }
-            else 
-            {
-              
-            }
-          })}
-        </div>
-      </div>  */}
     </div> 
   );
 };

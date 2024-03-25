@@ -829,4 +829,68 @@ app.get('/searchbarreseptienhaku/:id', (req, res) => {
         return res.status(200).json(data); 
     })
 })
+app.delete('/recipes/delete/:id', (req, res) => {
+    const recipe_id = req.params.id; 
+
+    db.beginTransaction(function(err) {
+        if (err) { return res.status(500).json("Virhe transaktion aloittamisessa: " + err); }
+
+        db.query('DELETE FROM ratings WHERE recipe_id = ?', [recipe_id], function(err, result) {
+            if (err) { 
+                db.rollback(function() {
+                    return res.status(500).json("Virhe arvioiden poistossa: " + err);
+                });
+            }
+
+            db.query('DELETE FROM photos WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                if (err) { 
+                    db.rollback(function() {
+                        return res.status(500).json("Virhe valokuvien poistossa: " + err);
+                    });
+                }
+
+                db.query('DELETE FROM keywords WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                    if (err) { 
+                        db.rollback(function() {
+                            return res.status(500).json("Virhe avainsanojen poistossa: " + err);
+                        });
+                    }
+
+                    db.query('DELETE FROM ingredients WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                        if (err) { 
+                            db.rollback(function() {
+                                return res.status(500).json("Virhe ainesosien poistossa: " + err);
+                            });
+                        }
+
+                        db.query('DELETE FROM favorites WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                            if (err) { 
+                                db.rollback(function() {
+                                    return res.status(500).json("Virhe suosikkien poistossa: " + err);
+                                });
+                            }
+
+                            db.query('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id], function(err, result) {
+                                if (err) { 
+                                    db.rollback(function() {
+                                        return res.status(500).json("Virhe reseptin poistossa: " + err);
+                                    });
+                                }
+
+                                db.commit(function(err) {
+                                    if (err) { 
+                                        db.rollback(function() {
+                                            return res.status(500).json("Virhe transaktion vahvistamisessa: " + err);
+                                        });
+                                    }
+                                    return res.status(200).json("Reseptin poisto onnistui: " + result);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
 //sendMail(transporter, mailOptions)

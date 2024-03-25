@@ -7,42 +7,27 @@ import  EditRecipeForm  from './EditRecipeForm';
 export const RecipeDisplay = () => {
   const { user } = useAuth();
   const [recipes, setRecipes] = useState([]);
-  const [authorInfo, setAuthorInfo] = useState([]);
-  const [votes, setVotes] = useState({});
-  const [favorites, setFavorites] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentRecipe, setCurrentRecipe] = useState(null);
   const [ratings, setRatings] = useState([]);
+  const [lastUpdatedRecipeId, setLastUpdatedRecipeId] = useState(null);
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-
 
   const handleEditClick = (recipe) => {
     setCurrentRecipe(recipe);
     setShowEditModal(true);
-  };
+ };
 
-  const handleCloseModal = () => {
+ const handleCloseModal = () => {
     setShowEditModal(false);
-    setCurrentRecipe(null); // Optional: Clear current recipe
-    // Optional: Refresh or update your recipes list here if needed
-  };
+    setCurrentRecipe(null);
+ };
 
-  const handleVote = (index, type) => {
-    const newVotes = { ...votes };
-    const voteKey = `${index}_${type}`; // Unique key for each recipe and vote type
-    newVotes[voteKey] = (newVotes[voteKey] || 0) + 1;
-    setVotes(newVotes);
-  };
-  const addToFavorites = (recipe) => {
-    alert(`${recipe.title} has been added to favorite recipes!`);
-    // Here you can also update the state if you want to track favorites within the app
-    // For example, to prevent adding the same recipe multiple times, check if it's already a favorite
-    if (!favorites.includes(recipe)) {
-      favorites.push(recipe.title);
-    }
-    console.log("Lisätty resepti: " + favorites)
-  };
+ const handleRecipeUpdated = (recipeId) => {
+  setLastUpdatedRecipeId(recipeId);
+  setLastUpdatedRecipeId(0);
+  console.log("Tähän id ", lastUpdatedRecipeId);
+ };
   const handleDelete = async (recipe_id, index) => {
     try {
       const response = await fetch(`http://localhost:8081/recipes/delete/${recipe_id}`, {
@@ -50,12 +35,9 @@ export const RecipeDisplay = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        // Include authentication tokens/credentials if needed
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
-
-      // Update state to remove the recipe from the UI
       const updatedRecipes = [...recipes];
       updatedRecipes.splice(index, 1);
       setRecipes(updatedRecipes);
@@ -103,7 +85,8 @@ export const RecipeDisplay = () => {
     }
     fetchRecipes();
     fetchUserRecipeRatings();
-  }, []);
+    setLastUpdatedRecipeId(0);
+  }, [lastUpdatedRecipeId]);
 return (
 <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
 <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1rem' }}>
@@ -145,13 +128,13 @@ return (
           <Modal.Title>Edit Recipe</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {currentRecipe && (
+        {currentRecipe && (
             <EditRecipeForm
               user={user}
               recipe={currentRecipe}
               onSave={() => {
                 setShowEditModal(false);
-                // Optional: Refresh or update your recipes list here
+                handleRecipeUpdated(currentRecipe.recipe_id);
               }}
               onClose={handleCloseModal}
             />

@@ -25,6 +25,14 @@ const AddRecipeForm = ({ user }) => {
       description: instructions,
       visibility,
     };
+    // Check if the file is an image based on its extension
+ const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+ const fileExtension = file.name.split('.').pop().toLowerCase();
+
+ if (file && !allowedExtensions.includes(fileExtension)) {
+    alert('Please upload an image file with a valid extension (jpg, jpeg, png, gif, bmp, webp).');
+    return; // Exit the function if the file is not an image
+ }
   
     try {
       const recipeResponse = await fetch('http://localhost:8081/recipeslisays', {
@@ -118,10 +126,19 @@ const AddRecipeForm = ({ user }) => {
   };
 
   const handleIngredientAmountChange = (index, value) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients[index].amount = value;
-    setIngredients(updatedIngredients);
-  };
+    // Regular expression to check if the value contains only digits
+    const numberRegex = /^\d+$/;
+   
+    // Check if the value is a number
+    if (numberRegex.test(value)) {
+       const updatedIngredients = [...ingredients];
+       updatedIngredients[index].amount = value;
+       setIngredients(updatedIngredients);
+    } else {
+       // Optionally, show an error message to the user
+       alert('Laita määrä numeroilla eli grammoina tai kappale määränä');
+    }
+   };
 
   const addIngredient = () => {
     setIngredients([...ingredients, { name: '', amount: '' }]);

@@ -9,7 +9,6 @@ const SearchBar = () => {
   const [details, setRecipedetails] = useState(null);
   const [reseptit, setReseptit] = useState([]); 
   const [searchError, setSearchError] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(true);
   const {id} = useParams(); 
   const navigate = useNavigate();
 
@@ -60,22 +59,6 @@ const SearchBar = () => {
 
     window.open(mailtoLink, '_blank');
  };
-
-  const fetchPopularRecipes = async () => {
-    try {
-      const response = await fetch('http://localhost:8081/haetaansuositutreseptit', {});
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const recipes = await response.json();
-      setReseptit(recipes);
-      console.log(recipes);
-    } catch (error) {
-      console.error('Error fetching favorite recipes:', error);
-    }
-  };
-
   const handlehaku = async (event) => {
     event.preventDefault();
     try {

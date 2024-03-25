@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
   const [title, setTitle] = useState(recipe.title);
-  const [ingredients, setIngredients] = useState([recipe.ingredients]); // This should be an array of { name: '', amount: '' }
+  const [ingredients, setIngredients] = useState([recipe.ingredients]); 
   const [description, setDescription] = useState(recipe.description);
-  const [tags, setTags] = useState(recipe.keywords); // Assuming tags are an array of strings
+  const [tags, setTags] = useState(recipe.keywords); 
   const [visibility, setVisibility] = useState(recipe.visibility);
   const [ingredientideet, setIngredientideet] = useState([recipe.ingredient_ids])
   const [file, setFile] = useState(null);
@@ -39,11 +39,9 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
       alert("Reseptillä on oltava vähintään yksi ainesosa.");
       return; 
     }
-    // Remove the ingredient from the local state
     const updatedIngredients = ingredients.filter((_, i) => i !== index);
     setIngredients(updatedIngredients);
 
-    // Get the ingredient ID to delete from the database
     const ingredientIdToDelete = await fetch('http://localhost:8081/ingredientidhaku', {
       method: 'POST',
       headers: {
@@ -55,7 +53,6 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
     const ingredient_id = await ingredientIdToDelete.json(); 
     console.log("Tässä ainesosa id", ingredient_id); 
     try {
-       // Make an API call to delete the ingredient from the database
        const response = await fetch(`http://localhost:8081/ingredients/${ingredient_id}`, {
          method: 'DELETE',
        });
@@ -64,7 +61,6 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
          throw new Error('Failed to delete ingredient');
        }
    
-       // Optionally, remove the ingredient ID from the ingredientideet state
        const updatedIngredientIds = ingredientideet.filter((_, i) => i !== index);
        setIngredientideet(updatedIngredientIds);
    
@@ -77,7 +73,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
   const handleRecipeUpdate = async (event) => {
     event.preventDefault();
 
-    // Prepare recipe data
+
     const recipeData = {
       title,
       description,
@@ -85,13 +81,13 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
       recipe_id
     };
 
-    // Prepare ingredients data
+
     const ingredientsData = ingredients.filter(i => i.name && i.amount);
 
 
 
     try {
-      // Update recipe information
+
       const recipeResponse = await fetch('http://localhost:8081/reseptinpaivitys', {
         method: 'PUT',
         headers: {
@@ -106,7 +102,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
 
       const newIngredients = ingredientsData.filter((ingredient, index) => !ingredientideet[index]);
 
-      // Create new ingredients in the database
+
       const newIngredientResponses = await Promise.all(newIngredients.map(ingredient =>
         fetch('http://localhost:8081/ingredients', {
           method: 'POST',
@@ -116,14 +112,14 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
           body: JSON.stringify({recipe_id: recipe_id, name: ingredient.name, quantity: ingredient.amount }),
         })
       ));
-      // Update ingredientideet with new IDs
+
       const newIngredientIds = await Promise.all(newIngredientResponses.map(response => response.json()));
       console.log("UUDET AINESOSA ID:T ", newIngredientIds);
       const uudetidt = [...ingredientideet, ...newIngredientIds]
       console.log("Koko lista olevinaan", uudetidt)
       setTestilista([...testilista, ...uudetidt]);
       console.log("KAIKKI AINESOSA ID:T ", testilista)
-      // Update existing ingredients
+
 
       const ingredientsResponse = await Promise.all(ingredientsData.map((ingredient, index) =>
         fetch('http://localhost:8081/ingredientspaivitys', {
@@ -141,7 +137,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
         }
       }
 
-      // Update tags
+
       const tagsResponse = await fetch('http://localhost:8081/keywordspaivitys', {
         method: 'PUT',
         headers: {
@@ -154,7 +150,6 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
         throw new Error('Failed to update tags');
       }
 
-      // If a new photo was provided, upload it
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
@@ -168,8 +163,8 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
           throw new Error('Failed to upload new photo');
         }
       }
-
-      onSave(); // Callback function to handle post-update actions
+      console.log("Reseptin id: ", recipe_id)
+      onSave();
       alert("Päivitys onnistui ;)")
     } catch (error) {
       console.error(error);
