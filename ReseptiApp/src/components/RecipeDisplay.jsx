@@ -25,7 +25,6 @@ export const RecipeDisplay = () => {
 
  const handleRecipeUpdated = (recipeId) => {
   setLastUpdatedRecipeId(recipeId);
-  setLastUpdatedRecipeId(0);
   console.log("Tähän id ", lastUpdatedRecipeId);
  };
   const handleDelete = async (recipe_id, index) => {
