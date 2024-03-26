@@ -25,10 +25,14 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
     setIngredientideet(uuttaainesosaidt);
   }, []);
   const handleIngredientChange = (index, field, value) => {
+    if (field === 'amount' && isNaN(value)) {
+       alert('Määrän tulee olla numero.');
+       return; 
+    }
     const newIngredients = [...ingredients];
     newIngredients[index] = { ...newIngredients[index], [field]: value };
     setIngredients(newIngredients);
-  };
+   };
 
   const handleIngredientAdd = () => {
     setIngredients([...ingredients, { name: '', amount: '' }]);
@@ -151,6 +155,13 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
       }
 
       if (file) {
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+          alert('Please upload an image file with a valid extension (jpg, jpeg, png, gif, bmp, webp).');
+           return; // Exit the function if the file is not an image
+                }
         const formData = new FormData();
         formData.append('file', file);
         formData.append('recipe_id', recipe_id)
@@ -163,9 +174,8 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
           throw new Error('Failed to upload new photo');
         }
       }
-      console.log("Reseptin id: ", recipe_id)
       onSave();
-      alert("Päivitys onnistui ;)")
+      alert("Reseptin päivitys onnistui")
     } catch (error) {
       console.error(error);
       alert('An error occurred while updating the recipe: ' + error.message);

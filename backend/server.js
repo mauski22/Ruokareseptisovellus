@@ -90,7 +90,7 @@ app.post("/sendrecoveryemail", (req, res) => {
                 <a href="http://localhost:5173/PasswordReset/${result[0].user_id}/${result[0].name}">Vaihda salasana</a>
                 <p>Jos et pyytänyt salasanan vaihtoa, voit jättää tämän viestin huomiotta.</p>
                 <p>Ystävällisin terveisin,</p>
-                <p>Haute Cuisine backend ;D</p>`;
+                <p>Haute Cuisine backend</p>`;
 
                 sendMail(transporter, mailOptions);
                 console.log("Email has been sent to " + recipientEmail);

@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, InputGroup, Container, Tabs, Tab } from 'react-bootstrap';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
+function RatingStars({ rating }) {
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+     if (i < rating) {
+       stars.push(<span key={i} style={{ fontSize: '24px', color: 'gold' }}>★</span>);
+     } else {
+       stars.push(<span key={i} style={{ fontSize: '24px', color: 'gold' }}>☆</span>);
+     }
+  }
+  return <p>{stars}</p>;
+ }
 const SearchBar = () => {
   const [keywords, setKeywords] = useState([]);
   const [selectedKeyword, setSelectedKeyword] = useState('');
@@ -27,9 +38,7 @@ const SearchBar = () => {
             throw new Error('Network response was not ok');
           }
           const data = await response.json();
-          console.log("Tässä vähän tietoa kyseisestä reseptistä ", data)
           setRecipedetails(data);
-          console.log("TÄSSÄ ON TÄMÄN RESEPTIN TIEDOT ", details)
         } catch (error) {
           console.error('Error fetching recipe details:', error);
         }
@@ -53,7 +62,7 @@ const SearchBar = () => {
 
   const handleShareRecipe = () => {
     const recipeUrl = window.location.href; // Tämä on nykyinen sivun URL
-    const subject = encodeURIComponent(`Resepti: ${details.title}`); // Reseptin otsikko
+    const subject = encodeURIComponent(`Resepti: ${details[0].title}`); // Reseptin otsikko
     const body = encodeURIComponent(`Hei! Katso tämä  komia resepti: ${recipeUrl}`); // Sähköpostin viestin sisältö
     const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
 
@@ -136,7 +145,7 @@ const SearchBar = () => {
                        <p>Julkaisija: {recipe.author_nickname}</p>
                        <p>Resepti luotu: {recipe.created_at}</p>
                        <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
-                       <p>Käyttäjien antama arvosana: {recipe.average_rating}</p>
+                       <p>Käyttäjien antama arvosana: <RatingStars rating={recipe.average_rating} /></p>
                     </Tab>
                     <Tab eventKey={`tabReseptin Ainesosat-${index}`} title="Reseptin Ainesosat">
                        <p>Ainesosat: {recipe.ingredients}</p>
@@ -168,7 +177,7 @@ const SearchBar = () => {
                        <p>Julkaisija: {details[0].author_nickname}</p>
                        <p>Resepti luotu: {details[0].created_at}</p>
                        <p>Näkyvyys: {details[0].visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
-                       <p>Käyttäjien antama arvosana: {details[0].average_rating}</p>
+                       <p>Käyttäjien antama arvosana: <RatingStars rating={details[0].average_rating} /></p>
                        <Button variant="outline-secondary" onClick={handleShareRecipe}>
                          Jaa resepti
                        </Button>

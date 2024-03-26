@@ -14,9 +14,9 @@ const ResetPassword = () => {
         },
         body: JSON.stringify({email: email}),
       });
-
       const data = await response.json();
       console.log(data);
+      alert("Salasanan palautuslinkin pitäisi löytyä sähköpostistasi")
     } catch (error) {
       console.error(error);
       alert("Sähköpostiosoitetta ei löytynyt");
