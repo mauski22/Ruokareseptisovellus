@@ -81,7 +81,6 @@ const App = () => {
           <RegisterComponent handleCloseForm={toggleRegisterModal} />
         </Modal.Body>
       </Modal>
-      {/*Testi */}
     </div> 
   );
 };
