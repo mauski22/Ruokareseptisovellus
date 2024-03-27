@@ -94,7 +94,7 @@ export const AllRecipeDisplay = () => {
   
       Katso tätä maukasta reseptiä: ${recipe.title}
   
-      Tässä on linkki reseptiin: ${window.location.origin}/recipes/${recipe.recipe_id}
+      Tässä on linkki reseptiin: ${window.location.origin}/recipe/${recipe.recipe_id}
   
       Lähetetty Ruokareseptisovelluksesta.
     `;
