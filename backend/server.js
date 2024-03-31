@@ -48,12 +48,12 @@ let transporter = nodemailer.createTransport({
     port: 465, 
     secure: true,
     auth: {
-            user: 'bearmario2@gmail.com',
-            pass: 'qnve boaa bixt ddkg'
+            user: 'GMAIL ADDRESS NEEDED HERE',
+            pass: 'PASSWORD'
     }
     });
 const mailOptions = {
-        from: {name: 'Haute-Cuisine backendpro 666', address: 'bearmario2@gmail.com'},
+        from: {name: 'Haute-Cuisine backendpro 666', address: 'GMAIL ADDRESS NEEDED HERE'},
         to: 'jiojiojiojiojoij',
         subject: 'Salasananpalautus',
         html: html
