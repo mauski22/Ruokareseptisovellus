@@ -1,5 +1,7 @@
 function Person () {
-    
+    return(
+        <h1>Yksityishenkilön näkymä</h1>
+    )
 }
 
 

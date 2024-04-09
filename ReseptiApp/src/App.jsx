@@ -64,8 +64,8 @@ const App = () => {
         <Route path="/favoriteRecipes" element={<FavoriteRecipes />} />
         <Route path='/recipe/:id' element={<SearchBar/>}/>
         <Route path="/" element= {<SearchBar/>}/>
-        <Route path="/personview" element= {<Person/>}/>
-        <Route path="/companyview" element= {<Company/>}/>
+        <Route path="/Person" element= {<Person/>}/>
+        <Route path="/Company" element= {<Company/>}/>
       </Routes>
 
       <Modal show={showLoginModal} onHide={toggleLoginModal}>
