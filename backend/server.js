@@ -893,4 +893,20 @@ app.delete('/recipes/delete/:id', (req, res) => {
         });
     });
 });
+app.get('/superadminFavorites/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const sql = `
+        SELECT r.* FROM recipes r
+        JOIN favorites f ON r.recipe_id = f.recipe_id
+        JOIN users u ON f.user_id = u.user_id
+        WHERE u.user_role = 'superadmin' AND u.user_id = ?;
+    `;
+    db.query(sql, [userId], (err, data) => {
+        if (err) {
+            console.error("Error fetching superadmin's favorite recipes:", err);
+            return res.status(500).json("Error fetching superadmin's favorite recipes: " + err);
+        }
+        return res.status(200).json(data);
+    });
+});
 //sendMail(transporter, mailOptions)
