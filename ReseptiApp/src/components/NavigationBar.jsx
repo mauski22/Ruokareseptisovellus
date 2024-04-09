@@ -1,6 +1,6 @@
 //NavigationBar.jsx
 import React, { useState } from 'react';
-import { Container, Navbar, Nav, Button, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Container, Navbar, Nav, Button, Modal, OverlayTrigger, Popover, Dropdown } from 'react-bootstrap';
 import { useAuth } from './AuthContext';
 import { NavLink, useLocation } from 'react-router-dom';
 import AddRecipeForm from './AddRecipeForm';
@@ -106,11 +106,16 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
               </>
             ) : (
               <>
-                <Navbar.Text className="me-2">
-                </Navbar.Text>
-                <Button onClick={onLoginClicked} variant="primary">Kirjaudu Yksityishenkilönä</Button> {/* Adjust as necessary for your login logic */}
-                
-                <Button onClick={onLoginClicked} variant="danger">Kirjaudu Yrityksenä</Button> {/* Adjust as necessary for your login logic */}
+                <Dropdown>
+                  <Dropdown.Toggle variant="success" id="dropdown-login">
+                    Kirjaudu
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => onLoginClicked('individual')}>Kirjaudu Yksityishenkilönä</Dropdown.Item>
+                    <Dropdown.Item onClick={() => onLoginClicked('company')}>Kirjaudu Yrityksenä</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
                 <Button onClick={onSignUpClicked} variant="secondary">Rekisteröidy</Button> {/* Adjust as necessary for your signup logic */}
               </>
             )}
