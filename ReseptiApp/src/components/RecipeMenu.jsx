@@ -8,9 +8,9 @@ const RecipeMenu = ({ onClick }) => {
     const navigate = useNavigate();
     return (
         <div>
-            <button onClick={() =>{ navigate('/usersOwnRecipes'); onClick(); }}>OMAT RESEPTIT</button>
-            <button onClick={() =>{ navigate('/allRecipes'); onClick(); }}>KAIKKI RESEPTIT</button>      
-            <button onClick={() =>{ navigate('/favoriteRecipes'); onClick(); }}>SUOSIKIT</button>      
+            <button onClick={() =>{ navigate('/usersOwnRecipes'); onClick(); }}>OMAT IDEAT</button>
+            <button onClick={() =>{ navigate('/allRecipes'); onClick(); }}>KAIKKI IDEAT</button>      
+            <button onClick={() =>{ navigate('/favoriteRecipes'); onClick(); }}>SUOSIKKI IDEAT</button>      
         </div>
     );
 }

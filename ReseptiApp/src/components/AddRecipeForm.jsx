@@ -147,7 +147,7 @@ const AddRecipeForm = ({ user }) => {
   return (
     <form onSubmit={handleRecipeSubmit} enctype="multipart/form-data" style={{flex: "auto"}}>
       <div>
-        <label>Nimi: </label>
+        <label>Idean nimi: </label>
         <input
           type="text"
           value={title}
@@ -156,29 +156,28 @@ const AddRecipeForm = ({ user }) => {
         />
       </div>
       <div>
-        <label>Raaka-aineet: </label>
+        <label>Hinta & valuutta: </label>
         {ingredients.map((ingredient, index) => (
           <div key={index}>
             <input
               type="text"
-              value={ingredient.name}
-              onChange={(e) => handleIngredientNameChange(index, e.target.value)}
-              placeholder="Raaka-aine"
+              value={ingredient.amount}
+              onChange={(e) => handleIngredientAmountChange(index, e.target.value)}
+              placeholder="Summa"
               required
             />
             <input
               type="text"
-              value={ingredient.amount}
-              onChange={(e) => handleIngredientAmountChange(index, e.target.value)}
-              placeholder="Määrä"
+              value={ingredient.name}
+              onChange={(e) => handleIngredientNameChange(index, e.target.value)}
+              placeholder="Valuutta"
               required
             />
           </div>
         ))}
-        <button type="button" onClick={addIngredient}>Lisää raaka-aine</button>
       </div>
       <div>
-        <label>Ohjeet: </label>
+        <label>Idean kuvaus: </label>
         <textarea
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)} style={{height: "400px", width: "100%"}}
@@ -186,7 +185,7 @@ const AddRecipeForm = ({ user }) => {
         />
       </div>
       <div>
-        <label>Hashtagit (#): </label>
+        <label>Avainsanat: </label>
         <input
           type="text"
           value={tags}
@@ -201,7 +200,7 @@ const AddRecipeForm = ({ user }) => {
       <label>Valitse kuva: </label>
         <input type="file" onChange={(e) => setFile(e.target.files[0])}/>
       </div>
-      <button type="submit">Lisää resepti</button>
+      <button type="submit">Lisää Idea</button>
     </form>
   );
 };

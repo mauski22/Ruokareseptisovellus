@@ -83,7 +83,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
               <Nav.Link as={NavLink} to="/publicRecipes">Selaa Ideoita</Nav.Link>
             )}
             {isLoggedIn && (
-              <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää resepti</Button>
+              <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää idea</Button>
             )}
             {isLoggedIn && isSuperAdmin && (
               <Nav.Link as={NavLink} to="/usersTable">{"("}ADMIN{")"}</Nav.Link>
@@ -119,7 +119,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
       />
     <Modal show={showAddRecipeModal} onHide={handleCloseAddRecipeForm}>
         <Modal.Header closeButton>
-          <Modal.Title>Lisää uusi resepti</Modal.Title>
+          <Modal.Title>Lisää uusi idea</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <AddRecipeForm user={user} />
