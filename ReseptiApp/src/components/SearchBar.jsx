@@ -135,7 +135,7 @@ const SearchBar = () => {
                <div key={index} className="col-md-4" style={{ padding: '10px' }}>
                  <div className="card" style={{ width: '43rem', height: '40rem' }}>
                    <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
-                    <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
+                    <Tab eventKey={`tab${index}First`} title="Idea">
                        <img
                          src={`http://localhost:8081/images/${recipe.photos}`}
                          alt={recipe.title}
@@ -143,14 +143,14 @@ const SearchBar = () => {
                        />
                        <h5 className="card-title">{recipe.title}</h5>
                        <p>Julkaisija: {recipe.author_nickname}</p>
-                       <p>Resepti luotu: {recipe.created_at}</p>
+                       <p>Idea luotu: {recipe.created_at}</p>
                        <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                        <p>Käyttäjien antama arvosana: <RatingStars rating={recipe.average_rating} /></p>
                     </Tab>
-                    <Tab eventKey={`tabReseptin Ainesosat-${index}`} title="Reseptin Ainesosat">
-                       <p>Ainesosat: {recipe.ingredients}</p>
+                    <Tab eventKey={`tabReseptin Ainesosat-${index}`} title="Hinta & valuutta">
+                       <p>Hinta & valuutta {recipe.ingredients}</p>
                     </Tab>
-                    <Tab eventKey={`tabValmistusohje-${index}`} title="Valmistusohje">
+                    <Tab eventKey={`tabValmistusohje-${index}`} title="Idean kuvaus">
                        <p className="card-text">{recipe.description}</p>
                     </Tab>
                    </Tabs>
@@ -161,11 +161,11 @@ const SearchBar = () => {
          </>
        ) : (
          <>
-           <h1>Hakemasi resepti</h1>
+           <h1>Hakemasi idea</h1>
            <div className="col-md-4" style={{ padding: '10px' }}>
              <div className="card" style={{ width: '43rem', height: '40rem' }}>
                <Tabs defaultActiveKey="tabFirst" id="uncontrolled-tab-example">
-                 <Tab eventKey="tabFirst" title="Reseptin etusivu">
+                 <Tab eventKey="tabFirst" title="Idea">
                    {details && details[0] && (
                     <>
                        <img
@@ -175,7 +175,7 @@ const SearchBar = () => {
                        />
                        <h5 className="card-title">{details[0].title}</h5>
                        <p>Julkaisija: {details[0].author_nickname}</p>
-                       <p>Resepti luotu: {details[0].created_at}</p>
+                       <p>Idea luotu: {details[0].created_at}</p>
                        <p>Näkyvyys: {details[0].visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                        <p>Käyttäjien antama arvosana: <RatingStars rating={details[0].average_rating} /></p>
                        <Button variant="outline-secondary" onClick={handleShareRecipe}>
@@ -184,10 +184,10 @@ const SearchBar = () => {
                     </>
                    )}
                  </Tab>
-                 <Tab eventKey="tabReseptin Ainesosat" title="Reseptin Ainesosat">
+                 <Tab eventKey="tabReseptin Ainesosat" title="Hinta & Valuutta">
                    {details && details[0] && <p>Ainesosat: {details[0].ingredients}</p>}
                  </Tab>
-                 <Tab eventKey="tabValmistusohje" title="Valmistusohje">
+                 <Tab eventKey="tabValmistusohje" title="Idean kuvaus">
                    {details && details[0] && <p className="card-text">{details[0].description}</p>}
                  </Tab>
                </Tabs>

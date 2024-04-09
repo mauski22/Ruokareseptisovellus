@@ -52,28 +52,28 @@ const FavoriteRecipes = () => {
 
   return (
 <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
-  <h2>Suosikki Reseptit</h2>
+  <h2>Myydyt ideat</h2>
   <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1px' }}>
     {favoriteRecipes.map((recipe, index) => (
       <Card key={index} className="recipe-card" style={{ width: '100%', margin: '10px' }}>
         <Row noGutters>
           <Col md={8}>
             <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
-              <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
+              <Tab eventKey={`tab${index}First`} title="Idean etusivu">
                 <img
                   src={`http://localhost:8081/images/${recipe.photos}`}
-                  alt="Recipe"
+                  alt="Idea"
                   className="custom-image"
                   style={{ width: '50%', height: 'auto' }} />
                 <h5 className="card-title">{recipe.title}</h5>
                 <p>Julkaisija: {recipe.author_nickname}</p>
-                <p>Resepti luotu: {recipe.created_at}</p>
+                <p>Idea luotu: {recipe.created_at}</p>
                 <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
               </Tab>
-              <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
+              <Tab eventKey={`tab${index}Hinta & valuutta`} title="Hinta & valuutta">
                 <p>{recipe.ingredients}</p>
               </Tab>
-              <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
+              <Tab eventKey={`tab${index}Kuvaus`} title="Kuvaus">
                 <p className="card-text">{recipe.description}</p>
               </Tab>
             </Tabs>
