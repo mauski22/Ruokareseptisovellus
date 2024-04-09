@@ -13,7 +13,7 @@ export const AllRecipeDisplay = () => {
 
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
 
-  isSuperAdmin = user.userRole === "superadmin";
+  const isSuperAdmin = user.userRole === "superadmin";
   useEffect(() => {
     const fetchFavoriteRecipes = async () => {
       try {
