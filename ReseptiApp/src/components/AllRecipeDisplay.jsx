@@ -13,6 +13,7 @@ export const AllRecipeDisplay = () => {
 
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
 
+  isSuperAdmin = user.userRole === "superadmin";
   useEffect(() => {
     const fetchFavoriteRecipes = async () => {
       try {
@@ -264,7 +265,7 @@ const removeRating = async (recipeId, userId) => {
 
 const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
   const isFavorite = userFavorites.has(recipe.recipe_id);
-
+if(isSuperAdmin){
   return (
     <Button 
       onClick={() => toggleFavorite(recipe)}
@@ -277,9 +278,11 @@ const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
       }} 
       size="sm"
     >
-      {isFavorite ? '⭐' : '☆'} {/* Keltainen tähti, jos suosikki; harmaa tähti, jos ei */}
+
+      {isFavorite ? 'Ostettu' : '💰Osta tämä idea '} {/* Keltainen tähti, jos suosikki; harmaa tähti, jos ei */}
     </Button>
   );
+}
 };
 
 
