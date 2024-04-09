@@ -184,7 +184,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
 
   return (
     <div>
-      <h2>Muokkaa reseptiä</h2>
+      <h2>Muokkaa ideaa</h2>
       <form onSubmit={handleRecipeUpdate}>
         <div>
           <label>Nimi: </label>
@@ -192,14 +192,14 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
           {console.log("Ainesosat " + recipe.ingredients, "Ohjeet: " +  recipe.description, "AINESOSAIDT: " + recipe.ingredient_ids + " Photoes: " + recipe.photos,  + recipe_id +recipe.keywords)}
         </div>
         <div>
-          <label>Raaka-aineet: </label>
+          <label>Hinta & valuutta </label>
           {ingredients.map((ingredient, index) => (
             <div key={index}>
               <input
                 type="text"
                 value={ingredient.name}
                 onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
-                placeholder="Raaka-aine"
+                placeholder="Hinta & valuutta"
                 required
               />
               <input
@@ -209,17 +209,15 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
                 placeholder="Määrä"
                 required
               />
-              <button type='button' onClick={() => handledeleteingredient(index)}>Poista</button>
             </div>
           ))}
-          <button type="button" onClick={handleIngredientAdd}>Lisää raaka-aine</button>
         </div>
         <div>
-          <label>Ohjeet: </label>
+          <label>Idean kuvaus </label>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} style={{height: "300px", width: "700px"}}required />
         </div>
         <div>
-          <label>Hashtagit (#): </label>
+          <label>Hakusanat : </label>
           <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} />
         </div>
         <div>
