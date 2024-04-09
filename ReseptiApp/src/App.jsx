@@ -18,6 +18,7 @@ import Person from './components/Person';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import FakeStats from './components/FakeStats';
+import ImageCarousel from './components/ImageCarousel';
 
 const App = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="/" element= {<SearchBar/>}/>
         <Route path="/Person" element= {<Person/>}/>
         <Route path="/Company" element= {<Company/>}/>
+        <Route path="/ImageCarousel" element= {<ImageCarousel/>}/>
       </Routes>
 
       <Modal show={showLoginModal} onHide={toggleLoginModal}>

@@ -1,0 +1,7 @@
+/* Lisää tämä CSS-koodi sovelluksesi tyylitiedostoon */
+.carousel-image {
+    max-width: 100%; /* Asettaa kuvan maksimileveydeksi 100% vanhemman elementin leveydestä */
+    max-height: 500px; /* Asettaa kuvan maksimikorkeudeksi 500 pikseliä */
+    object-fit: contain; /* Varmistaa, että kuva mahtuu määritettyihin mittoihin säilyttäen mittasuhteet */
+  }
+  
