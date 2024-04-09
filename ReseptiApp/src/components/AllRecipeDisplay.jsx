@@ -293,7 +293,7 @@ const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
           <Row>
             <Col md={5} style={{ marginBottom: '20px'}}>
               <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
-               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
+               <Tab eventKey={`tab${index}First`} title="Idean etusivu">
                 <ListGroup variant="center">
                   <ListGroup.Item>
                   <Card.Title as="h2"style={{marginTop:'30px'}}>{recipe.title}</Card.Title>
@@ -303,7 +303,7 @@ const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
                   <p>Julkaisija: {recipe.author_nickname}</p>
                   </ListGroup.Item>
                   <ListGroup.Item>
-                  <p>Resepti luotu: {recipe.created_at}</p>
+                  <p>Idea luotu: {recipe.created_at}</p>
                   </ListGroup.Item>
                   <ListGroup.Item>
                   <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
@@ -345,10 +345,10 @@ const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
                   </ListGroup>
                   </ListGroup>
                </Tab>
-               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
+               <Tab eventKey={`tab${index}Idean hinta & valuutta`} title="Idean hinta & valuutta">
                     <p>{recipe.ingredients }</p>
                </Tab>
-               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
+               <Tab eventKey={`tab${index}Idean kuvaus`} title="Idean kuvaus">
                   <p className="card-text">{recipe.description}</p>
                </Tab>
               </Tabs>
@@ -357,7 +357,7 @@ const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
               <Card.Img 
                variant="right"
                src={`http://localhost:8081/images/${recipe.photos}`}
-               alt="Recipe"
+               alt="Idea"
                className="custom-image"
               />
             </Col>
