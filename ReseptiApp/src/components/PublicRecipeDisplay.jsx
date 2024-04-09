@@ -55,10 +55,10 @@ export const PublicRecipeDisplay = () => {
           <Row noGutters>
             <Col md={8}>
               <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
-               <Tab eventKey={`tab${index}First`} title="Reseptin etusivu">
+               <Tab eventKey={`tab${index}First`} title="Idea">
                   <h5 className="card-title">{recipe.title}</h5>
                   <p>Julkaisija: {recipe.author_nickname}</p>
-                  <p>Resepti luotu: {recipe.created_at}</p>
+                  <p>Idea luotu: {recipe.created_at}</p>
                   <p>Näkyvyys: {recipe.visibility === 1 ? 'Julkinen' : 'Vain jäsenille'}</p>
                   <Button onClick={() => registerAlert()}
                   style={{ 
@@ -94,10 +94,10 @@ export const PublicRecipeDisplay = () => {
                     ⭐
                   </Button>
                </Tab>
-               <Tab eventKey={`tab${index}Reseptin Ainesosat`} title="Reseptin Ainesosat">
+               <Tab eventKey={`tab${index}Idean summa ja valuutta`} title="Idean summa ja valuutta">
                     <p>{recipe.ingredients}</p>
                </Tab>
-               <Tab eventKey={`tab${index}Valmistusohje`} title="Valmistusohje">
+               <Tab eventKey={`tab${index}Kuvaus`} title="Idean kuvaus">
                   <p className="card-text">{recipe.description}</p>
                </Tab>
               </Tabs>
@@ -106,7 +106,7 @@ export const PublicRecipeDisplay = () => {
               <img 
                variant="bottom"
                src={`http://localhost:8081/images/${recipe.photos}`}
-               alt="Recipe"
+               alt="Idea"
                className="custom-image"
               />
             </Col>
