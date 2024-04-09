@@ -17,6 +17,7 @@ import Company from './components/Company';
 import Person from './components/Person';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import FakeStats from './components/FakeStats';
 
 const App = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -54,6 +55,7 @@ const App = () => {
     <div className="App search-bar">
       <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
       <Routes>
+        <Route path="/" element={<FakeStats />} />
         <Route path="/usersTable" element={<UsersTable />} />
         <Route path="/recipes" element={<RecipeMenu />} />
         <Route path="/reset-password" element={<ResetPassword />} />
