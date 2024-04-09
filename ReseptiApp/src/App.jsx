@@ -13,6 +13,8 @@ import RecipeDisplay from './components/RecipeDisplay';
 import PublicRecipeDisplay from './components/PublicRecipeDisplay';
 import AllRecipeDisplay from './components/AllRecipeDisplay';
 import FavoriteRecipes from './components/FavoriteRecipes';
+import Company from './components/Company';
+import Person from './components/Person';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -62,6 +64,8 @@ const App = () => {
         <Route path="/favoriteRecipes" element={<FavoriteRecipes />} />
         <Route path='/recipe/:id' element={<SearchBar/>}/>
         <Route path="/" element= {<SearchBar/>}/>
+        <Route path="/personview" element= {<Person/>}/>
+        <Route path="/companyview" element= {<Company/>}/>
       </Routes>
 
       <Modal show={showLoginModal} onHide={toggleLoginModal}>
