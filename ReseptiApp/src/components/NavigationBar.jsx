@@ -100,7 +100,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {user ? (
               <>
                 <Navbar.Text className="me-2">
-                  Kirjauduttu sisään: {user.userName} {isSuperAdmin ? '[ADMIN]' : '(Jäsen)'}
+                  Kirjauduttu sisään: {user.userName} {isSuperAdmin ? 'YRITYS' : 'Jäsen'}
                 </Navbar.Text>
                 <Button onClick={handleShowConfirmModal} variant="outline-danger">Kirjaudu ulos</Button>
               </>
