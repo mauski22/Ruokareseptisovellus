@@ -906,6 +906,10 @@ app.get('/superadminFavorites/:userId', (req, res) => {
             console.error("Error fetching superadmin's favorite recipes:", err);
             return res.status(500).json("Error fetching superadmin's favorite recipes: " + err);
         }
+        data.forEach(row => {
+            row.created_at = row.created_at.toISOString().split('T')[0];
+            row.updated_at = row.updated_at.toISOString().split('T')[0];
+        });
         return res.status(200).json(data);
     });
 });
