@@ -42,7 +42,7 @@ export const PublicRecipeDisplay = () => {
   }
   return (
     <div className="container" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
-      <h2>Kaikki Reseptit</h2>
+      <h2>Kaikki Ideat</h2>
       <div className="row" style={{ display: 'flex', flexWrap: 'wrap', margin: '1px' }}>
 
       {recipes.map((recipe, index) => {
