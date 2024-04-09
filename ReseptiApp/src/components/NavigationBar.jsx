@@ -56,7 +56,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
     <>
     <Navbar bg="light" expand="lg" className="justify-content-between">
       <Container>
-        <Navbar.Brand as={NavLink} to="/">Ruokareseptisovellus</Navbar.Brand>
+        <Navbar.Brand as={NavLink} to="/">Idea Market</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -76,11 +76,11 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
                   rootClose={true}
                   onHide={handleClosePopover}
                 >
-                  <Nav.Link onClick={handlePopoverClick}>Reseptit</Nav.Link>
+                  <Nav.Link onClick={handlePopoverClick}>Ideat</Nav.Link>
                 </OverlayTrigger>
               )}
             {!isLoggedIn && (
-              <Nav.Link as={NavLink} to="/publicRecipes">Selaa Reseptejä</Nav.Link>
+              <Nav.Link as={NavLink} to="/publicRecipes">Selaa Ideoita</Nav.Link>
             )}
             {isLoggedIn && (
               <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää resepti</Button>
