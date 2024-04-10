@@ -91,9 +91,6 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
             {isLoggedIn && (
               <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää idea</Button>
             )}
-            {isLoggedIn && isSuperAdmin && (
-              <Nav.Link as={NavLink} to="/usersTable">{"("}ADMIN{")"}</Nav.Link>
-            )}
 
           </Nav>
           <Nav>
