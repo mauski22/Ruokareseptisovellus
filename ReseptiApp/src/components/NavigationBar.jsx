@@ -54,13 +54,13 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
 
   return (
     <>
-    <Navbar bg="light" expand="lg" className="justify-content-between">
-      <Container>
+<Navbar bg="" expand="lg" className="justify-content-between navbar-blue">
+        <Container>
         <Navbar.Brand as={NavLink} to="/">Idea Market</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" exact>Etusivu</Nav.Link>
+            <Nav.Link as={NavLink} to="/" exact></Nav.Link>
             {isLoggedIn && (
                 <OverlayTrigger
                   show={showPopover}
