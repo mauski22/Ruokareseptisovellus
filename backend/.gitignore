@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 *.jpg
+*.png
 *.jpeg
 *.webp
