@@ -67,7 +67,6 @@ const AddRecipeForm = ({ user }) => {
       }
       const reseptiIdtulos = await reseptiIDn.json();
       console.log("ReseptiIdtulos: " + reseptiIdtulos);
-
       const ingredientRequests = ingredients.map(ingredient => {
         if (ingredient.name && ingredient.amount) {
           return fetch('http://localhost:8081/ingredients', {
@@ -77,8 +76,8 @@ const AddRecipeForm = ({ user }) => {
             },
             body: JSON.stringify({
               recipe_id: reseptiIdtulos,
-              name: ingredient.name,
-              quantity: ingredient.amount,
+              name: ingredient.amount,
+              quantity: ingredient.name,
             })
           });
         }
