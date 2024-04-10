@@ -13,7 +13,7 @@ const Person = () => {
     <Container>
       <Row className="my-4">
         <Col>
-          <h1>Tervetuloa Ilkka {user.userName}</h1>
+          <h1>Tervetuloa {user.nickname}</h1>
         </Col>
         <Col className="text-right">
           <Button variant="primary">Lisää idea</Button>

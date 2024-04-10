@@ -56,7 +56,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
     <>
 <Navbar bg="" expand="lg" className="justify-content-between navbar-blue">
         <Container>
-        <Navbar.Brand as={NavLink} to="/">Idea Market</Navbar.Brand>
+        <Navbar.Brand as={NavLink} to="/" style={{"color":"white"}}>Idea Market</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -80,7 +80,7 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
                 </OverlayTrigger>
               )}
             {!isLoggedIn && (
-              <Nav.Link as={NavLink} to="/publicRecipes">Selaa Ideoita</Nav.Link>
+              <Nav.Link as={NavLink} to="/publicRecipes" style={{"color":"white"}}>Selaa Ideoita</Nav.Link>
             )}
             {isLoggedIn && !isSuperAdmin && (
               <Nav.Link as={NavLink} to="/Person">Profiili</Nav.Link>

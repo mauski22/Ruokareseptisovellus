@@ -477,7 +477,7 @@ app.get('/getUserOwnRecipeRatings/:userId', (req, res) => {
     });
 });
 app.post('/login', (req, res) => {
-    const sql = "SELECT name, user_id, user_role FROM users WHERE email = ? AND password = ?";
+    const sql = "SELECT nickname, name, user_id, user_role FROM users WHERE email = ? AND password = ?";
     const values = [
         req.body.email,
         req.body.password
@@ -485,10 +485,11 @@ app.post('/login', (req, res) => {
     db.query(sql, values, (err, data) => {
         if(err) return res.json("Login Failed");
         if (data.length > 0) {
+            const nickname = data[0].nickname;
             const userName = data[0].name;
             const user_id = data[0].user_id;
             const userRole = data[0].user_role;
-            return res.json({userName, user_id, userRole});
+            return res.json({userName, user_id, userRole, nickname});
         }
         else {
             res.json("Login failed")

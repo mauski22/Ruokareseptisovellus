@@ -1,7 +1,9 @@
 import React from 'react';
 import { Card, Container, Row, Col, Button } from 'react-bootstrap';
+import { useAuth } from './AuthContext';
 
 const Company = () => {
+  const {user} = useAuth();
   // Mock data for ideat (ideas) and stats
   const ideat = new Array(3).fill({}).map((_, index) => ({
     title: `Tuotekortti ${index + 1}`,
@@ -31,7 +33,7 @@ const Company = () => {
     <Container>
       <Row className="my-4 justify-content-between">
         <Col>
-          <h1>Tervetuloa Piian Piha!</h1>
+          <h1>Tervetuloa {user.nickname}</h1>
         </Col>
       </Row>
 
