@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button, ListGroup } from 'react-bootstrap';
+import PurchaseModal from './PurcahseModal';
 
 export const AllRecipeDisplay = () => {
   const { user } = useAuth();
@@ -264,25 +265,43 @@ const removeRating = async (recipeId, userId) => {
  };
 
 const FavoriteStar = ({ recipe, userFavorites, toggleFavorite }) => {
-  const isFavorite = userFavorites.has(recipe.recipe_id);
-if(isSuperAdmin){
-  return (
-    <Button 
-      onClick={() => toggleFavorite(recipe)}
-      style={{ 
-        marginRight: '10px', 
-        marginLeft: '20px',
-        backgroundColor: isFavorite ? 'yellow' : 'white', // Keltainen, jos suosikki; valkoinen, jos ei
-        borderColor: isFavorite ? 'gold' : 'grey', // Kullanvärinen reunus, jos suosikki; harmaa, jos ei
-        color: isFavorite ? 'black' : 'grey', // Tekstin väri: musta, jos suosikki; harmaa, jos ei
-      }} 
-      size="sm"
-    >
+  const [showModal, setShowModal] = useState(false);
+ const isFavorite = userFavorites.has(recipe.recipe_id);
+ const isSuperAdmin = true; // Tässä oletetaan, että käyttäjä on superadmin
 
-      {isFavorite ? 'Ostettu' : '💰Osta tämä idea '} {/* Keltainen tähti, jos suosikki; harmaa tähti, jos ei */}
-    </Button>
-  );
-}
+ const handlePurchase = (recipeId, price) => {
+    console.log(`Ostettiin idea ${recipeId} hintaan ${price}`);
+    toggleFavorite(recipe);
+    setShowModal(false);
+ };
+
+ if (isSuperAdmin) {
+   return (
+     <>
+       <Button
+         onClick={() => setShowModal(true)}
+         style={{
+           marginRight: '10px',
+           marginLeft: '20px',
+           backgroundColor: isFavorite ? 'yellow' : 'white',
+           borderColor: isFavorite ? 'gold' : 'grey',
+           color: isFavorite ? 'black' : 'grey',
+         }}
+         size="sm"
+       >
+         {isFavorite ? 'Ostettu' : '💰Osta tämä idea'}
+       </Button>
+       <PurchaseModal
+         show={showModal}
+         handleClose={() => setShowModal(false)}
+         handlePurchase={handlePurchase}
+         recipe={recipe}
+       />
+     </>
+   );
+ }
+
+ return null; // Tässä oletetaan, että jos käyttäjä ei ole superadmin, komponentti ei renderöi mitään
 };
 
 
