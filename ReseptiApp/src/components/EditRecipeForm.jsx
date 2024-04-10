@@ -15,15 +15,16 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
     setVisibility(newVisibility === 'public' ? 1 : 0);
   };
   useEffect(() => {
-     const uuttaainesosaa = recipe.ingredients.split(',').map(ingredient => {
-      const [name, amount] = ingredient.split(' (');
-      return { name: name.trim(), amount: parseInt(amount) };
+    const uuttaainesosaa = recipe.ingredients.split(',').map(ingredient => {
+       const [name, amount] = ingredient.split(' (');
+       const cleanedAmount = amount.replace(')', '').trim();
+       return { name: name.trim(), amount: cleanedAmount };
     });
     setIngredients(uuttaainesosaa);
     const uuttaainesosaidt = recipe.ingredient_ids.split(',').map(id => parseInt(id.trim()));
-
+   
     setIngredientideet(uuttaainesosaidt);
-  }, []);
+   }, []);
   const handleIngredientChange = (index, field, value) => {
     if (field === 'amount' && isNaN(value)) {
        alert('Määrän tulee olla numero.');
@@ -131,7 +132,7 @@ const EditRecipeForm = ({ user, recipe, onSave, onClose }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name: ingredient.name, quantity: ingredient.amount, ingredient_id: uudetidt[index], recipe_id: recipe_id }),
+          body: JSON.stringify({ name: ingredient.amount, quantity: ingredient.name, ingredient_id: uudetidt[index], recipe_id: recipe_id }),
         })
       ));
 
