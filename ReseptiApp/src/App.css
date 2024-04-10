@@ -113,6 +113,16 @@ a, .button-link {
 
 /* ... other styles */
 .navbar-blue {
-    background-color: #007bff; /* This is Bootstrap's default blue, change as needed */
+    background-color: #6D64FF; /* This is Bootstrap's default blue, change as needed */
+  }
+  .custom-outline-button {
+    border-color: white !important; /* Ensure this overrides Bootstrap styles */
+    border-width: 2px !important; /* Adjust thickness as desired */
+  }
+  
+  .custom-outline-button-text {
+    border-color: white;
+    border-width: 2px;
+    color: black; /* This sets the text color to black */
   }
   
