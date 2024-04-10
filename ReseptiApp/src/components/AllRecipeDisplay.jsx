@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { Card, Tab, Tabs, Container, Row, Col, CardGroup, Button, ListGroup } from 'react-bootstrap';
-import PurchaseModal from './PurcahseModal';
+import PurchaseModal from './PurchaseModal';
 
 export const AllRecipeDisplay = () => {
   const { user } = useAuth();

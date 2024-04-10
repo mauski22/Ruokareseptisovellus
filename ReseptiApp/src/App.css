@@ -2,7 +2,7 @@
 
 /* Ensure the carousel takes up less vertical space */
 .carousel-image {
-    max-height: 250px; /* Adjust the max-height to your preference for banner size */
+    max-height: 100%; /* Adjust the max-height to your preference for banner size */
     width: 100%;
     object-fit: cover; /* This will cover the area of the img tag without stretching the image */
   }

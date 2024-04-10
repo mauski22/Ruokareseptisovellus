@@ -13,35 +13,26 @@ const ImageCarousel = () => {
     <Carousel.Item interval={3000}>
   <img
     className="d-block w-100 carousel-image" // Lisää tämä luokka
-    src="/assets/Kuva1.webp"
+    src="/assets/Kuva1.png"
     alt="First slide"
   />
-  <Carousel.Caption>
-    <h3>Ensimmäinen kuva</h3>
-    <p>Kuvaus ensimmäisestä kuvasta.</p>
-  </Carousel.Caption>
+  
 </Carousel.Item>
       <Carousel.Item interval={3000}>
         <img
-          className="d-block w-100 carousel-image" // Lisää tämä luokka
-          src="/assets/Kuva2.webp"
+          className="d-block carousel-image" // Lisää tämä luokka
+          src="/assets/Kuva2.png"
           alt="Second slide"
         />
-        <Carousel.Caption>
-          <h3>Toinen kuva</h3>
-          <p>Kuvaus toisesta kuvasta.</p>
-        </Carousel.Caption>
+        
       </Carousel.Item>
       <Carousel.Item interval={3000}>
         <img
           className="d-block w-100 carousel-image" // Lisää tämä luokka
-          src="/assets/Kuva3.webp"
+          src="/assets/Kuva3.png"
           alt="Third slide"
         />
-        <Carousel.Caption>
-          <h3>Kolmas kuva</h3>
-          <p>Kuvaus kolmannesta kuvasta.</p>
-        </Carousel.Caption>
+        
       </Carousel.Item>
       {/* Voit lisätä lisää Carousel.Item-komponentteja lisää kuvia varten */}
     </Carousel>

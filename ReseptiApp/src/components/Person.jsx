@@ -27,8 +27,8 @@ const Person = () => {
               <Card.Body>
                 <Card.Title>{`${idea.title} ${index + 1}`}</Card.Title>
                 <Card.Text>{idea.description}</Card.Text>
-                <Button variant="primary">Osta</Button>{' '}
-                <Button variant="secondary">Hylkää</Button>
+                <Button variant="primary">Muokkaa</Button>{' '}
+                <Button variant="secondary">Poista</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -39,7 +39,7 @@ const Person = () => {
         <Col md={4}>
           <Card>
             <Card.Body>
-              <Card.Title>Jonossa olevat ideat</Card.Title>
+              <Card.Title>Julkiset ideat</Card.Title>
               <Card.Text>7 kpl</Card.Text>
             </Card.Body>
           </Card>
@@ -47,16 +47,16 @@ const Person = () => {
         <Col md={4}>
           <Card>
             <Card.Body>
-              <Card.Title>Kuukausimaksu</Card.Title>
-              <Card.Text>300€/kk</Card.Text>
+              <Card.Title>Salatut ideat</Card.Title>
+              <Card.Text>4 kpl</Card.Text>
             </Card.Body>
           </Card>
         </Col>
         <Col md={4}>
           <Card>
             <Card.Body>
-              <Card.Title>Ostetut ideat</Card.Title>
-              <Card.Text>1 kpl</Card.Text>
+              <Card.Title>Myydyt ideat</Card.Title>
+              <Card.Text>Tuotot: 145€</Card.Text>
             </Card.Body>
           </Card>
         </Col>
