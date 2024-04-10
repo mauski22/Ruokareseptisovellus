@@ -43,8 +43,8 @@ export const RecipeDisplay = () => {
 
       alert('Idea poistettu onnistuneesti!');
     } catch (error) {
-      console.error("Error deleting recipe:", error);
-      alert('Failed to delete the recipe.');
+      console.error("Error deleting idea:", error);
+      alert('Failed to delete the idea.');
     }
   };
 
@@ -65,21 +65,21 @@ export const RecipeDisplay = () => {
         console.log("Ideadatan komponentin tiedot pitäisi näkyä tässä", recipeData)
         setRecipes(recipeData);
       } catch (error) {
-        console.error("Error fetching recipe data:", error);
+        console.error("Error fetching idea data:", error);
       }
     };
     const fetchUserRecipeRatings = async () => {
       try {
           const response = await fetch(`http://localhost:8081/getUserOwnRecipeRatings/${user.user_id}`);
           if (!response.ok) {
-              throw new Error('Failed to fetch user recipe ratings');
+              throw new Error('Failed to fetch user idea ratings');
           }
           const ratingsData = await response.json();
           console.log("ratingsdata :",ratingsData);
           delay(200);
           setRatings(ratingsData);
       } catch (error) {
-          console.error('Error fetching user recipe ratings:', error);
+          console.error('Error fetching user idea ratings:', error);
       }
     }
     fetchRecipes();

@@ -40,7 +40,7 @@ const SearchBar = () => {
           const data = await response.json();
           setRecipedetails(data);
         } catch (error) {
-          console.error('Error fetching recipe details:', error);
+          console.error('Error fetching idea details:', error);
         }
       } else {
         // Jos osoiterivillä ei ole id:tä, hae suositut reseptit
@@ -52,7 +52,7 @@ const SearchBar = () => {
           const data = await response.json();
           setReseptit(data);
         } catch (error) {
-          console.error('Error fetching popular recipes:', error);
+          console.error('Error fetching popular ideas:', error);
         }
       }
     };
@@ -62,8 +62,8 @@ const SearchBar = () => {
 
   const handleShareRecipe = () => {
     const recipeUrl = window.location.href; // Tämä on nykyinen sivun URL
-    const subject = encodeURIComponent(`Resepti: ${details[0].title}`); // Reseptin otsikko
-    const body = encodeURIComponent(`Hei! Katso tämä  komia resepti: ${recipeUrl}`); // Sähköpostin viestin sisältö
+    const subject = encodeURIComponent(`Idea: ${details[0].title}`); // Reseptin otsikko
+    const body = encodeURIComponent(`Hei! Katso tämä  komia idea: ${recipeUrl}`); // Sähköpostin viestin sisältö
     const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
 
     window.open(mailtoLink, '_blank');
@@ -80,7 +80,7 @@ const SearchBar = () => {
       });
 
       const reseptiID = await vastaus.json();
-      console.log('PITÄISI TULLA RESEPTIID = ', reseptiID);
+      console.log('PITÄISI TULLA IDEAID = ', reseptiID);
 
       if (reseptiID === 'Avainsanaa ei löytynyt') {
         setSearchError(true); // Asetetaan tila ilmoittaaksemme, että hakusanalla ei löytynyt tietoa
@@ -95,7 +95,7 @@ const SearchBar = () => {
       setRecipedetails(tiedot[0]);
       navigate(`/recipe/${reseptiID}`);
     } catch (error) {
-      console.log('Reseptin haku epäonnistui: ', error);
+      console.log('Idea haku epäonnistui: ', error);
     }
   };
 
