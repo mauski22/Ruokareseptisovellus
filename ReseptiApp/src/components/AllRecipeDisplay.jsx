@@ -65,7 +65,7 @@ export const AllRecipeDisplay = () => {
         throw new Error('Failed to add recipe to favorites');
       }
   
-      alert(`${recipe.title} on lisätty suosikkeihin!`);
+      alert(`${recipe.title} on ostettu!`);
     } catch (error) {
       console.error('Error adding recipe to favorites:', error);
       alert('Failed to add recipe to favorites');
