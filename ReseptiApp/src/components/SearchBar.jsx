@@ -130,7 +130,6 @@ const SearchBar = () => {
        {!details ? (
          <>
            <div style={{ maxHeight: '95vh', overflowY: 'scroll'}}>
-             <h1>Suositut ideat</h1>
              {reseptit.flat().map((recipe, index) => (
                <div key={index} className="col-md-4" style={{ padding: '10px' }}>
                  <div className="card" style={{ width: '43rem', height: '40rem' }}>
