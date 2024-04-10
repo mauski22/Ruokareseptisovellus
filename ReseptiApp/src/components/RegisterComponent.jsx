@@ -97,7 +97,7 @@ const RegisterComponent = ({ handleCloseForm }) => {
        : 
       (
     <Form onSubmit={handleRegisterSubmit}>
-      <Form.Label>Haluatko rekisteröidä yrityksen?{'  '}
+      <Form.Label>Haluatko rekisteröidä yrityksen?
       </Form.Label>
       <Button onClick={() =>{setCompanyRegistering(!companyRegistering);}}>
         Yritysrekisteröintiin
