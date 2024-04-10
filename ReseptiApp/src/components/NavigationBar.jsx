@@ -89,7 +89,11 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
               <Nav.Link as ={NavLink} to="/Company">Profiili</Nav.Link>
             )}
             {isLoggedIn && (
-              <Button variant="primary" onClick={handleShowAddRecipeForm}>Lisää idea</Button>
+  <Button variant="outline-primary" className="rounded-pill custom-outline-button-text" onClick={handleShowAddRecipeForm}>
+  Lisää idea
+</Button>
+
+
             )}
 
           </Nav>
