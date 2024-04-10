@@ -111,10 +111,10 @@ const AddRecipeForm = ({ user }) => {
 
       console.log("Tässä kuva", file);
       await Promise.all(ingredientRequests);
-      alert('Recipe, photo and ingredients added successfully!');
+      alert('Idea added succesfully');
     } catch (err) {
       console.error(err);
-      alert('Failed to add the recipe, photo or ingredients. Please try again.');
+      alert('Failed to add the IDEA!');
     }
   };
 
@@ -135,7 +135,7 @@ const AddRecipeForm = ({ user }) => {
        setIngredients(updatedIngredients);
     } else {
        // Optionally, show an error message to the user
-       alert('Laita määrä numeroilla eli grammoina tai kappale määränä');
+       alert('Laita summa numeroina');
     }
    };
 

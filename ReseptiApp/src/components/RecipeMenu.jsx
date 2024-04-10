@@ -10,7 +10,7 @@ const RecipeMenu = ({ onClick }) => {
         <div>
             <button onClick={() =>{ navigate('/usersOwnRecipes'); onClick(); }}>OMAT IDEAT</button>
             <button onClick={() =>{ navigate('/allRecipes'); onClick(); }}>KAIKKI IDEAT</button>      
-            <button onClick={() =>{ navigate('/favoriteRecipes'); onClick(); }}>SUOSIKKI IDEAT</button>      
+            <button onClick={() =>{ navigate('/favoriteRecipes'); onClick(); }}>OSTETUT IDEAT</button>      
         </div>
     );
 }
