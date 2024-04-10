@@ -96,6 +96,12 @@ const NavigationBar = ({ onLoginClicked, onSignUpClicked }) => {
           <Nav>
             {user ? (
               <>
+                 <img
+        src={user.profilePictureUrl || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"} // Replace with your default or user's profile picture URL
+        className="rounded-circle mr-2"
+        alt="Profile"
+        style={{ width: '30px', height: '30px', objectFit: 'cover' }}
+      />
                 <Navbar.Text className="me-2">
                   Kirjauduttu sisään: {user.userName} {isSuperAdmin ? 'YRITYS' : 'Jäsen'}
                 </Navbar.Text>
