@@ -129,11 +129,11 @@ const SearchBar = () => {
        {searchError && <p style={{ color: 'red' }}>Hakusanalla ei löytynyt tietoa.</p>}
        {!details ? (
          <>
-           <div style={{ maxHeight: '95vh', overflowY: 'scroll'}}>
-             {reseptit.flat().map((recipe, index) => (
-               <div key={index} className="col-md-4" style={{ padding: '10px' }}>
-                 <div className="card" style={{ width: '43rem', height: '40rem' }}>
-                   <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`}>
+    <div className="row" style={{ maxHeight: '95vh', overflowY: 'auto' }}> {/* Use Bootstrap row and adjust overflow */}
+        {reseptit.flat().slice(0, 6).map((recipe, index) => ( // Slice the first 6 recipes to display
+          <div key={index} className="col-lg-4 col-md-6 mb-4"> {/* Use Bootstrap column sizing */}
+            <div className="card h-100"> {/* Full height card */}
+              <Tabs defaultActiveKey={`tab${index}First`} id={`uncontrolled-tab-example-${index}`} className="flex-column h-100"> {/* Flex column for tabs */}
                     <Tab eventKey={`tab${index}First`} title="Idea">
                        <img
                          src={`http://localhost:8081/images/${recipe.photos}`}

@@ -38,4 +38,22 @@
     margin-top: 0; /* Align checkbox vertically with label */
     margin-right: 5px; /* Space between checkbox and label */
   }
+  /* App.css or another relevant stylesheet */
+
+.card-custom {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Simple box shadow for depth */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  .card-img-top {
+    height: 150px; /* Fixed height for images */
+    object-fit: cover; /* Ensure images cover the area */
+  }
+  
+  /* Adjust the size of the card content as desired */
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  /* Further stylize the tabs and other elements as needed */
   
