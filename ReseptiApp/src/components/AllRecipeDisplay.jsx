@@ -83,7 +83,7 @@ export const AllRecipeDisplay = () => {
 
       // Päivitetään favoriteRecipes-tila poistamalla siitä poistettu resepti
       setFavoriteRecipes(favoriteRecipes.filter(recipe => recipe.recipe_id !== recipeId));
-      alert('Resepti on poistettu suosikeista!');
+      alert('Idea on poistettu ostetuista ideoista!');
     } catch (error) {
       console.error('Error removing recipe from favorites:', error);
       alert('Failed to remove recipe from favorites');
