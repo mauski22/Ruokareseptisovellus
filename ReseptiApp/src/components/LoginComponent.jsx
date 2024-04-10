@@ -68,7 +68,7 @@ const LoginComponent = ({ handleCloseForm }) => {
       </Button>
       <Button variant="danger" onClick={handleCloseForm}>Peruuta</Button>
       <div className="mt-3">
-        <Link to="/reset-password" onClick={onResetPasswordClick}>Unohditko salasanasi?</Link>
+        <Link to="/reset-password" onClick={onResetPasswordClick} style={{"color":"blue"}}>Unohditko salasanasi?</Link>
       </div>
     </Form>
   );
