@@ -19,6 +19,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import FakeStats from './components/FakeStats';
 import ImageCarousel from './components/ImageCarousel';
+import Sidebar from './components/Sidebar';
 
 const App = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -52,11 +53,30 @@ const App = () => {
     }
 
   }, [location]);
+  const FrontPageLayout = () => {
+    return (
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-3">
+            <Sidebar />
+          </div>
+      
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="App search-bar">
-      <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
+      <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />¨
+      <ImageCarousel />
+      <div className="d-flex justify-content-center mt-3">
+        <div className="w-50"> {/* Adjust width as needed */}
+          <SearchBar />
+        </div>
+      </div>
       <Routes>
-        <Route path="/" element={<FakeStats />} />
+        <Route path="/" element={<FrontPageLayout />} />
         <Route path="/usersTable" element={<UsersTable />} />
         <Route path="/recipes" element={<RecipeMenu />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -66,7 +86,6 @@ const App = () => {
         <Route path="/allRecipes" element={<AllRecipeDisplay />} />
         <Route path="/favoriteRecipes" element={<FavoriteRecipes />} />
         <Route path='/recipe/:id' element={<SearchBar/>}/>
-        <Route path="/" element= {<SearchBar/>}/>
         <Route path="/Person" element= {<Person/>}/>
         <Route path="/Company" element= {<Company/>}/>
         <Route path="/ImageCarousel" element= {<ImageCarousel/>}/>
@@ -79,7 +98,7 @@ const App = () => {
         <Modal.Body>
           <LoginComponent handleCloseForm={toggleLoginModal} handleResetLinkClick={!showLoginModal} />
         </Modal.Body>
-      </Modal>
+      </Modal>  
 
       <Modal show={showRegisterModal} onHide={toggleRegisterModal}>
         <Modal.Header closeButton>
