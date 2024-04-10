@@ -67,12 +67,26 @@ const App = () => {
   };
 
   return (
-    <div className="App search-bar">
-      <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />¨
+    <div className="App">
+      <NavigationBar onLoginClicked={toggleLoginModal} onSignUpClicked={toggleRegisterModal} />
       <ImageCarousel />
-      <div className="d-flex justify-content-center mt-3">
-        <div className="w-50"> {/* Adjust width as needed */}
-          <SearchBar />
+      
+      <div className="container-fluid mt-3">
+        <div className="row">
+          <div className="col-md-3 sidebar-sticky"> {/* Make the sidebar sticky */}
+            <Sidebar />
+          </div>
+          <div className="col-md-9">
+            <SearchBar />
+            <div className="row"> {/* This row will contain your recipes */}
+              {recipes.slice(0, 6).map((recipe, index) => (
+                <div key={index} className="col-md-4 mb-4"> {/* Each recipe card will take up 4 columns */}
+                  {/* Render your Recipe component here */}
+                  {/* The Recipe component will contain the recipe details */}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <Routes>

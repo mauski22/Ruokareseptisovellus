@@ -56,4 +56,11 @@
   }
   
   /* Further stylize the tabs and other elements as needed */
+  /* CSS in App.css or another stylesheet */
+.sidebar-sticky {
+    position: sticky;
+    top: 0; /* Adjust this if your header has a certain height */
+    height: 100vh; /* Optional: for a full-height sidebar */
+    overflow-y: auto; /* To enable scrolling within the sidebar */
+  }
   
