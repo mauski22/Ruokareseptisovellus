@@ -7,7 +7,7 @@ const RegisterComponent = ({ handleCloseForm }) => {
   const [emailError, setEmailError] = useState("");
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
-
+  const [companyRegistering, setCompanyRegistering] = useState(false);
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -37,7 +37,71 @@ const RegisterComponent = ({ handleCloseForm }) => {
   };
 
   return (
+    companyRegistering ? (
+      <Form onSubmit={handleRegisterSubmit}>
+      <Form.Label>Haluatko rekisteröityä ideamyyjänä?{'  '}
+      </Form.Label>
+      <Button onClick={() =>{setCompanyRegistering(!companyRegistering);}}>
+        Myyjän rekisteröintiin
+      </Button>
+      <Form.Group className="mb-3" controlId="formNickname">
+        <Form.Label>Yrityksen nimi</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Syötä yrityksen nimi"
+          value={nicknameInput}
+          onChange={(e) => setNicknameInput(e.target.value)}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="formRealName">
+        <Form.Label>Yrityksen Y-Tunnus</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Syötä yrityksen Y-Tunnus"
+          value={nameInput}
+          onChange={(e) => setNameInput(e.target.value)}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Label>Sähköposti</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Syötä sähköposti"
+          value={emailInput}
+          onChange={(e) => { setEmailInput(e.target.value); setEmailError("") }}
+          isInvalid={!!emailError}
+        />
+        <Form.Control.Feedback type="invalid">
+          {emailError}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Label>Salasana</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Syötä salasana"
+          value={passwordInput}
+          onChange={(e) => setPasswordInput(e.target.value)}
+        />
+      </Form.Group>
+
+      <Button variant="primary" type="submit">
+        Rekisteröidy
+      </Button>
+      <Button variant="danger" onClick={handleCloseForm}>Peruuta</Button>
+    </Form>
+      )
+       : 
+      (
     <Form onSubmit={handleRegisterSubmit}>
+      <Form.Label>Haluatko rekisteröidä yrityksen?{'  '}
+      </Form.Label>
+      <Button onClick={() =>{setCompanyRegistering(!companyRegistering);}}>
+        Yritysrekisteröintiin
+      </Button>
       <Form.Group className="mb-3" controlId="formNickname">
         <Form.Label>Käyttäjätunnus</Form.Label>
         <Form.Control
@@ -86,7 +150,7 @@ const RegisterComponent = ({ handleCloseForm }) => {
         Rekisteröidy
       </Button>
       <Button variant="danger" onClick={handleCloseForm}>Peruuta</Button>
-    </Form>
+    </Form> )
   );
 };
 
