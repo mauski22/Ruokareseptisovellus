@@ -1,0 +1,7 @@
+Joo eli cd komennolla mennään kansioon backend jossa annetaan komento: npm install 
+Sama komento annetaan ReseptiApp kansiossa, eli siis npm install
+Jos näillä komennoilla ei tule tarvittavat kirjastot niin kannattaa käyttää komentoa npm update
+Sitten backend kansiossa käytetään komentoa npm start, jolloin backend käynnistyy.
+Reseptiapp kansiossa käytetään komentoa npm run dev, jolloin sovelluksen pitäisi käynnistyä. 
+SQL-scripti ajetaan vain mySQL-tietokannassa portissa 3307 ja salasanalla Ruutti. 
+Edellä mainitut SQL-tiedot pitäisi löytyä myös server.js tiedosta myös. 

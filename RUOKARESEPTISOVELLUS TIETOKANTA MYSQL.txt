@@ -1,0 +1,61 @@
+CREATE DATABASE IF NOT EXISTS reseptisovellus;
+USE reseptisovellus;
+
+CREATE TABLE IF NOT EXISTS Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    nickname VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    user_role ENUM('superadmin', 'user', 'viewer') NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Recipes (
+    recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author_id INT,
+    description TEXT,
+    visibility BOOLEAN NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Ingredients (
+    ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    name VARCHAR(255) NOT NULL,
+    quantity VARCHAR(255) NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Photos (
+    photo_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    image VARCHAR(255) NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Ratings (
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    user_id INT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Keywords (
+    keyword_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    keyword VARCHAR(255) NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Favorites (
+    favorite_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    user_id INT,
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
