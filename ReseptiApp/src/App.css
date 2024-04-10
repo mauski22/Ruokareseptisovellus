@@ -64,3 +64,55 @@
     overflow-y: auto; /* To enable scrolling within the sidebar */
   }
   
+  /* Define color variables */
+:root {
+  --color-blue: #6D64FF;
+  --color-dark-blue: #111D33;
+  --color-grey-blue: #2D384B;
+  --color-yellow: #FEC339;
+  --color-white: #FFFFFF;
+}
+
+/* Use color variables */
+body {
+  background-color: var(--color-white);
+  color: var(--color-dark-blue);
+  font-family: 'Arial', sans-serif; /* Example font */
+}
+
+.header {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+.card {
+  background-color: var(--color-grey-blue);
+  color: var(--color-white);
+}
+
+.button-primary {
+  background-color: var(--color-yellow);
+  color: var(--color-dark-blue);
+}
+
+.button-secondary {
+  background-color: var(--color-dark-blue);
+  color: var(--color-white);
+}
+
+/* Additional styling */
+a, .button-link {
+  color: var(--color-yellow);
+}
+
+/* Backgrounds and borders for elements */
+.navbar, .footer {
+  background-color: var(--color-dark-blue);
+  border-color: var(--color-grey-blue);
+}
+
+/* ... other styles */
+.navbar-blue {
+    background-color: #007bff; /* This is Bootstrap's default blue, change as needed */
+  }
+  

@@ -1,36 +1,94 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Card, Container, Row, Col, Button } from 'react-bootstrap';
 
-function Company() {
-    // Initialize state
-    const [ideasPurchased, setIdeasPurchased] = useState(0);
-    const [totalValue, setTotalValue] = useState(0);
-    const [uniqueIndividuals, setUniqueIndividuals] = useState(0);
+const Company = () => {
+  // Mock data for ideat (ideas) and stats
+  const ideat = new Array(3).fill({}).map((_, index) => ({
+    title: `Tuotekortti ${index + 1}`,
+    description: "Tähän lyhyt kuvaus ideasta"
+  }));
 
-    // Simulate fetching data from an API
-    useEffect(() => {
-        // Replace this with your actual data fetching logic
-        const fetchData = async () => {
-            // Example data fetching logic
-            const response = await fetch('your-api-url-here');
-            const data = await response.json();
+  // Stats data
+  const stats = {
+    queue: 7,
+    monthlyFee: '300€/kk',
+    purchased: 1
+  };
 
-            // Update state with fetched data
-            setIdeasPurchased(data.ideasPurchased);
-            setTotalValue(data.totalValue);
-            setUniqueIndividuals(data.uniqueIndividuals);
-        };
+  // Component to render individual idea cards
+  const IdeaCard = ({ title, description }) => (
+    <Card className="mb-3">
+      <Card.Body>
+        <Card.Title>{title}</Card.Title>
+        <Card.Text>{description}</Card.Text>
+        <Button variant="primary">Osta</Button>{' '}
+        <Button variant="secondary">Hylkää</Button>
+      </Card.Body>
+    </Card>
+  );
 
-        fetchData();
-    }, []);
+  return (
+    <Container>
+      <Row className="my-4 justify-content-between">
+        <Col>
+          <h1>Tervetuloa Piian Piha!</h1>
+        </Col>
+      </Row>
 
-    return (
-        <div>
-            <h1>Yritysnäkymä</h1>
-            <p>Yritys on ostanut {ideasPurchased} ideaa.</p>
-            <p>Yhteen laskettu arvo ideoista jotka on ostettu: {totalValue}</p>
-            <p>Kuinka monelta eri henkilöltä on ostettu ideoita: {uniqueIndividuals}</p>
-        </div>
-    );
-}
+      <Row className="mb-4">
+        <Col>
+          <Card>
+            <Card.Body>
+              <Card.Title>Jonossa olevat ideat</Card.Title>
+              <Card.Text>{stats.queue} kpl</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+            <Card.Body>
+              <Card.Title>Kuukausimaksu</Card.Title>
+              <Card.Text>{stats.monthlyFee}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+            <Card.Body>
+              <Card.Title>Ostetut ideat</Card.Title>
+              <Card.Text>{stats.purchased} kpl</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col className="mb-3">
+          <h4>Katseluoikeus päättyy</h4>
+          <Row>
+            {ideat.map((idea, index) => (
+              <Col md={4} key={index}>
+                <IdeaCard title={idea.title} description={idea.description} />
+              </Col>
+            ))}
+          </Row>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <h4>Uusimmat ideat kategorioissasi</h4>
+          <Row>
+            {ideat.map((idea, index) => (
+              <Col md={4} key={index}>
+                <IdeaCard title={idea.title} description={idea.description} />
+              </Col>
+            ))}
+          </Row>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
 export default Company;
